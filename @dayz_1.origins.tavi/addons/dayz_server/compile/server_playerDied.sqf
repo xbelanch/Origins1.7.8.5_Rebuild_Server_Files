@@ -17,6 +17,12 @@ _humanity = _source getVariable["humanity",2500];
 _weapon = currentWeapon _source;
 _playerIDk = getPlayerUID _source;
 
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["PLAYER_DIED", format ["characterID=%1 playerUID=%2 playerName=%3 sourceUID=%4 sourceName=%5 method=%6", _characterID, _playerID, _playerName, _playerIDk, _sourceName, _method]] call A2EDC_fnc_trace;
+};
+};
+
 
 
 if ( isNull _source || _source == _newObject ) then {
@@ -65,8 +71,6 @@ deleteVehicle _newObject;
 };
 
 diag_log ("PDEATH: Player Died " + _playerID);
-
-
 
 
 

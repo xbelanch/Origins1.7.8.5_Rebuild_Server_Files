@@ -1,3 +1,56 @@
+A2EDC_TRACE = false;
+A2EDC_TRACE_DEEP = false;
+
+A2EDC_fnc_trace = {
+private ["_channel","_message"];
+_channel = _this select 0;
+_message = _this select 1;
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+diag_log format ["[A2EDC:%1] %2", _channel, _message];
+};
+};
+};
+
+A2EDC_fnc_tracePV = {
+private ["_event","_payload","_payloadType","_payloadCount"];
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_event = _this select 0;
+_payload = _this select 1;
+_payloadType = typeName _payload;
+_payloadCount = -1;
+if (_payloadType == "ARRAY") then {
+_payloadCount = count _payload;
+};
+["PV", format ["event=%1 payloadType=%2 payloadCount=%3", _event, _payloadType, _payloadCount]] call A2EDC_fnc_trace;
+};
+};
+};
+
+A2EDC_fnc_childOpcode = {
+private ["_key","_chars","_opcodeChars","_i","_ch","_prefix"];
+_key = _this;
+_chars = toArray _key;
+_opcodeChars = [];
+_prefix = "";
+if ((count _chars) >= 6) then {
+_prefix = toString [_chars select 0,_chars select 1,_chars select 2,_chars select 3,_chars select 4,_chars select 5];
+};
+if (_prefix == "CHILD:") then {
+for "_i" from 6 to ((count _chars) - 1) do {
+_ch = _chars select _i;
+if (_ch == 58) exitWith {};
+_opcodeChars set [count _opcodeChars,_ch];
+};
+};
+if ((count _opcodeChars) > 0) then {
+toString _opcodeChars
+} else {
+"UNKNOWN"
+};
+};
+
 waituntil {!isnil "bis_fnc_init"};
 
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\publicEH_srv.sqf";
@@ -108,18 +161,42 @@ fnc_buildWeightedArray = 	compile preprocessFileLineNumbers "\z\addons\dayz_code
 onPlayerDisconnected 		"[_uid,_name] call server_onPlayerDisconnect;";
 
 server_hiveWrite = {
-private["_data"];
+private["_data","_started","_elapsed","_opcode","_traceEnabled"];
 
+_traceEnabled = false;
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_traceEnabled = true;
+_opcode = _this call A2EDC_fnc_childOpcode;
+_started = diag_tickTime;
+};
+};
 _data = "HiveEXT" callExtension _this;
+if (_traceEnabled) then {
+_elapsed = diag_tickTime - _started;
+["HIVE", format ["write opcode=%1 elapsed=%2", _opcode, _elapsed]] call A2EDC_fnc_trace;
+};
 
-
+_data;
 };
 
 server_hiveReadWrite = {
-private["_key","_resultArray","_data"];
+private["_key","_resultArray","_data","_started","_elapsed","_opcode","_traceEnabled"];
 _key = _this select 0;
 
+_traceEnabled = false;
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_traceEnabled = true;
+_opcode = _key call A2EDC_fnc_childOpcode;
+_started = diag_tickTime;
+};
+};
 _data = "HiveEXT" callExtension _key;
+if (_traceEnabled) then {
+_elapsed = diag_tickTime - _started;
+["HIVE", format ["readwrite opcode=%1 elapsed=%2", _opcode, _elapsed]] call A2EDC_fnc_trace;
+};
 
 _resultArray = call compile format ["%1;",_data];
 

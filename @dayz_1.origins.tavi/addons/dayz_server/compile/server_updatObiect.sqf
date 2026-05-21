@@ -1,4 +1,4 @@
-private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku"];
+private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku","_traceClass"];
 
 _object = 	_this select 0;
 _type = 	toLower(_this select 1);
@@ -7,6 +7,12 @@ _isNotOk = false;
 _allowed =["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
 _objectID =	_object getVariable ["ObjectID","0"];
 _uid = 		_object getVariable ["ObjectUID","0"];
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_traceClass = typeOf _object;
+["OBJECT", format ["class=%1 operation=%2 objectID=%3 uid=%4", _traceClass, _type, _objectID, _uid]] call A2EDC_fnc_trace;
+};
+};
 
 diag_log format ["_object=%1, _type=%2, _objectID=%3, _uid=%4",_object,_type,_objectID,_uid];
 

@@ -1,4 +1,4 @@
-private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos"];
+private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos","_traceName"];
 
 diag_log ("UPDATE: " + str(_this) );
 
@@ -196,6 +196,21 @@ _currentWpn = "";
 };
 _temp = round(_character getVariable ["temperature",100]);
 _currentState = [_currentWpn,_currentAnim,_temp];
+
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_traceName = "unknown";
+if (!isNull _character) then {
+_traceName = name _character;
+};
+["PLAYER_SYNC", format ["name=%1 uid=%2 characterID=%3 force=%4 posUpdate=%5 gearUpdate=%6 medUpdate=%7 inVehicle=%8", _traceName, _PlayerID, _characterID, _force, _isNewPos, _isNewGear, _isNewMed, _isInVehicle]] call A2EDC_fnc_trace;
+if (!(isNil "A2EDC_TRACE_DEEP")) then {
+if (A2EDC_TRACE_DEEP) then {
+["PLAYER_SYNC", format ["deep name=%1 uid=%2 pos=%3 gear=%4 backpack=%5 medical=%6", _traceName, _PlayerID, _playerPos, _playerGear, _playerBackp, _medical]] call A2EDC_fnc_trace;
+};
+};
+};
+};
 
 
 

@@ -26,6 +26,11 @@ _fnc_dump = {
 diag_log format ["Exec Time server_monitor = %1",_this];
 };
 _t1 = diag_tickTime; 
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", "server_monitor start"] call A2EDC_fnc_trace;
+};
+};
 
 diag_log "HIVE: Starting";
 
@@ -34,6 +39,11 @@ diag_log "HIVE: Starting";
 
 
 _key = format["CHILD:302:%1:",dayZ_instance];
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", format ["object streaming request instance=%1", dayZ_instance]] call A2EDC_fnc_trace;
+};
+};
 _data = "HiveEXT" callExtension _key;
 diag_log format ["_data = %1",_data];
 
@@ -63,6 +73,11 @@ if (_status == "ObjectStreamStart") then {
 _val = _result select 1;
 
 diag_log ("HIVE: Commence Object Streaming...");
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", format ["object streaming start count=%1", _val]] call A2EDC_fnc_trace;
+};
+};
 for "_i" from 1 to _val do {
 _data = "HiveEXT" callExtension _key;
 
@@ -73,6 +88,11 @@ _myArray set [count _myArray,_result];
 
 };
 
+};
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", format ["object streaming end loaded=%1", count _myArray]] call A2EDC_fnc_trace;
+};
 };
 
 _countr = 0;		
@@ -1867,6 +1887,21 @@ if (isDedicated) then {
 _id = [] execFSM "\z\addons\dayz_server\system\server_cleanup.fsm";
 };
 
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", "WAI start"] call A2EDC_fnc_trace;
+};
+};
 [] ExecVM "\z\addons\dayz_server\WAI\init.sqf";
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", "DZMS start"] call A2EDC_fnc_trace;
+};
+};
 [] ExecVM "\z\addons\dayz_server\DZMS\DZMSInit.sqf";
 allowConnection = true;
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+["MONITOR", "allowConnection=true"] call A2EDC_fnc_trace;
+};
+};
