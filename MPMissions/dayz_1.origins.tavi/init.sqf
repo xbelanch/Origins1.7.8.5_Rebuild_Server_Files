@@ -69,7 +69,16 @@ if (!isDedicated) then {
 	_nul = [] execVM "Camera\loginCamera.sqf";	
 	
 	// Epoch Admin Tools
-	[] execVM "admintools\AdminList.sqf";
+	call compile preprocessFileLineNumbers "admintools\AdminList.sqf";
+	if (isNil "AdminList") then {
+		AdminList = [];
+	};
+	if (isNil "ModList") then {
+		ModList = [];
+	};
+	if (isNil "tempList") then {
+		tempList = [];
+	};
 	if ( !((getPlayerUID player) in AdminList) && !((getPlayerUID player) in ModList) && !((getPlayerUID player) in tempList)) then 
 	{
 			[] execVM "Scripts\kh_actions.sqf";

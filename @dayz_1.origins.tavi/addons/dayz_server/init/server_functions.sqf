@@ -1,5 +1,5 @@
-A2EDC_TRACE = false;
-A2EDC_TRACE_DEEP = false;
+A2EDC_TRACE = true;
+A2EDC_TRACE_DEEP = true;
 
 A2EDC_fnc_trace = {
 private ["_channel","_message"];
@@ -70,7 +70,7 @@ server_updatObiect =			compile preprocessFileLineNumbers "\z\addons\dayz_server\
 server_playerDied =				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerDied.sqf";
 server_pubOriObj = 				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_pubOriObj.sqf";
 
-server_udalitObj = 				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_udalitObj.sqf";		
+server_udalitObj = 				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_udalitObj.sqf";
 
 server_playerSync =				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerSync.sqf";
 zombie_findOwner =				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\zombie_findOwner.sqf";
@@ -79,7 +79,7 @@ server_wantbbplz =				compile preprocessFileLineNumbers "\z\addons\dayz_server\c
 serv_verbb_pas =						compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\verbb_pas_a.sqf";
 disco_playerMorph =     compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\disco_playerMorph.sqf";
 disco_damageHandler =    compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\disco_damageHandler.sqf";
-disco_playerDeath  =    compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\disco_playerDeath.sqf"; 
+disco_playerDeath  =    compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\disco_playerDeath.sqf";
 botPlayers = [];
 
 vehicle_handleInteract = {
@@ -141,7 +141,7 @@ diag_log ("CLEANUP: DELETED A " + str(_type) );
 
 server_characterSync = {
 private ["_characterID","_playerPos","_playerGear","_playerBackp","_medical","_currentState","_currentModel","_key"];
-_characterID = 	_this select 0;	
+_characterID = 	_this select 0;
 _playerPos =	_this select 1;
 _playerGear =	_this select 2;
 _playerBackp =	_this select 3;
@@ -155,7 +155,7 @@ _key call server_hiveWrite;
 };
 
 
-fnc_buildWeightedArray = 	compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_buildWeightedArray.sqf";		
+fnc_buildWeightedArray = 	compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_buildWeightedArray.sqf";
 
 
 onPlayerDisconnected 		"[_uid,_name] call server_onPlayerDisconnect;";
@@ -474,7 +474,7 @@ _unit setvariable ["ARGT_DEFENCE_PATROL", true, true];
 };
 };
 } foreach _men;
-};  
+};
 };
 
 ARGT_DEFENCE_BEHAVIOUR = {

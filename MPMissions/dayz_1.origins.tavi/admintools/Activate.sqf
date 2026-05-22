@@ -1,3 +1,11 @@
+if (isNil "AdminList") then {
+	AdminList = [];
+};
+
+if (isNil "ModList") then {
+	ModList = [];
+};
+
 if ((getPlayerUID player) in AdminList || (getPlayerUID player) in ModList) then {
 
 	if (isnil "tracker") then {tracker = true;};

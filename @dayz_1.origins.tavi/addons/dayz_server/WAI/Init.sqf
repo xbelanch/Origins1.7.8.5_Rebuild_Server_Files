@@ -5,6 +5,15 @@ heli_para  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compil
 heli_patrol = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\heli_patrol.sqf";
 vehicle_patrol = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\vehicle_patrol.sqf";
 
+if (isNil "PVDZE_serverObjectMonitor") then {
+	PVDZE_serverObjectMonitor = [];
+	if (!(isNil "A2EDC_TRACE")) then {
+		if (A2EDC_TRACE) then {
+			["COMPAT", "initialized missing PVDZE_serverObjectMonitor=[] for WAI compatibility"] call A2EDC_fnc_trace;
+		};
+	};
+};
+
 on_kill = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\ai_killed.sqf";
 
 ai_monitor = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\AImonitor.sqf";
