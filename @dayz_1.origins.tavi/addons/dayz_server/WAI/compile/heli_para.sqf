@@ -132,11 +132,23 @@ while {(alive _helicopter) AND (_drop)} do {
 			_para setBehaviour ai_behaviour;
 			removeAllWeapons _para;
 			removeAllItems _para;
-			_para addweapon _weapon;
+			if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+				["WAI heli_para primary addWeapon", _weapon] call A2EDC_fnc_traceWeaponClass;
+			};
+			if ((typeName _weapon == "STRING") && (_weapon != "")) then {
+				_para addweapon _weapon;
+			};
 			for "_i" from 1 to _mags do {_para addMagazine _magazine;};
 			_para addBackpack _aipack;
 			{_para addMagazine _x} forEach _gearmagazines;
-			{_para addweapon _x} forEach _geartools;
+			{
+				if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+					["WAI heli_para gear tool addWeapon", _x] call A2EDC_fnc_traceWeaponClass;
+				};
+				if ((typeName _x == "STRING") && (_x != "")) then {
+					_para addweapon _x;
+				};
+			} forEach _geartools;
 			if (ai_custom_skills) then {
 				switch (_skill) do {
 				case 0 : {_aicskill = ai_custom_array1;};

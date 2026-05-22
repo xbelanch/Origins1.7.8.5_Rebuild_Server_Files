@@ -75,11 +75,23 @@ if (ai_static_useweapon) then {
 	};
 	_gearmagazines = _aigear select 0;
 	_geartools = _aigear select 1;
-	_unit addweapon _weapon;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["WAI SpawnStatic primary addWeapon", _weapon] call A2EDC_fnc_traceWeaponClass;
+	};
+	if ((typeName _weapon == "STRING") && (_weapon != "")) then {
+		_unit addweapon _weapon;
+	};
 	for "_i" from 1 to _mags do {_unit addMagazine _magazine};
 	_unit addBackpack _aipack;
 	{_unit addMagazine _x} forEach _gearmagazines;
-	{_unit addweapon _x} forEach _geartools;
+	{
+		if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+			["WAI SpawnStatic gear tool addWeapon", _x] call A2EDC_fnc_traceWeaponClass;
+		};
+		if ((typeName _x == "STRING") && (_x != "")) then {
+			_unit addweapon _x;
+		};
+	} forEach _geartools;
 };
 if (ai_static_skills) then {
 	{_unit setSkill [(_x select 0),(_x select 1)]} forEach ai_static_array;

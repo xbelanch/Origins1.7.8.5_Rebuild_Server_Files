@@ -1,5 +1,5 @@
 A2EDC_TRACE = true;
-A2EDC_TRACE_DEEP = true;
+A2EDC_TRACE_DEEP = false;
 
 A2EDC_fnc_trace = {
 private ["_channel","_message"];
@@ -49,6 +49,29 @@ toString _opcodeChars
 } else {
 "UNKNOWN"
 };
+};
+
+A2EDC_fnc_traceWeaponClass = {
+private ["_context","_weapon","_type","_reason"];
+_context = _this select 0;
+_weapon = _this select 1;
+_type = typeName _weapon;
+_reason = "";
+if (_type != "STRING") then {
+_reason = format ["non-string type=%1", _type];
+} else {
+if (_weapon == "") then {
+_reason = "empty string";
+} else {
+if (!(isClass(configFile >> "CfgWeapons" >> _weapon))) then {
+_reason = "missing CfgWeapons class";
+};
+};
+};
+if (_reason != "") then {
+["WEAPON_CLASS", format ["%1 invalid weapon=%2 reason=%3", _context, _weapon, _reason]] call A2EDC_fnc_trace;
+};
+_reason == ""
 };
 
 waituntil {!isnil "bis_fnc_init"};

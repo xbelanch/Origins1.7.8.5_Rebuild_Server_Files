@@ -61,9 +61,29 @@ _backpackMag = getMagazineCargo unitBackpack _object;
 
 
 _currentWpn = "";
+if (isNil "_currentWpn") then {
+_currentWpn = "";
+};
+if ((typeName _currentWpn) == "STRING") then {
+if (_currentWpn != "") then {
+if (!(isClass(configFile >> "CfgWeapons" >> _currentWpn))) then {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph currentWpn before CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
+};
 _muzzles = getArray(configFile >> "cfgWeapons" >> _currentWpn >> "muzzles");
 if (count _muzzles > 1) then {
 _currentWpn = currentMuzzle _object;
+};
+} else {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph currentWpn before CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
+};
+} else {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph currentWpn before CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
 };
 
 
@@ -91,9 +111,28 @@ removeAllWeapons _newUnit;
 
 
 { _newUnit addMagazine _x } forEach _magazines;
-{ _newUnit addWeapon _x } forEach _weapons;
-if(_primweapon !=  (primaryWeapon _newUnit)) then { _newUnit addWeapon _primweapon };
-if(_secweapon != (secondaryWeapon _newUnit) && _secweapon != "") then {	_newUnit addWeapon _secweapon };
+{
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph restore _weapons addWeapon", _x] call A2EDC_fnc_traceWeaponClass;
+};
+if ((typeName _x == "STRING") && (_x != "")) then {
+_newUnit addWeapon _x;
+};
+} forEach _weapons;
+if(_primweapon !=  (primaryWeapon _newUnit)) then {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph restore _primweapon addWeapon", _primweapon] call A2EDC_fnc_traceWeaponClass;
+};
+if ((typeName _primweapon == "STRING") && (_primweapon != "")) then {
+_newUnit addWeapon _primweapon;
+};
+};
+if(_secweapon != (secondaryWeapon _newUnit) && _secweapon != "") then {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph restore _secweapon addWeapon", _secweapon] call A2EDC_fnc_traceWeaponClass;
+};
+_newUnit addWeapon _secweapon;
+};
 
 
 if (!isNil "_newBackpackType") then {
@@ -110,6 +149,9 @@ _backpackWpnQtys = 	_backpackWpn select 1;
 };
 _countr = 0;
 {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["disco_playerMorph backpack addWeaponCargoGlobal", _x] call A2EDC_fnc_traceWeaponClass;
+};
 _newBackpack addWeaponCargoGlobal [_x,(_backpackWpnQtys select _countr)];
 _countr = _countr + 1;
 } forEach _backpackWpnTypes;
@@ -141,7 +183,11 @@ _newUnit setVariable["unconsciousTime",(_medical select 10),true];
 
 {
 _newUnit setVariable[_x,true,true];
+if (!isNil "fnc_usec_damageBleed") then {
 [_newUnit,_x,0] spawn fnc_usec_damageBleed;
+} else {
+diag_log "[A2EDC:DISCO] skip fnc_usec_damageBleed: function undefined in server context";
+};
 usecBleed = [_newUnit,_x,0];
 publicVariable "usecBleed";
 } forEach (_medical select 8);

@@ -179,6 +179,9 @@ _objWpnTypes = (_intentory select 0) select 0;
 _objWpnQty = (_intentory select 0) select 1;
 _countr = 0;					
 {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["server_monitor object inventory CfgWeapons probe", _x] call A2EDC_fnc_traceWeaponClass;
+};
 _isOK = 	isClass(configFile >> "CfgWeapons" >> _x);
 if (_isOK) then {
 _block = 	getNumber(configFile >> "CfgWeapons" >> _x >> "stopThis") == 1;

@@ -71,7 +71,12 @@ for "_x" from 1 to _unitcount do {
 	for "_i" from 1 to 3 do {
 		_unit addMagazine _magazine;
 	};
-	_unit addWeapon _weapon;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["DZMSAISpawn primary addWeapon", _weapon] call A2EDC_fnc_traceWeaponClass;
+	};
+	if ((typeName _weapon == "STRING") && (_weapon != "")) then {
+		_unit addWeapon _weapon;
+	};
 	_unit selectWeapon _weapon;
 	
 	_unit addBackpack _aipack;
@@ -85,7 +90,12 @@ for "_x" from 1 to _unitcount do {
 	} forEach _gearmagazines;
 	
 	{
-		_unit addWeapon _x
+		if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+			["DZMSAISpawn gear tool addWeapon", _x] call A2EDC_fnc_traceWeaponClass;
+		};
+		if ((typeName _x == "STRING") && (_x != "")) then {
+			_unit addWeapon _x;
+		};
 	} forEach _geartools;
 	
 	//Lets set the skills

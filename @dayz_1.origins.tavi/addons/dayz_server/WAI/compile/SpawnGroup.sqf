@@ -66,11 +66,23 @@ for "_x" from 1 to _unitnumber do {
 	_unit setBehaviour ai_behaviour;
 	removeAllWeapons _unit;
 	removeAllItems _unit;
-	_unit addweapon _weapon;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["WAI SpawnGroup primary addWeapon", _weapon] call A2EDC_fnc_traceWeaponClass;
+	};
+	if ((typeName _weapon == "STRING") && (_weapon != "")) then {
+		_unit addweapon _weapon;
+	};
 	for "_i" from 1 to _mags do {_unit addMagazine _magazine;};
 	_unit addBackpack _aipack;
 	{_unit addMagazine _x} forEach _gearmagazines;
-	{_unit addweapon _x} forEach _geartools;
+	{
+		if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+			["WAI SpawnGroup gear tool addWeapon", _x] call A2EDC_fnc_traceWeaponClass;
+		};
+		if ((typeName _x == "STRING") && (_x != "")) then {
+			_unit addweapon _x;
+		};
+	} forEach _geartools;
 	if (ai_custom_skills) then {
 		switch (_skill) do {
 		case 0 : {_aicskill = ai_custom_array1;};

@@ -185,12 +185,23 @@ if (_isInVehicle) then {
 _currentWpn = "";
 } else {
 if ( typeName(_currentWpn) == "STRING" ) then {
+if (_currentWpn != "") then {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["server_playerSync currentMuzzle CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
 _muzzles = getArray(configFile >> "cfgWeapons" >> _currentWpn >> "muzzles");
 if (count _muzzles > 1) then {
 _currentWpn = currentMuzzle _character;
 };	
 } else {
-
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["server_playerSync currentMuzzle before CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
+};
+} else {
+if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+["server_playerSync currentMuzzle before CfgWeapons probe", _currentWpn] call A2EDC_fnc_traceWeaponClass;
+};
 _currentWpn = "";
 };
 };

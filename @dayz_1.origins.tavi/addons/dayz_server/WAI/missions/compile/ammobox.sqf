@@ -16,12 +16,18 @@ _numberofitems = (round (random 2)) + wai_mission_numberofitems;
 
 for "_i" from 1 to _numberofguns do {
 	_weapon = ammo_box_guns call BIS_fnc_selectRandom;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["WAI ammobox gun CfgWeapons magazines probe", _weapon] call A2EDC_fnc_traceWeaponClass;
+	};
 	_mags = getArray (configFile >> "cfgWeapons" >> _weapon >> "magazines");
 	_box addWeaponCargoGlobal [_weapon,1];
 	_box addMagazineCargoGlobal [(_mags select 0),round(random 2) + 1];
 };
 for "_i" from 1 to _numberoftools do {
 	_tool = ammo_box_tools call BIS_fnc_selectRandom;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["WAI ammobox tool addWeaponCargoGlobal", _tool] call A2EDC_fnc_traceWeaponClass;
+	};
 	_box addWeaponCargoGlobal [_tool,2];
 };
 

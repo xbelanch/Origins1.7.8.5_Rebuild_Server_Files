@@ -200,6 +200,9 @@ DZMSGetWeapon = {
 		case 3: {_aiweapon = DZMSWeps3;};
 	};
 	_weapon = _aiweapon call BIS_fnc_selectRandom;
+	if (!(isNil "A2EDC_fnc_traceWeaponClass")) then {
+		["DZMSGetWeapon CfgWeapons magazines probe", _weapon] call A2EDC_fnc_traceWeaponClass;
+	};
 	_magazine = getArray (configFile >> "CfgWeapons" >> _weapon >> "magazines") select 0;
 	
 	_fin = [_weapon,_magazine];
