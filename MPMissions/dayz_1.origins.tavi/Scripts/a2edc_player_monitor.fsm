@@ -715,6 +715,13 @@ class FSM
        "_worldspace = 	dayzOriginsPlL2 select 0;" \n
        "_state =			dayzOriginsPlL2 select 1;" \n
        "_humanity = 		dayzOriginsPlL2 select 2;" \n
+       "_a2edcStateWeapon = ""<none>"";" \n
+       "_a2edcStateAnim = ""<none>"";" \n
+       "if ((typeName _state) == ""ARRAY"") then {" \n
+       "	if (count _state > 0) then {_a2edcStateWeapon = _state select 0;};" \n
+       "	if (count _state > 1) then {_a2edcStateAnim = _state select 1;};" \n
+       "};" \n
+       "diag_log format [""[A2EDC:WEAPON_STATE:LOGIN2_STATE] uid=%1 charID=%2 state=%3 stateWeapon=%4 stateAnim=%5 currentWeapon=%6 primaryWeapon=%7 secondaryWeapon=%8 animationState=%9 weapons=%10"",getPlayerUID player,_charID,_state,_a2edcStateWeapon,_a2edcStateAnim,currentWeapon player,primaryWeapon player,secondaryWeapon player,animationState player,weapons player];" \n
        "if (!isNil ""A2EDC_TRACE_GENDER_SELECT"") then {" \n
        "	if (A2EDC_TRACE_GENDER_SELECT) then {" \n
        "		diag_log format [""[A2EDC:GENDER_SELECT:CLIENT_LOGIN2_RESPONSE] uid=%1 charID=%2 isNew=%3 needsGender=%4 selectSex=%5 model=%6 payload=%7"",getPlayerUID player,_charID,_isNew,_a2edcNeedsGenderSelect,player getVariable [""selectSex"",""<nil>""],typeOf player,dayzOriginsPlL2];" \n
@@ -1023,6 +1030,8 @@ class FSM
        "	};" \n
        "};" \n
        "" \n
+       "diag_log format [""[A2EDC:WEAPON_STATE:RESTORE_STATE:BEFORE] uid=%1 charID=%2 state=%3 stateWeapon=%4 stateAnim=%5 currentWeapon=%6 primaryWeapon=%7 secondaryWeapon=%8 animationState=%9 weapons=%10"",getPlayerUID player,if (isNil ""dayz_characterID"") then {""<nil>""} else {dayz_characterID},_state,_currentWpn,_currentAnim,currentWeapon player,primaryWeapon player,secondaryWeapon player,animationState player,weapons player];" \n
+       "" \n
        "if (_currentWpn == ""MeleeHatchet"") then {" \n
        "	player addMagazine 'hatchet_swing';" \n
        "};" \n
@@ -1051,6 +1060,7 @@ class FSM
        "		};" \n
        "	};" \n
        "};" \n
+       "diag_log format [""[A2EDC:WEAPON_STATE:RESTORE_STATE:AFTER] uid=%1 charID=%2 stateWeapon=%3 stateAnim=%4 currentWeapon=%5 primaryWeapon=%6 secondaryWeapon=%7 animationState=%8 weapons=%9"",getPlayerUID player,if (isNil ""dayz_characterID"") then {""<nil>""} else {dayz_characterID},_currentWpn,_currentAnim,currentWeapon player,primaryWeapon player,secondaryWeapon player,animationState player,weapons player];" \n
        "" \n
        "//Player control loop" \n
        "dayz_monitor1 = [] spawn {" \n
@@ -1138,6 +1148,9 @@ class FSM
        "dayzGearSave = true;" \n
        "" \n
        "dayz_slowCheck = 	[] spawn player_spawn_2;" \n
+       "if (!isNil ""A2EDC_fnc_fixWeaponStanceAfterSpawn"") then {" \n
+       "	[] spawn A2EDC_fnc_fixWeaponStanceAfterSpawn;" \n
+       "};" \n
        "" \n
        "_world = toUpper(worldName); //toUpper(getText (configFile >> ""CfgWorlds"" >> (worldName) >> ""description""));" \n
        "_nearestCity = nearestLocations [getPos player, [""NameCityCapital"",""NameCity"",""NameVillage"",""NameLocal""],1000];" \n

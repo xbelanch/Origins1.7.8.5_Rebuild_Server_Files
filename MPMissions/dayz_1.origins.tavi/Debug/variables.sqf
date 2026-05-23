@@ -190,6 +190,8 @@ if (isNil "A2EDC_GENDER_SELECT_TRACE_DB_STATE") then {A2EDC_GENDER_SELECT_TRACE_
 if (isNil "A2EDC_DEBUG_SUICIDE_ACTION") then {A2EDC_DEBUG_SUICIDE_ACTION = true;};
 if (isNil "A2EDC_ENABLE_PLAYER_SUICIDE") then {A2EDC_ENABLE_PLAYER_SUICIDE = true;};
 if (isNil "A2EDC_suicideInProgress") then {A2EDC_suicideInProgress = false;};
+if (isNil "A2EDC_TRACE_WEAPON_STATE_AFTER_SPAWN") then {A2EDC_TRACE_WEAPON_STATE_AFTER_SPAWN = true;};
+if (isNil "A2EDC_FIX_WEAPON_STANCE_AFTER_SPAWN") then {A2EDC_FIX_WEAPON_STANCE_AFTER_SPAWN = true;};
 r_pitchWhine = 			false;
 r_isBandit =			false;
 USEC_woundHit 	= [
