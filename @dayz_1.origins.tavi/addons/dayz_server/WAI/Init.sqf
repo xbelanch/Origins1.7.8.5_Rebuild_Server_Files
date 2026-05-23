@@ -7,6 +7,7 @@ vehicle_patrol = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\co
 
 if (isNil "PVDZE_serverObjectMonitor") then {
 	PVDZE_serverObjectMonitor = [];
+	A2EDC_PVDZE_serverObjectMonitorShim = true;
 	if (!(isNil "A2EDC_TRACE")) then {
 		if (A2EDC_TRACE) then {
 			["COMPAT", "initialized missing PVDZE_serverObjectMonitor=[] for WAI compatibility"] call A2EDC_fnc_trace;

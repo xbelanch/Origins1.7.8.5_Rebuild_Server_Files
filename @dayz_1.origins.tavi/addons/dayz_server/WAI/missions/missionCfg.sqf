@@ -72,17 +72,13 @@ military_unarmed = [
 // cargo trucks to spawn in missions
 cargo_trucks = [
 "ori_vil_truck_civ_base",
-"ori_vil_originsmod_truck_civ",
-"ori_vil_originsmod_truck_civ1",
-"ori_vil_originsmod_truck_civ2"
+"ori_vil_originsmod_truck_civ"
 ];
 
 // refuel trucks to spawn in missions
 refuel_trucks = [
 "ori_vil_truck_civ_base",
-"ori_vil_originsmod_truck_civ",
-"ori_vil_originsmod_truck_civ1",
-"ori_vil_originsmod_truck_civ2"
+"ori_vil_originsmod_truck_civ"
 ];
 
 // civilian vehicles to spawn in missions

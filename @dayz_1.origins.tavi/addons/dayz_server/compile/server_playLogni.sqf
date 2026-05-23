@@ -96,6 +96,8 @@ _a2edcModelInvalid = true;
 if (A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL && {_a2edcModelInvalid}) then {
 _a2edcNeedsGenderSelect = true;
 };
+_playerObj setVariable ["A2EDC_needsGenderSelect",_a2edcNeedsGenderSelect,true];
+_playerObj setVariable ["A2EDC_loginModel",_a2edcRawModel,true];
 
 diag_log format ["LOGIN RESULT_spl: %1",_primary];
 diag_log format [

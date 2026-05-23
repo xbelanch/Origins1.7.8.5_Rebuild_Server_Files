@@ -1,4 +1,4 @@
-private["_characterID","_playerObj","_playerID","_selectedRegion","_arr_spawnPos","_slevel","_bbase","_selectedRegionV","_selectedRegion1","_dummy","_worldspace","_state","_doLoop","_key","_primary","_medical","_stats","_humanity","_randomSpot","_position","_debug","_distance","_distSB","_hit","_fractures","_score","_selectedRegionRandom","_findSpot","_isNear","_clientID"];
+private["_characterID","_playerObj","_playerID","_selectedRegion","_arr_spawnPos","_slevel","_bbase","_selectedRegionV","_selectedRegion1","_dummy","_worldspace","_state","_doLoop","_key","_primary","_medical","_stats","_humanity","_randomSpot","_position","_debug","_distance","_distSB","_hit","_fractures","_score","_selectedRegionRandom","_findSpot","_isNear","_clientID","_a2edcNeedsGenderSelect","_a2edcLoginModel"];
 
 
 
@@ -41,6 +41,8 @@ _worldspace = 	[];
 
 
 _state = 		[];
+_a2edcNeedsGenderSelect = _playerObj getVariable ["A2EDC_needsGenderSelect",false];
+_a2edcLoginModel = _playerObj getVariable ["A2EDC_loginModel",typeOf _playerObj];
 
 
 _doLoop = 0;
@@ -162,12 +164,22 @@ _playerObj setVariable["humanKills_CHK",(_stats select 2)];
 _playerObj setVariable["banditKills_CHK",(_stats select 3)];
 if (count _stats > 4) then {
 if (!(_stats select 3)) then {
+if (_a2edcNeedsGenderSelect) then {
 _playerObj setVariable["selectSex",true,true];
 diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=true reason=stats-index-3-false stats=%3 model=%4",_playerID,_characterID,_stats,typeOf _playerObj];
+} else {
+_playerObj setVariable["selectSex",false,true];
+diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=false reason=login-valid-model-stats-index-3-false stats=%3 model=%4 loginModel=%5",_playerID,_characterID,_stats,typeOf _playerObj,_a2edcLoginModel];
+};
 };
 } else {
+if (_a2edcNeedsGenderSelect) then {
 _playerObj setVariable["selectSex",true,true];
 diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=true reason=stats-too-short stats=%3 model=%4",_playerID,_characterID,_stats,typeOf _playerObj];
+} else {
+_playerObj setVariable["selectSex",false,true];
+diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=false reason=login-valid-model-stats-too-short stats=%3 model=%4 loginModel=%5",_playerID,_characterID,_stats,typeOf _playerObj,_a2edcLoginModel];
+};
 };
 } else {
 diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=skip reason=no-stats model=%3",_playerID,_characterID,typeOf _playerObj];

@@ -18,6 +18,11 @@ bb_base_level1f = [];
 bb_base_level2f = [];
 bb_base_level3f = [];
 ori_servObjMonitor = [];
+dayz_serverObjectMonitor = ori_servObjMonitor;
+serverObjectMonitor = dayz_serverObjectMonitor;
+dayz_serverMonitor = true;
+serverMonitor = true;
+sm_done = false;
 _newinvhouse = [];
 _dobav = true;
 _dobavL = true;
@@ -1903,8 +1908,9 @@ if (A2EDC_TRACE) then {
 };
 [] ExecVM "\z\addons\dayz_server\DZMS\DZMSInit.sqf";
 allowConnection = true;
+sm_done = true;
 if (!(isNil "A2EDC_TRACE")) then {
 if (A2EDC_TRACE) then {
-["MONITOR", "allowConnection=true"] call A2EDC_fnc_trace;
+["MONITOR", format ["allowConnection=true sm_done=%1 serverObjectMonitor=%2 serverMonitor=%3",sm_done,count dayz_serverObjectMonitor,dayz_serverMonitor]] call A2EDC_fnc_trace;
 };
 };
