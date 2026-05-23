@@ -5,7 +5,7 @@
 		UnitCount is the number of units to spawn
 		SkillLevel is the skill number defined in DZMSAIConfig.sqf
 */																		//
-private ["_position","_unitcount","_skill","_wpRadius","_xpos","_ypos","_unitGroup","_aiskin","_unit","_weapon","_magazine","_wppos1","_wppos2","_wppos3","_wppos4","_wp1","_wp2","_wp3","_wp4","_wpfin","_unitArrayName","_unitMissionCount"];
+private ["_position","_unitcount","_skill","_wpRadius","_xpos","_ypos","_unitGroup","_aiskin","_unit","_weapon","_magazine","_wppos1","_wppos2","_wppos3","_wppos4","_wp1","_wp2","_wp3","_wp4","_wpfin","_unitArrayName","_unitMissionCount","_aicskill"];
 _position = _this select 0;
 _unitcount = _this select 1;
 _skill = _this select 2;
@@ -105,9 +105,37 @@ for "_x" from 1 to _unitcount do {
 		case 2: {_aicskill = DZMSSkills2;};
 		case 3: {_aicskill = DZMSSkills3;};
 	};
+
+	if (isNil "_aicskill") then {
+		if (!isNil "DZMSSkills1") then {
+			_aicskill = DZMSSkills1;
+			diag_log format ["[A2EDC:DZMS:AI_SKILL] _aicskill was nil for skill=%1; using DZMSSkills1 fallback",_skill];
+		} else {
+			_aicskill = [];
+			diag_log format ["[A2EDC:DZMS:AI_SKILL] _aicskill was nil for skill=%1; no DZMSSkills fallback found, skipping setSkill loop",_skill];
+		};
+	};
+
+	if ((typeName _aicskill) != "ARRAY") then {
+		diag_log format [
+			"[A2EDC:DZMS:AI_SKILL] invalid _aicskill type=%1 value=%2 skill=%3; skipping setSkill loop",
+			typeName _aicskill,
+			_aicskill,
+			_skill
+		];
+		_aicskill = [];
+	};
 	
 	{
-		_unit setSkill [(_x select 0),(_x select 1)]
+		if ((typeName _x) == "ARRAY") then {
+			if ((count _x) >= 2) then {
+				_unit setSkill [(_x select 0),(_x select 1)]
+			} else {
+				diag_log format ["[A2EDC:DZMS:AI_SKILL] invalid skill entry=%1 skill=%2",_x,_skill];
+			};
+		} else {
+			diag_log format ["[A2EDC:DZMS:AI_SKILL] invalid skill entry=%1 skill=%2",_x,_skill];
+		};
 	} forEach _aicskill;
 	
 	//Lets prepare the unit for cleanup
