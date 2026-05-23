@@ -1,3 +1,4 @@
 dayz_server.pbo
 *bak
-*pbo
+*.pbo
+tools/

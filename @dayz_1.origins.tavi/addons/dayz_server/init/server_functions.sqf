@@ -1,3 +1,12 @@
+call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\a2edc_buildinfo.sqf";
+diag_log format [
+"[A2EDC:BUILD] dayz_server.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_UTC},
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_PREFIX") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_PREFIX},
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE}
+];
+
 A2EDC_TRACE = true;
 A2EDC_TRACE_DEEP = false;
 

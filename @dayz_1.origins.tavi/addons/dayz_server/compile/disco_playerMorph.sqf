@@ -1,4 +1,11 @@
-private ["_object","_playerID","_characterID","_penalty","_playerName","_model","_position","_dir","_currentAnim","_updates","_humanity","_temp","_worldspace","_zombieKills","_headShots","_humanKills","_banditKills","_medical","_messing","_weapons","_magazines","_primweapon","_secweapon","_newBackpackType","_backpackWpn","_backpackMag","_currentWpn","_muzzles","_doLoop","_key","_primary","_newUnit","_newBackpack","_backpackWpnTypes","_backpackWpnQtys","_countr","_backpackmagTypes","_backpackmagQtys","_backpackmag","_fractures","_mydamage_eh1","_isDead","_playerGear","_playerBackp"];
+diag_log format [
+"[A2EDC:DISCO:VERSION] disco_playerMorph executing build_id=%1 build_utc=%2 note=%3",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_UTC},
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE}
+];
+
+private ["_object","_playerID","_characterID","_penalty","_playerName","_model","_position","_dir","_currentAnim","_updates","_humanity","_temp","_worldspace","_zombieKills","_headShots","_humanKills","_banditKills","_medical","_messing","_weapons","_magazines","_primweapon","_secweapon","_newBackpackType","_backpackWpn","_backpackMag","_currentWpn","_muzzles","_doLoop","_key","_primary","_newUnit","_newBackpack","_backpackWpnTypes","_backpackWpnQtys","_countr","_backpackmagTypes","_backpackmagQtys","_backpackmag","_fractures","_mydamage_eh1","_isDead","_playerGear","_playerBackp","_a2edcBleedFn"];
 _object 	= _this select 0;
 
 _playerID 	= _this select 1; 
@@ -64,6 +71,13 @@ _currentWpn = "";
 if (isNil "_currentWpn") then {
 _currentWpn = "";
 };
+diag_log format [
+"[A2EDC:DISCO:CURRENT_WPN] build_id=%1 currentWpn=%2 type=%3 isNil=%4",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+_currentWpn,
+typeName _currentWpn,
+isNil "_currentWpn"
+];
 if ((typeName _currentWpn) == "STRING") then {
 if (_currentWpn != "") then {
 if (!(isClass(configFile >> "CfgWeapons" >> _currentWpn))) then {
@@ -183,10 +197,34 @@ _newUnit setVariable["unconsciousTime",(_medical select 10),true];
 
 {
 _newUnit setVariable[_x,true,true];
+diag_log format [
+"[A2EDC:DISCO:BLEED_GUARD:ENTER] build_id=%1 wound=%2 fnc_isNil=%3 newUnit=%4",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+_x,
+isNil "fnc_usec_damageBleed",
+_newUnit
+];
+
+_a2edcBleedFn = nil;
+
 if (!isNil "fnc_usec_damageBleed") then {
-[_newUnit,_x,0] spawn fnc_usec_damageBleed;
+_a2edcBleedFn = fnc_usec_damageBleed;
+};
+
+if (!isNil "_a2edcBleedFn") then {
+diag_log format [
+"[A2EDC:DISCO:BLEED_GUARD:SPAWN] build_id=%1 wound=%2 using=indirect",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+_x
+];
+
+[_newUnit,_x,0] spawn _a2edcBleedFn;
 } else {
-diag_log "[A2EDC:DISCO] skip fnc_usec_damageBleed: function undefined in server context";
+diag_log format [
+"[A2EDC:DISCO:BLEED_GUARD:SKIP] build_id=%1 wound=%2 reason=fnc_usec_damageBleed undefined",
+if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+_x
+];
 };
 usecBleed = [_newUnit,_x,0];
 publicVariable "usecBleed";

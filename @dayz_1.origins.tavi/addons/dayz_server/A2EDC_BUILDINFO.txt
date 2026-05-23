@@ -1,0 +1,10 @@
+build_id=20260523-074514
+build_utc=2026-05-23T07:45:14Z
+source=@dayz_1.origins.tavi/addons/dayz_server
+output_pbo=@dayz_1.origins.tavi/addons/dayz_server.pbo
+prefix=z\addons\dayz_server
+hostname=home-X99F8
+git_commit=4c6634e05b55d4ffd0aece6d696021ebbbc4d7f5
+git_short=4c6634e
+git_dirty=true
+note=bleedguard-runtime-marker-v3

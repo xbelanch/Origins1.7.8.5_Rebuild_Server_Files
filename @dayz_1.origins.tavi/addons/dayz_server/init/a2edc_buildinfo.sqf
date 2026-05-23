@@ -1,0 +1,5 @@
+A2EDC_DAYZ_SERVER_BUILD_ID = "20260523-074514";
+A2EDC_DAYZ_SERVER_BUILD_UTC = "2026-05-23T07:45:14Z";
+A2EDC_DAYZ_SERVER_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
+A2EDC_DAYZ_SERVER_BUILD_PREFIX = "z\addons\dayz_server";
+A2EDC_DAYZ_SERVER_BUILD_NOTE = "bleedguard-runtime-marker-v3";

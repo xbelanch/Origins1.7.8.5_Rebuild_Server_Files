@@ -39,6 +39,16 @@ while {_run} do
 	diag_log text format ["[DZMS]: Running Minor Mission %1.",_varName];
 	
 	//Let's wait for it to finish or timeout
-	waitUntil {DZMSMinDone};
+	diag_log format [
+		"[A2EDC:DZMS:MIN_TIMER] waiting for minor mission completion mission=%1 var=%2 isNil=%3",
+		_varName,
+		"DZMSMinDone",
+		isNil "DZMSMinDone"
+	];
+	waitUntil {
+		sleep 5;
+		(!isNil "DZMSMinDone") && {DZMSMinDone}
+	};
+	diag_log format ["[A2EDC:DZMS:MIN_TIMER] minor mission completion detected mission=%1",_varName];
 	DZMSMinDone = nil;
 };
