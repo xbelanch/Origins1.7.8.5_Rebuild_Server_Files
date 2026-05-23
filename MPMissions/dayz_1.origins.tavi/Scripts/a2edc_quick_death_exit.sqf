@@ -95,4 +95,10 @@ while {!_shouldExit} do {
 _display displayRemoveEventHandler ["KeyDown",_keyHandler];
 
 diag_log "[A2EDC:DEATH_UI] executing return-to-lobby action";
+diag_log format [
+	"[A2EDC:DEATH_UI:EXIT_TO_POOL] uid=%1 charID=%2 time=%3",
+	getPlayerUID player,
+	if (isNil "dayz_characterID") then {"<nil>"} else {dayz_characterID},
+	time
+];
 endMission "END1";

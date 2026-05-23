@@ -1,4 +1,4 @@
-private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state"];
+private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid"];
 
 
 diag_log ("STARTING LOGIN: " + str(_this));
@@ -67,7 +67,60 @@ _isNew = 		count _primary < 6;
 _charID = 		_primary select 2;
 _randomSpot = false;
 
+if (isNil "A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL") then {A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL = true;};
+if (isNil "A2EDC_GENDER_SELECT_TRACE_DB_STATE") then {A2EDC_GENDER_SELECT_TRACE_DB_STATE = true;};
+
+_a2edcRawModel = "";
+if (_isNew) then {
+if (count _primary > 3) then {
+_a2edcRawModel = _primary select 3;
+};
+} else {
+if (count _primary > 7) then {
+_a2edcRawModel = _primary select 7;
+};
+};
+
+_a2edcNeedsGenderSelect = _isNew;
+_a2edcInvalidGenderModels = ["","Survivor1_DZ","""Survivor1_DZ"""];
+_a2edcModelInvalid = false;
+
+if ((typeName _a2edcRawModel) != "STRING") then {
+_a2edcModelInvalid = true;
+} else {
+if (_a2edcRawModel in _a2edcInvalidGenderModels) then {
+_a2edcModelInvalid = true;
+};
+};
+
+if (A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL && {_a2edcModelInvalid}) then {
+_a2edcNeedsGenderSelect = true;
+};
+
 diag_log format ["LOGIN RESULT_spl: %1",_primary];
+diag_log format [
+"[A2EDC:GENDER_SELECT:SERVER_LOGIN] uid=%1 name=%2 charID=%3 isNew=%4 newPlayer=%5 rawCount=%6 raw=%7",
+_playerID,
+_playerName,
+_charID,
+_isNew,
+_newPlayer,
+count _primary,
+_primary
+];
+
+diag_log format [
+"[A2EDC:GENDER_SELECT:SERVER_DECISION] uid=%1 name=%2 charID=%3 isNew=%4 needsGender=%5 rawModel=%6 modelInvalid=%7 primaryCount=%8 requireValidModel=%9",
+_playerID,
+_playerName,
+_charID,
+_isNew,
+_a2edcNeedsGenderSelect,
+_a2edcRawModel,
+_a2edcModelInvalid,
+count _primary,
+A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL
+];
 
 
 _hiveVer = 0;
@@ -120,5 +173,16 @@ if (_hiveVer >= dayz_hiveVersionNo) then {
 _isHiveOk = true;
 };
 
-dayzPlayerLogin = [_charID,_inventory,_backpack,_survival,_isNew,dayz_versionNo,_model,_isHiveOk,_newPlayer];
+dayzPlayerLogin = [_charID,_inventory,_backpack,_survival,_isNew,dayz_versionNo,_model,_isHiveOk,_newPlayer,_a2edcNeedsGenderSelect];
+diag_log format [
+"[A2EDC:GENDER_SELECT:SERVER_LOGIN] uid=%1 name=%2 charID=%3 isNew=%4 model=%5 hiveOk=%6 newPlayer=%7 needsGender=%8",
+_playerID,
+_playerName,
+_charID,
+_isNew,
+_model,
+_isHiveOk,
+_newPlayer,
+_a2edcNeedsGenderSelect
+];
 (owner _playerObj) publicVariableClient "dayzPlayerLogin";

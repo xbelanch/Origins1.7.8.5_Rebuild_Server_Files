@@ -23,6 +23,18 @@ if (A2EDC_TRACE) then {
 };
 };
 
+if (_method == "a2edc_suicide") then {
+diag_log format [
+"[A2EDC:SUICIDE] server received dayzDeath characterID=%1 playerUID=%2 playerName=%3 sourceUID=%4 sourceName=%5 method=%6",
+_characterID,
+_playerID,
+_playerName,
+_playerIDk,
+_sourceName,
+_method
+];
+};
+
 
 
 if ( isNull _source || _source == _newObject ) then {
@@ -63,6 +75,10 @@ if (_characterID != "0") then
 {
 _key = format["CHILD:202:%1:%2:",_characterID,_minutes];
 
+if (_method == "a2edc_suicide") then {
+diag_log format ["[A2EDC:SUICIDE] server writing hive death key=%1",_key];
+};
+
 _key call server_hiveWrite;
 } 
 else 
@@ -71,7 +87,6 @@ deleteVehicle _newObject;
 };
 
 diag_log ("PDEATH: Player Died " + _playerID);
-
 
 
 

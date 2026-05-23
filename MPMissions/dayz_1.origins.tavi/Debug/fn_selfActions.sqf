@@ -4,7 +4,7 @@ scriptName "Functions\misc\fn_selfActions.sqf";
 	- Function
 	- [] call fnc_usec_selfActions;
 ************************************************************/
-private ["_vehicle","_inVehicle","_bag","_classbag","_isWater","_hasAntiB","_hasFuelE","_hasFuelBE","_hasRawMeat","_hasKnife","_hasToolbox","_hasTent","_onLadder","_nearLight","_mbBackpacks","_nearBackpacks","_nearPlayerB","_playerID","_canPickLight","_canRest","_nextVehicle","_shwmsg","_newCuTyp","_isOwnerName","_newTypeB","_keep2","_typedeP","_nameKillerP","_canDo","_text","_ownerID","_maxbbLevel","_levelhouse","_naObnovku","_nextlvl","_isHarvested","_isVehicle","_isMan","_isAnimal","_isZombie","_isDestructable","_isTent","_isFuel","_isAlive","_isCruse","_object","_nummsg","_takemes","_maxbbLevelt","_isUpsideDown","_notManned","_mates","_totpa","_allFixed","_hitpoints","_damage","_part","_cmpt","_damagePercent","_color","_string","_handle","_cfg","_tc","_mt","_mti","_nameClass1","_st","_statuss","_stname"];
+private ["_vehicle","_inVehicle","_bag","_classbag","_isWater","_hasAntiB","_hasFuelE","_hasFuelBE","_hasRawMeat","_hasKnife","_hasToolbox","_hasTent","_onLadder","_nearLight","_mbBackpacks","_nearBackpacks","_nearPlayerB","_playerID","_canPickLight","_canRest","_nextVehicle","_shwmsg","_newCuTyp","_isOwnerName","_newTypeB","_keep2","_typedeP","_nameKillerP","_canDo","_suicideEnabled","_text","_ownerID","_maxbbLevel","_levelhouse","_naObnovku","_nextlvl","_isHarvested","_isVehicle","_isMan","_isAnimal","_isZombie","_isDestructable","_isTent","_isFuel","_isAlive","_isCruse","_object","_nummsg","_takemes","_maxbbLevelt","_isUpsideDown","_notManned","_mates","_totpa","_allFixed","_hitpoints","_damage","_part","_cmpt","_damagePercent","_color","_string","_handle","_cfg","_tc","_mt","_mti","_nameClass1","_st","_statuss","_stname"];
 
 
 _vehicle = vehicle player;
@@ -43,6 +43,24 @@ if (!isNull _nearLight) then {
 	};
 };
 _canDo = (!r_drag_sqf and !r_player_unconscious and !_onLadder);
+_suicideEnabled = false;
+if (!isNil "A2EDC_ENABLE_PLAYER_SUICIDE") then {
+	_suicideEnabled = A2EDC_ENABLE_PLAYER_SUICIDE;
+};
+
+if (_suicideEnabled and _canDo and !_inVehicle and alive player) then {
+	if (s_player_a2edc_suicide < 0) then {
+		s_player_a2edc_suicide = player addAction [("<t color=""#ff4444"">" + ("Commit Suicide") + "</t>"),"Scripts\a2edc_suicide.sqf","",1,false,true,"",""];
+		diag_log format [
+			"[A2EDC:SUICIDE] player action added uid=%1 charID=%2",
+			getPlayerUID player,
+			if (isNil "dayz_characterID") then {"<nil>"} else {dayz_characterID}
+		];
+	};
+} else {
+	player removeAction s_player_a2edc_suicide;
+	s_player_a2edc_suicide = -1;
+};
 
 if (_nearBackpacks) then {
 	if (_nearPlayerB) then {

@@ -1,4 +1,12 @@
 dayz_server.pbo
 *bak
 *.pbo
-tools/
+tools/*
+!tools/db/
+!tools/db/.gitignore
+!tools/db/*.sh
+!tools/db/a2edc-db.env.example
+!tools/db/a2edc-db-shadow.env.example
+tools/db/a2edc-db.env
+tools/db/a2edc-db-shadow.env
+backups/mysql/

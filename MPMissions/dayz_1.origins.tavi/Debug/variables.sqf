@@ -136,6 +136,7 @@ dayz_resetSelfActions = {
 	s_player_cnbb = -1;
 	s_player_1bupd = -1;
 	s_player_packFdp = -1;
+	s_player_a2edc_suicide = -1;
 };
 call dayz_resetSelfActions;
 
@@ -181,6 +182,14 @@ if (isNil "A2EDC_QUICK_DEATH_EXIT_KEY") then {A2EDC_QUICK_DEATH_EXIT_KEY = 57;};
 if (isNil "A2EDC_QUICK_DEATH_EXIT_DELAY") then {A2EDC_QUICK_DEATH_EXIT_DELAY = 8;};
 if (isNil "A2EDC_QUICK_DEATH_AUTO_EXIT") then {A2EDC_QUICK_DEATH_AUTO_EXIT = false;};
 if (isNil "A2EDC_QUICK_DEATH_AUTO_EXIT_DELAY") then {A2EDC_QUICK_DEATH_AUTO_EXIT_DELAY = 25;};
+if (isNil "A2EDC_TRACE_GENDER_SELECT") then {A2EDC_TRACE_GENDER_SELECT = true;};
+if (isNil "A2EDC_FORCE_GENDER_SELECT_AFTER_DEATH") then {A2EDC_FORCE_GENDER_SELECT_AFTER_DEATH = false;};
+if (isNil "A2EDC_GENDER_SELECT_DEBUG") then {A2EDC_GENDER_SELECT_DEBUG = true;};
+if (isNil "A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL") then {A2EDC_GENDER_SELECT_REQUIRE_VALID_MODEL = true;};
+if (isNil "A2EDC_GENDER_SELECT_TRACE_DB_STATE") then {A2EDC_GENDER_SELECT_TRACE_DB_STATE = true;};
+if (isNil "A2EDC_DEBUG_SUICIDE_ACTION") then {A2EDC_DEBUG_SUICIDE_ACTION = true;};
+if (isNil "A2EDC_ENABLE_PLAYER_SUICIDE") then {A2EDC_ENABLE_PLAYER_SUICIDE = true;};
+if (isNil "A2EDC_suicideInProgress") then {A2EDC_suicideInProgress = false;};
 r_pitchWhine = 			false;
 r_isBandit =			false;
 USEC_woundHit 	= [

@@ -163,11 +163,14 @@ _playerObj setVariable["banditKills_CHK",(_stats select 3)];
 if (count _stats > 4) then {
 if (!(_stats select 3)) then {
 _playerObj setVariable["selectSex",true,true];
+diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=true reason=stats-index-3-false stats=%3 model=%4",_playerID,_characterID,_stats,typeOf _playerObj];
 };
 } else {
 _playerObj setVariable["selectSex",true,true];
+diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=true reason=stats-too-short stats=%3 model=%4",_playerID,_characterID,_stats,typeOf _playerObj];
 };
 } else {
+diag_log format ["[A2EDC:GENDER_SELECT:SERVER_SETUP] uid=%1 charID=%2 selectSex=skip reason=no-stats model=%3",_playerID,_characterID,typeOf _playerObj];
 
 
 _playerObj setVariable["zombieKills",0,true];
@@ -236,6 +239,15 @@ _playerObj setVariable["lastPos",getPosATL _playerObj];
 
 dayzOriginsPlL2 = [_worldspace,_state,_humanity];
 _clientID = owner _playerObj;
+diag_log format [
+"[A2EDC:GENDER_SELECT:SERVER_SETUP_PUBLISH] uid=%1 charID=%2 selectSex=%3 worldspace=%4 state=%5 model=%6",
+_playerID,
+_characterID,
+_playerObj getVariable ["selectSex","<nil>"],
+_worldspace,
+_state,
+typeOf _playerObj
+];
 _clientID publicVariableClient "dayzOriginsPlL2";
 
 
@@ -246,5 +258,3 @@ diag_log ("LOGIN serverDO_plSp PUBLISHING: " + str(_playerObj) + " Type: " + (ty
 
 DOdowndblink = null;
 dayzOrigingsL2 = null;
-
-

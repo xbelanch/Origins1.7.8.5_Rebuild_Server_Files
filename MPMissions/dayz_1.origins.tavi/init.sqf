@@ -65,7 +65,7 @@ if (!isDedicated) then {
 	
 	//Run the player monitor
 	_id = player addEventHandler ["Respawn", {_id = [] spawn player_death;}];
-	_playerMonitor = 	[] execVM "\z\addons\dayz_code\system\player_monitor.sqf";
+	_playerMonitor = 	[] execVM "Scripts\a2edc_player_monitor.sqf";
 	
 	// Epoch Admin Tools
 	call compile preprocessFileLineNumbers "admintools\AdminList.sqf";
