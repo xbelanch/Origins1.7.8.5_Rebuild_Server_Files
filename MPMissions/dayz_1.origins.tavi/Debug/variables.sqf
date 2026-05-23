@@ -173,6 +173,14 @@ r_player_actions = 		[];
 r_handlerCount = 		0;
 r_action_repair = 		false;
 r_action_targets = 		[];
+
+// A2EDC quick death exit UX. This returns the dead client to lobby/debrief only;
+// it does not create a new character or bypass server death persistence.
+if (isNil "A2EDC_QUICK_DEATH_EXIT") then {A2EDC_QUICK_DEATH_EXIT = true;};
+if (isNil "A2EDC_QUICK_DEATH_EXIT_KEY") then {A2EDC_QUICK_DEATH_EXIT_KEY = 57;};
+if (isNil "A2EDC_QUICK_DEATH_EXIT_DELAY") then {A2EDC_QUICK_DEATH_EXIT_DELAY = 8;};
+if (isNil "A2EDC_QUICK_DEATH_AUTO_EXIT") then {A2EDC_QUICK_DEATH_AUTO_EXIT = false;};
+if (isNil "A2EDC_QUICK_DEATH_AUTO_EXIT_DELAY") then {A2EDC_QUICK_DEATH_AUTO_EXIT_DELAY = 25;};
 r_pitchWhine = 			false;
 r_isBandit =			false;
 USEC_woundHit 	= [
