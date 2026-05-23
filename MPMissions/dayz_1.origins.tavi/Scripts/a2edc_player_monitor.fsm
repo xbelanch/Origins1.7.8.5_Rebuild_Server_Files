@@ -471,6 +471,7 @@ class FSM
        "	_isHiveOk = _msg select 7;" \n
        "	_newPlayer = _msg select 8;" \n
        "	diag_log (""PLAYER RESULT: "" + str(_isHiveOk));" \n
+       "	diag_log format [""[A2EDC:LOGIN_PAYLOAD:CLIENT_PARSE] uid=%1 payload=%2 payloadCount=%3 charID=%4 version=%5 model=%6 hiveOk=%7 newPlayer=%8"",getPlayerUID player,_msg,count _msg,_charID,_version,_model,_isHiveOk,_newPlayer];" \n
        "};" \n
        "if (count _msg > 9) then {" \n
        "	_a2edcNeedsGenderSelect = _msg select 9;" \n
@@ -552,7 +553,8 @@ class FSM
     class ERROR__Wrong_HIVE
     {
       name = "ERROR__Wrong_HIVE";
-      init = /*%FSM<STATEINIT""">*/"endLoadingScreen;" \n
+      init = /*%FSM<STATEINIT""">*/"diag_log format [""[A2EDC:LOGIN_PAYLOAD:CLIENT_HIVE_BAD] uid=%1 charID=%2 payload=%3 payloadCount=%4 version=%5 model=%6 hiveOk=%7 allowConnection=%8 sm_done=%9 serverObjectMonitor=%10 serverMonitor=%11"",getPlayerUID player,_charID,_msg,count _msg,_version,_model,_isHiveOk,if (isNil ""allowConnection"") then {""<nil>""} else {allowConnection},if (isNil ""sm_done"") then {""<nil>""} else {sm_done},if (isNil ""dayz_serverObjectMonitor"") then {""<nil>""} else {count dayz_serverObjectMonitor},if (isNil ""dayz_serverMonitor"") then {""<nil>""} else {dayz_serverMonitor}];" \n
+       "endLoadingScreen;" \n
        "selectNoPlayer;" \n
        "" \n
        "_myTime = time;" \n

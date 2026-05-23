@@ -1,4 +1,4 @@
-private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid"];
+private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid","_a2edcOwner","_a2edcAllowConnection","_a2edcSmDone","_a2edcServerObjectMonitor","_a2edcServerMonitor"];
 
 
 diag_log ("STARTING LOGIN: " + str(_this));
@@ -174,6 +174,27 @@ _isHiveOk = true;
 };
 
 dayzPlayerLogin = [_charID,_inventory,_backpack,_survival,_isNew,dayz_versionNo,_model,_isHiveOk,_newPlayer,_a2edcNeedsGenderSelect];
+_a2edcOwner = owner _playerObj;
+_a2edcAllowConnection = if (isNil "allowConnection") then {"<nil>"} else {allowConnection};
+_a2edcSmDone = if (isNil "sm_done") then {"<nil>"} else {sm_done};
+_a2edcServerObjectMonitor = if (isNil "dayz_serverObjectMonitor") then {"<nil>"} else {count dayz_serverObjectMonitor};
+_a2edcServerMonitor = if (isNil "dayz_serverMonitor") then {"<nil>"} else {dayz_serverMonitor};
+diag_log format [
+"[A2EDC:LOGIN_PAYLOAD] uid=%1 name=%2 owner=%3 payload=%4 payloadCount=%5 allowConnection=%6 sm_done=%7 serverObjectMonitor=%8 serverMonitor=%9 hiveVer=%10 requiredHive=%11 hiveOk=%12 dayzVersion=%13",
+_playerID,
+_playerName,
+_a2edcOwner,
+dayzPlayerLogin,
+count dayzPlayerLogin,
+_a2edcAllowConnection,
+_a2edcSmDone,
+_a2edcServerObjectMonitor,
+_a2edcServerMonitor,
+_hiveVer,
+dayz_hiveVersionNo,
+_isHiveOk,
+dayz_versionNo
+];
 diag_log format [
 "[A2EDC:GENDER_SELECT:SERVER_LOGIN] uid=%1 name=%2 charID=%3 isNew=%4 model=%5 hiveOk=%6 newPlayer=%7 needsGender=%8",
 _playerID,
@@ -185,4 +206,5 @@ _isHiveOk,
 _newPlayer,
 _a2edcNeedsGenderSelect
 ];
-(owner _playerObj) publicVariableClient "dayzPlayerLogin";
+_a2edcOwner publicVariableClient "dayzPlayerLogin";
+diag_log format ["[A2EDC:LOGIN_PAYLOAD:PUBLISHED] uid=%1 owner=%2 variable=dayzPlayerLogin",_playerID,_a2edcOwner];
