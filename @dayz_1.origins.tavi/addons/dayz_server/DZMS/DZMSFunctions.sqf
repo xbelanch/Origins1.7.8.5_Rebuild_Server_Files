@@ -131,11 +131,17 @@ DZMSSetupVehicle = {
 	_objectID = str(round(random 999999));
 	_object setVariable ["ObjectID", _objectID, true];
 	_object setVariable ["ObjectUID", _objectID, true];
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["DZMS:SETUP", format ["vehicle setup assigned temporary ids objectID=%1 DZMSEpoch=%2", _objectID, DZMSEpoch], _object] call A2EDC_fnc_traceObjectState;
+	};
 	
 	if (DZMSEpoch) then {
 		PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor, _object];
 	} else {
 		dayz_serverObjectMonitor set [count dayz_serverObjectMonitor, _object];
+	};
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["DZMS:SETUP", "vehicle added to monitor", _object] call A2EDC_fnc_traceObjectState;
 	};
 	
 	waitUntil {(!isNull _object)};
@@ -167,6 +173,9 @@ DZMSProtectObj = {
 	_objectID = str(round(random 999999));
 	_object setVariable ["ObjectID", _objectID, true];
 	_object setVariable ["ObjectUID", _objectID, true];
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["DZMS:PROTECT", format ["object protect assigned temporary ids objectID=%1 DZMSEpoch=%2", _objectID, DZMSEpoch], _object] call A2EDC_fnc_traceObjectState;
+	};
 	
 	if (_object isKindOf "ReammoBox") then {
 		// PermaLoot on top of ObjID because that "arma logic"
@@ -177,6 +186,9 @@ DZMSProtectObj = {
 		PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor, _object];
 	} else {
 		dayz_serverObjectMonitor set [count dayz_serverObjectMonitor, _object];
+	};
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["DZMS:PROTECT", "object added to monitor", _object] call A2EDC_fnc_traceObjectState;
 	};
 	
     if (!((typeOf _object) in ["USVehicleBox","USLaunchersBox","AmmoBoxSmall_556","AmmoBoxSmall_762","MedBox0","USBasicWeaponsBox","USBasicAmmunitionBox","RULaunchersBox"]) || DZMSSceneryDespawnLoot) then {

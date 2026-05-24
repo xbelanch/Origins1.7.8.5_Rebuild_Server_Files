@@ -9,12 +9,22 @@ _objectID =	_object getVariable ["ObjectID","0"];
 _uid = 		_object getVariable ["ObjectUID","0"];
 if (!(isNil "A2EDC_TRACE")) then {
 if (A2EDC_TRACE) then {
-_traceClass = typeOf _object;
-["OBJECT", format ["class=%1 operation=%2 objectID=%3 uid=%4", _traceClass, _type, _objectID, _uid]] call A2EDC_fnc_trace;
-};
+	_traceClass = typeOf _object;
+	["OBJECT", format ["class=%1 operation=%2 objectID=%3 uid=%4", _traceClass, _type, _objectID, _uid]] call A2EDC_fnc_trace;
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["OBJECT", format ["UPDATE begin operation=%1", _type], _object] call A2EDC_fnc_traceObjectState;
+	};
+	};
 };
 
 diag_log format ["_object=%1, _type=%2, _objectID=%3, _uid=%4",_object,_type,_objectID,_uid];
+
+if (_object isKindOf "Man") exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] refused object update for Man object=%1 type=%2 class=%3 objectID=%4 uid=%5 pos=%6", _object, _type, typeOf _object, _objectID, _uid, getPosATL _object];
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["OBJECT_GUARD", format ["refused Man object update operation=%1", _type], _object] call A2EDC_fnc_traceObjectState;
+	};
+};
 
 if ((typeName _objectID != "string") || (typeName _uid != "string")) then
 { 
@@ -62,11 +72,16 @@ if (_object isKindOf "AllVehicles") then {
 
 _fuel = fuel _object;
 
-_key = format["CHILD:305:%1:%2:%3:",_objectID,_worldspace,_fuel];
-
-_key call server_hiveWrite;
-};
-};
+	_key = format["CHILD:305:%1:%2:%3:",_objectID,_worldspace,_fuel];
+	if (!(isNil "A2EDC_TRACE")) then {
+	if (A2EDC_TRACE) then {
+		["OBJECT", format ["position write class=%1 objectID=%2 worldspace=%3 fuel=%4", typeOf _object, _objectID, _worldspace, _fuel]] call A2EDC_fnc_trace;
+	};
+	};
+	
+	_key call server_hiveWrite;
+	};
+	};
 
 _object_inventory = {
 if (_naObnovku) then {
@@ -125,10 +140,15 @@ _array set [count _array,[_st,_hit]];
 };
 
 
-_key = format["CHILD:306:%1:%2:%3:",_objectID,_array,_damage];
-
-_key call server_hiveWrite;
-_object setVariable ["needUpdate",false,true];
+	_key = format["CHILD:306:%1:%2:%3:",_objectID,_array,_damage];
+	if (!(isNil "A2EDC_TRACE")) then {
+	if (A2EDC_TRACE) then {
+		["OBJECT", format ["damage write class=%1 objectID=%2 hits=%3 damage=%4", typeOf _object, _objectID, count _array, _damage]] call A2EDC_fnc_trace;
+	};
+	};
+	
+	_key call server_hiveWrite;
+	_object setVariable ["needUpdate",false,true];
 };
 };
 

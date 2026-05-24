@@ -1,5 +1,33 @@
-A2EDC_DAYZ_SERVER_BUILD_ID = "20260523-232941";
-A2EDC_DAYZ_SERVER_BUILD_UTC = "2026-05-23T23:29:41Z";
-A2EDC_DAYZ_SERVER_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
-A2EDC_DAYZ_SERVER_BUILD_PREFIX = "z\addons\dayz_server";
-A2EDC_DAYZ_SERVER_BUILD_NOTE = "bleedguard-runtime-marker-v3";
+A2EDC_BUILD_ID = "20260524-164434";
+A2EDC_BUILD_UTC = "2026-05-24T16:44:34Z";
+A2EDC_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
+A2EDC_BUILD_PREFIX = "z\addons\dayz_server";
+A2EDC_BUILD_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v2";
+A2EDC_BUILD_EXPORT = "Export/dayz_server_20260524-164434_wai-dzms-vehicle-persistence-diagnostics-v2.pbo";
+A2EDC_BUILD_GIT_SHORT = "93bd7e6";
+A2EDC_BUILD_GIT_DIRTY = "true";
+
+A2EDC_DAYZ_SERVER_BUILD_ID = A2EDC_BUILD_ID;
+A2EDC_DAYZ_SERVER_BUILD_UTC = A2EDC_BUILD_UTC;
+A2EDC_DAYZ_SERVER_BUILD_SOURCE = A2EDC_BUILD_SOURCE;
+A2EDC_DAYZ_SERVER_BUILD_PREFIX = A2EDC_BUILD_PREFIX;
+A2EDC_DAYZ_SERVER_BUILD_NOTE = A2EDC_BUILD_NOTE;
+
+A2EDC_BUILD_EXPECTED_DIAGNOSTICS = [
+  "A2EDC:WAI:PUBLISH",
+  "A2EDC:DZMS:SETUP",
+  "A2EDC:DZMS:SAVE",
+  "A2EDC:OBJECT_GUARD",
+  "server_updateObject = server_updatObiect"
+];
+
+diag_log format [
+  "[A2EDC:BUILD] dayz_server.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",
+  A2EDC_BUILD_ID,
+  A2EDC_BUILD_UTC,
+  A2EDC_BUILD_PREFIX,
+  A2EDC_BUILD_NOTE,
+  A2EDC_BUILD_EXPORT,
+  A2EDC_BUILD_GIT_SHORT,
+  A2EDC_BUILD_GIT_DIRTY
+];

@@ -11,6 +11,9 @@ _damage = 0;
 _array = [];
 
 diag_log ("PUBLISH: Attempt " + str(_object));
+if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+	["WAI:PUBLISH", "start", _object] call A2EDC_fnc_traceObjectState;
+};
 _dir = 		_worldspace select 0;
 _location = _worldspace select 1;
 
@@ -51,9 +54,17 @@ if (_spawnDMG) then {
 //Send request
 _key = format["CHILD:308:%1:%2:%3:%4:%5:%6:%7:%8:%9:",dayZ_instance, _class, _damage , _characterID, _worldspace, [], _array, _fuel,_uid];
 diag_log ("HIVE: WRITE: "+ str(_key)); 
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+	["WAI:PUBLISH", format ["hive write class=%1 uid=%2 characterID=%3 worldspace=%4 damage=%5 hitCount=%6 fuel=%7", _class, _uid, _characterID, _worldspace, _damage, count _array, _fuel]] call A2EDC_fnc_trace;
+};
+};
 _key call server_hiveWrite;
 
 PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_object];
+if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+	["WAI:PUBLISH", "added PVDZE_serverObjectMonitor", _object] call A2EDC_fnc_traceObjectState;
+};
 
 // Switched to spawn so we can wait a bit for the ID
 [_object,_uid,_fuel,_damage,_array,_characterID,_class] spawn {
@@ -78,12 +89,15 @@ PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_object];
 		diag_log ("HIVE: WRITE: "+ str(_key));
 		_result = _key call server_hiveReadWrite;
 		_outcome = _result select 0;
-		if (_outcome == "PASS") then {
-			_oid = _result select 1;
-			_object setVariable ["ObjectID", _oid, true];
-			diag_log("CUSTOM: Selected " + str(_oid));
-			_done = true;
-			_retry = 100;
+			if (_outcome == "PASS") then {
+				_oid = _result select 1;
+				_object setVariable ["ObjectID", _oid, true];
+				diag_log("CUSTOM: Selected " + str(_oid));
+				if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+					["WAI:PUBLISH", format ["db id selected uid=%1 oid=%2", _uid, _oid], _object] call A2EDC_fnc_traceObjectState;
+				};
+				_done = true;
+				_retry = 100;
 
 		} else {
 			diag_log("CUSTOM: trying again to get id for: " + str(_uid));
@@ -109,11 +123,14 @@ PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_object];
 	
 	_object setvelocity [0,0,1];
 
-	_object call fnc_veh_ResetEH;
+		_object call fnc_veh_ResetEH;
 
-	// testing - should make sure everyone has eventhandlers for vehicles was unused...
-	PVDZE_veh_Init = _object;
-	publicVariable "PVDZE_veh_Init";
+		// testing - should make sure everyone has eventhandlers for vehicles was unused...
+		PVDZE_veh_Init = _object;
+		publicVariable "PVDZE_veh_Init";
+		if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+			["WAI:PUBLISH", format ["end publicVariable PVDZE_veh_Init uid=%1", _uid], _object] call A2EDC_fnc_traceObjectState;
+		};
 
-	diag_log ("PUBLISH: Created " + (_class) + " with ID " + str(_uid));
-};
+		diag_log ("PUBLISH: Created " + (_class) + " with ID " + str(_uid));
+	};

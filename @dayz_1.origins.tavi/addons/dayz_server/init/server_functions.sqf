@@ -1,11 +1,4 @@
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\a2edc_buildinfo.sqf";
-diag_log format [
-"[A2EDC:BUILD] dayz_server.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4",
-if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
-if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_UTC},
-if (isNil "A2EDC_DAYZ_SERVER_BUILD_PREFIX") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_PREFIX},
-if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE}
-];
 
 A2EDC_TRACE = true;
 A2EDC_TRACE_DEEP = false;
@@ -83,6 +76,33 @@ if (_reason != "") then {
 _reason == ""
 };
 
+A2EDC_fnc_monitorCounts = {
+private ["_dayzCount","_serverCount","_pvdzeCount"];
+_dayzCount = if (isNil "dayz_serverObjectMonitor") then {"<nil>"} else {count dayz_serverObjectMonitor};
+_serverCount = if (isNil "serverObjectMonitor") then {"<nil>"} else {count serverObjectMonitor};
+_pvdzeCount = if (isNil "PVDZE_serverObjectMonitor") then {"<nil>"} else {count PVDZE_serverObjectMonitor};
+format ["dayz_serverObjectMonitor=%1 serverObjectMonitor=%2 PVDZE_serverObjectMonitor=%3", _dayzCount, _serverCount, _pvdzeCount]
+};
+
+A2EDC_fnc_traceObjectState = {
+private ["_channel","_label","_object","_class","_objectID","_objectUID","_characterID","_ownerPUID","_lastUpdate","_netId","_pos","_isNull","_isMan","_monitors"];
+_channel = _this select 0;
+_label = _this select 1;
+_object = _this select 2;
+_class = if (isNull _object) then {"<null>"} else {typeOf _object};
+_objectID = if (isNull _object) then {"<null>"} else {_object getVariable ["ObjectID","<nil>"]};
+_objectUID = if (isNull _object) then {"<null>"} else {_object getVariable ["ObjectUID","<nil>"]};
+_characterID = if (isNull _object) then {"<null>"} else {_object getVariable ["CharacterID","<nil>"]};
+_ownerPUID = if (isNull _object) then {"<null>"} else {_object getVariable ["ownerPUID","<nil>"]};
+_lastUpdate = if (isNull _object) then {"<null>"} else {_object getVariable ["lastUpdate","<nil>"]};
+_netId = if (isNull _object) then {"<null>"} else {netId _object};
+_pos = if (isNull _object) then {"<null>"} else {getPosATL _object};
+_isNull = isNull _object;
+_isMan = if (_isNull) then {false} else {_object isKindOf "Man"};
+_monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<no monitor helper>"} else {call A2EDC_fnc_monitorCounts};
+[_channel, format ["%1 object=%2 class=%3 netId=%4 isNull=%5 isMan=%6 pos=%7 objectID=%8 objectUID=%9 characterID=%10 ownerPUID=%11 lastUpdate=%12 monitors=[%13]", _label, _object, _class, _netId, _isNull, _isMan, _pos, _objectID, _objectUID, _characterID, _ownerPUID, _lastUpdate, _monitors]] call A2EDC_fnc_trace;
+};
+
 waituntil {!isnil "bis_fnc_init"};
 
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\publicEH_srv.sqf";
@@ -99,6 +119,7 @@ DO_cperg =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\se
 serverDO_plSp =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\serverDO_plSp2.sqf";
 server_onPlayerDisconnect = 	compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_onPlayerDisconnect.sqf";
 server_updatObiect =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_updatObiect.sqf";
+server_updateObject = server_updatObiect;
 server_playerDied =				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerDied.sqf";
 server_pubOriObj = 				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_pubOriObj.sqf";
 

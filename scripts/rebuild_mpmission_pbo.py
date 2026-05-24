@@ -2,7 +2,6 @@
 import argparse
 import hashlib
 import json
-import os
 import shutil
 import socket
 import subprocess
@@ -12,33 +11,29 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "@dayz_1.origins.tavi" / "addons" / "dayz_server"
-ACTIVE_PBO = ROOT / "@dayz_1.origins.tavi" / "addons" / "dayz_server.pbo"
+MISSION_NAME = "dayz_1.origins.tavi"
+SOURCE = ROOT / "MPMissions" / MISSION_NAME
+ACTIVE_PBO = ROOT / "MPMissions" / f"{MISSION_NAME}.pbo"
 EXPORT_DIR = ROOT / "Export"
 MAKEPBO = ROOT / "tools" / "bin" / "makepbo"
-RAPIFY = ROOT / "tools" / "bin" / "rapify"
 UNPBO = ROOT / "tools" / "bin" / "unpbo"
-PREFIX = r"z\addons\dayz_server"
-DEFAULT_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v2"
+PREFIX = ""
+DEFAULT_NOTE = "mpmission-current-reconstruction-v1"
+BUILDINFO_REL = Path("Scripts") / "a2edc_mission_buildinfo.sqf"
 STALE_MARKERS = [
     "bleedguard-runtime-marker-v3",
     "build_id=20260523-185536",
     "build_id=20260523-232941",
 ]
 EXPECTED_STRINGS = [
-    "A2EDC:WAI:PUBLISH",
-    "A2EDC:DZMS:SETUP",
-    "A2EDC:DZMS:SAVE",
-    "A2EDC:OBJECT_GUARD",
-    "server_updateObject = server_updatObiect",
+    "A2EDC:MISSION_BUILD",
+    "A2EDC_MISSION_BUILD_ID",
+    "Scripts\\a2edc_mission_buildinfo.sqf",
 ]
 
 
 def run(args, *, check=True, capture=True):
-    kwargs = {
-        "cwd": ROOT,
-        "text": True,
-    }
+    kwargs = {"cwd": ROOT, "text": True}
     if capture:
         kwargs["stdout"] = subprocess.PIPE
         kwargs["stderr"] = subprocess.STDOUT
@@ -51,10 +46,6 @@ def run(args, *, check=True, capture=True):
 
 def rel(path):
     return path.relative_to(ROOT).as_posix()
-
-
-def shell_quote_parts(parts):
-    return " ".join(str(part) for part in parts)
 
 
 def now_build_id():
@@ -78,67 +69,40 @@ def file_count():
     return sum(1 for path in SOURCE.rglob("*") if path.is_file())
 
 
+def sha256(path):
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def write_build_info(build_id, build_utc, build_note, export_path):
     git = git_info()
-    export_rel = rel(export_path)
-    source_rel = rel(SOURCE)
-    sqf = SOURCE / "init" / "a2edc_buildinfo.sqf"
-    sqf.write_text(
+    buildinfo = SOURCE / BUILDINFO_REL
+    buildinfo.parent.mkdir(parents=True, exist_ok=True)
+    buildinfo.write_text(
         "\n".join(
             [
-                f'A2EDC_BUILD_ID = "{build_id}";',
-                f'A2EDC_BUILD_UTC = "{build_utc}";',
-                f'A2EDC_BUILD_SOURCE = "{source_rel}";',
-                f'A2EDC_BUILD_PREFIX = "{PREFIX}";',
-                f'A2EDC_BUILD_NOTE = "{build_note}";',
-                f'A2EDC_BUILD_EXPORT = "{export_rel}";',
-                f'A2EDC_BUILD_GIT_SHORT = "{git["short"]}";',
-                f'A2EDC_BUILD_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
-                "",
-                "A2EDC_DAYZ_SERVER_BUILD_ID = A2EDC_BUILD_ID;",
-                "A2EDC_DAYZ_SERVER_BUILD_UTC = A2EDC_BUILD_UTC;",
-                "A2EDC_DAYZ_SERVER_BUILD_SOURCE = A2EDC_BUILD_SOURCE;",
-                "A2EDC_DAYZ_SERVER_BUILD_PREFIX = A2EDC_BUILD_PREFIX;",
-                "A2EDC_DAYZ_SERVER_BUILD_NOTE = A2EDC_BUILD_NOTE;",
-                "",
-                "A2EDC_BUILD_EXPECTED_DIAGNOSTICS = [",
-                '  "A2EDC:WAI:PUBLISH",',
-                '  "A2EDC:DZMS:SETUP",',
-                '  "A2EDC:DZMS:SAVE",',
-                '  "A2EDC:OBJECT_GUARD",',
-                '  "server_updateObject = server_updatObiect"',
-                "];",
+                f'A2EDC_MISSION_BUILD_ID = "{build_id}";',
+                f'A2EDC_MISSION_BUILD_UTC = "{build_utc}";',
+                f'A2EDC_MISSION_BUILD_SOURCE = "{rel(SOURCE)}";',
+                f'A2EDC_MISSION_BUILD_PREFIX = "{PREFIX}";',
+                f'A2EDC_MISSION_BUILD_NOTE = "{build_note}";',
+                f'A2EDC_MISSION_BUILD_EXPORT = "{rel(export_path)}";',
+                f'A2EDC_MISSION_BUILD_GIT_SHORT = "{git["short"]}";',
+                f'A2EDC_MISSION_BUILD_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
                 "",
                 'diag_log format [',
-                '  "[A2EDC:BUILD] dayz_server.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",',
-                "  A2EDC_BUILD_ID,",
-                "  A2EDC_BUILD_UTC,",
-                "  A2EDC_BUILD_PREFIX,",
-                "  A2EDC_BUILD_NOTE,",
-                "  A2EDC_BUILD_EXPORT,",
-                "  A2EDC_BUILD_GIT_SHORT,",
-                "  A2EDC_BUILD_GIT_DIRTY",
+                '  "[A2EDC:MISSION_BUILD] dayz_1.origins.tavi.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",',
+                "  A2EDC_MISSION_BUILD_ID,",
+                "  A2EDC_MISSION_BUILD_UTC,",
+                "  A2EDC_MISSION_BUILD_PREFIX,",
+                "  A2EDC_MISSION_BUILD_NOTE,",
+                "  A2EDC_MISSION_BUILD_EXPORT,",
+                "  A2EDC_MISSION_BUILD_GIT_SHORT,",
+                "  A2EDC_MISSION_BUILD_GIT_DIRTY",
                 "];",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
-
-    txt = SOURCE / "A2EDC_BUILDINFO.txt"
-    txt.write_text(
-        "\n".join(
-            [
-                f"build_id={build_id}",
-                f"build_utc={build_utc}",
-                f"source={source_rel}",
-                f"export_pbo={export_rel}",
-                f"prefix={PREFIX}",
-                f"hostname={socket.gethostname() or 'unknown'}",
-                f"git_commit={git['commit']}",
-                f"git_short={git['short']}",
-                f"git_dirty={str(git['dirty']).lower()}",
-                f"note={build_note}",
                 "",
             ]
         ),
@@ -153,40 +117,21 @@ def validate_no_stale_markers():
             continue
         if path.suffix.lower() in {".pbo", ".png", ".jpg", ".jpeg", ".paa"}:
             continue
-        try:
-            text = path.read_text(encoding="utf-8", errors="ignore")
-        except OSError:
-            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
         for marker in STALE_MARKERS:
             if marker in text:
                 hits.append(f"{rel(path)}: {marker}")
     if hits:
-        raise RuntimeError("stale build markers found in active source:\n" + "\n".join(hits))
+        raise RuntimeError("stale build markers found in active mission source:\n" + "\n".join(hits))
 
 
-def sha256(path):
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def pack(export_path, pipeline_manifest_path):
+def pack(export_path):
     if not MAKEPBO.is_file():
         raise FileNotFoundError(f"makepbo not found: {MAKEPBO}")
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
     active_bytes = ACTIVE_PBO.read_bytes() if ACTIVE_PBO.is_file() else None
     cmd = [
         str(MAKEPBO),
-        "--prefix",
-        PREFIX,
-        "--pipeline",
-        "--native-binarize",
-        "--rapify-tool",
-        str(RAPIFY),
-        "--manifest",
-        str(pipeline_manifest_path),
         str(SOURCE),
         str(export_path),
     ]
@@ -195,8 +140,11 @@ def pack(export_path, pipeline_manifest_path):
     finally:
         if active_bytes is not None and (not ACTIVE_PBO.is_file() or ACTIVE_PBO.read_bytes() != active_bytes):
             ACTIVE_PBO.write_bytes(active_bytes)
-    syntax_line = next((line.strip() for line in output.splitlines() if "syntax-check:" in line), "")
-    return cmd, output, syntax_line
+    syntax_result = (
+        "skipped: mission PBO packed as raw text/no-prefix to match active mission; "
+        "rapify syntax check rejects existing description.ext block comments"
+    )
+    return cmd, output, syntax_result
 
 
 def verify_export(export_path, build_id, build_note):
@@ -205,26 +153,19 @@ def verify_export(export_path, build_id, build_note):
         shutil.rmtree(verify_dir)
     verify_dir.parent.mkdir(parents=True, exist_ok=True)
     listing = run([str(UNPBO), "-v", "-l", str(export_path)])
-    prefix_ok = f"property: prefix={PREFIX}" in listing
+    no_prefix = "property: prefix=" not in listing
     run([str(UNPBO), str(export_path), str(verify_dir)])
 
-    buildinfo = verify_dir / "init" / "a2edc_buildinfo.sqf"
+    buildinfo = verify_dir / BUILDINFO_REL
     if not buildinfo.is_file():
-        raise RuntimeError("post-pack verification failed: init/a2edc_buildinfo.sqf missing")
-    build_text = buildinfo.read_text(encoding="utf-8", errors="ignore")
-    missing = []
-    for needle in [build_id, build_note, "A2EDC:BUILD"]:
-        if needle not in build_text:
-            missing.append(needle)
-    if not prefix_ok:
-        missing.append(f"prefix {PREFIX}")
-
+        raise RuntimeError(f"post-pack verification failed: {BUILDINFO_REL.as_posix()} missing")
     combined = "\n".join(
         path.read_text(encoding="utf-8", errors="ignore")
         for path in verify_dir.rglob("*")
-        if path.is_file() and path.suffix.lower() in {"", ".sqf", ".txt", ".fsm"}
+        if path.is_file() and path.suffix.lower() in {"", ".sqf", ".txt", ".fsm", ".ext", ".sqm", ".hpp"}
     )
-    for needle in EXPECTED_STRINGS:
+    missing = []
+    for needle in [build_id, build_note] + EXPECTED_STRINGS:
         if needle not in combined:
             missing.append(needle)
     for marker in STALE_MARKERS:
@@ -233,16 +174,16 @@ def verify_export(export_path, build_id, build_note):
     if missing:
         raise RuntimeError("post-pack verification failed:\n" + "\n".join(missing))
     return {
-        "validation_command": shell_quote_parts([UNPBO, "-v", "-l", export_path]),
-        "prefix_ok": prefix_ok,
+        "validation_command": " ".join(str(part) for part in [UNPBO, "-v", "-l", export_path]),
+        "prefix": "",
+        "prefix_ok": no_prefix,
         "verify_dir": rel(verify_dir),
         "listing_head": listing.splitlines()[:20],
     }
 
 
 def changed_files_summary():
-    status = run(["git", "status", "--short"], check=False)
-    return status.splitlines()
+    return run(["git", "status", "--short"], check=False).splitlines()
 
 
 def write_manifest(path, data):
@@ -250,7 +191,7 @@ def write_manifest(path, data):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Build and export dayz_server.pbo with generated A2EDC metadata.")
+    parser = argparse.ArgumentParser(description="Build and export MPMission PBO with generated A2EDC metadata.")
     parser.add_argument("--build-id", default=None)
     parser.add_argument("--build-note", default=DEFAULT_NOTE)
     parser.add_argument("--output-name", default=None)
@@ -262,15 +203,12 @@ def main():
     generated_id, build_utc = now_build_id()
     build_id = args.build_id or generated_id
     safe_note = args.build_note.replace("/", "-").replace("\\", "-").replace(" ", "-")
-    pbo_name = args.output_name or f"dayz_server_{build_id}_{safe_note}.pbo"
+    pbo_name = args.output_name or f"{MISSION_NAME}_{build_id}_{safe_note}.pbo"
     export_path = EXPORT_DIR / pbo_name
     manifest_path = export_path.with_suffix(".manifest.json")
-    pipeline_manifest_path = ROOT / ".audit" / "builds" / f"{export_path.stem}.pipeline.tsv"
-    pipeline_manifest_path.parent.mkdir(parents=True, exist_ok=True)
-
     write_build_info(build_id, build_utc, args.build_note, export_path)
     validate_no_stale_markers()
-    build_cmd, build_output, syntax_check = pack(export_path, pipeline_manifest_path)
+    build_cmd, _build_output, syntax_check = pack(export_path)
     digest = sha256(export_path)
     verification = verify_export(export_path, build_id, args.build_note)
     manifest = {
@@ -283,11 +221,11 @@ def main():
         "source_dir": rel(SOURCE),
         "file_count": file_count(),
         "sha256": digest,
-        "build_command": shell_quote_parts(build_cmd),
+        "build_command": " ".join(str(part) for part in build_cmd),
         "validation_command": verification["validation_command"],
         "syntax_check_result": syntax_check,
-        "native_binarize": True,
-        "pipeline_manifest": rel(pipeline_manifest_path),
+        "native_binarize": False,
+        "pipeline_manifest": None,
         "post_pack_verify_dir": verification["verify_dir"],
         "changed_files_summary": changed_files_summary(),
     }
@@ -297,7 +235,7 @@ def main():
     print(f"manifest={rel(manifest_path)}")
     print(f"build_id={build_id}")
     print(f"build_utc={build_utc}")
-    print(f"prefix={PREFIX}")
+    print("prefix=<none>")
     print(f"sha256={digest}")
     print(syntax_check)
 

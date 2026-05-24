@@ -4,6 +4,7 @@
 startLoadingScreen ["","RscDisplayLoadCustom"];
 cutText ["","BLACK OUT"];
 enableSaving [false, false];
+call compile preprocessFileLineNumbers "Scripts\a2edc_mission_buildinfo.sqf";
 
 //REALLY IMPORTANT VALUES
 dayZ_hivePipe1 = 	"\\.\pipe\dayz";	//The named pipe
