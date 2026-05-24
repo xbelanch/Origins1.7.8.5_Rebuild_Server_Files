@@ -17,7 +17,7 @@ EXPORT_DIR = ROOT / "Export"
 MAKEPBO = ROOT / "tools" / "bin" / "makepbo"
 UNPBO = ROOT / "tools" / "bin" / "unpbo"
 PREFIX = r"z\addons\dayz_server"
-DEFAULT_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v4"
+DEFAULT_NOTE = "wai-dzms-classname-cleanup-v5"
 STALE_MARKERS = [
     "bleedguard-runtime-marker-v3",
     "build_id=20260523-185536",
@@ -30,6 +30,8 @@ EXPECTED_STRINGS = [
     "A2EDC:DZMS:PROTECT:SKIP_INVALID",
     "A2EDC:DZMS:PROTECT:SKIP_NULL",
     "A2EDC:DZMS:CLASS:SKIP_MISSING",
+    "A2EDC:WAI:CLASS:SKIP_MISSING",
+    "A2EDC:WAI:CARGO:SKIP_MISSING",
     "A2EDC:OBJECT_GUARD",
     "server_updateObject = server_updatObiect",
 ]
@@ -109,6 +111,8 @@ def write_build_info(build_id, build_utc, build_note, export_path):
                 '  "A2EDC:DZMS:PROTECT:SKIP_INVALID",',
                 '  "A2EDC:DZMS:PROTECT:SKIP_NULL",',
                 '  "A2EDC:DZMS:CLASS:SKIP_MISSING",',
+                '  "A2EDC:WAI:CLASS:SKIP_MISSING",',
+                '  "A2EDC:WAI:CARGO:SKIP_MISSING",',
                 '  "A2EDC:OBJECT_GUARD",',
                 '  "server_updateObject = server_updatObiect"',
                 "];",

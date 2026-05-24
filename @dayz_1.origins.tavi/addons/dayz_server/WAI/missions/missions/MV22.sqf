@@ -1,9 +1,9 @@
 //Medical Supply
 
-private ["_playerPresent","_cleanmission","_currenttime","_starttime","_missiontimeout","_vehname","_veh","_position","_vehclass","_vehdir","_objPosition"];
-_vehclass = "MV22_DZ";
+private ["_playerPresent","_cleanmission","_currenttime","_starttime","_missiontimeout","_vehname","_veh","_position","_vehclass","_vehdir","_objPosition","_tent","_tentClass"];
+_vehclass = "MV22_Ori";
 
-_vehname	= getText (configFile >> "CfgVehicles" >> _vehclass >> "displayName");
+_vehname = if (isClass (configFile >> "CfgVehicles" >> _vehclass)) then {getText (configFile >> "CfgVehicles" >> _vehclass >> "displayName")} else {_vehclass};
 _position = [getMarkerPos "center",0,5500,10,0,2000,0] call BIS_fnc_findSafePos;
 diag_log format["WAI: Mission MV22 Started At %1",_position];
 
@@ -12,19 +12,30 @@ _box = createVehicle ["LocalBasicWeaponsBox",[(_position select 0) - 20,(_positi
 [_box] call Medical_Supply_Box;
 
 //Medical Tent
-_tent = createVehicle ["USMC_WarfareBFieldHospital",[(_position select 0) - 20,(_position select 1) - 20,0], [], 0, "CAN_COLLIDE"];
+_tent = objNull;
+_tentClass = "USMC_WarfareBFieldHospital";
+if (isClass (configFile >> "CfgVehicles" >> _tentClass)) then {
+	_tent = createVehicle [_tentClass,[(_position select 0) - 20,(_position select 1) - 20,0], [], 0, "CAN_COLLIDE"];
+} else {
+	diag_log text format ["[A2EDC:WAI:CLASS:SKIP_MISSING] mission=MV22 class=%1 role=medical-tent pos=%2", _tentClass, [(_position select 0) - 20,(_position select 1) - 20,0]];
+};
 
 //MV22
-_veh = createVehicle [_vehclass,_position, [], 0, "CAN_COLLIDE"];
+_veh = objNull;
 _vehdir = round(random 360);
-_veh setDir _vehdir;
-clearWeaponCargoGlobal _veh;
-clearMagazineCargoGlobal _veh;
-_veh setVariable ["ObjectID","1",true];
-PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_veh];
-diag_log format["WAI: Mission MV22 spawned a %1",_vehname];
-
-_objPosition = getPosATL _veh;
+_objPosition = _position;
+if (isClass (configFile >> "CfgVehicles" >> _vehclass)) then {
+	_veh = createVehicle [_vehclass,_position, [], 0, "CAN_COLLIDE"];
+	_veh setDir _vehdir;
+	clearWeaponCargoGlobal _veh;
+	clearMagazineCargoGlobal _veh;
+	_veh setVariable ["ObjectID","1",true];
+	PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_veh];
+	diag_log format["WAI: Mission MV22 spawned a %1",_vehname];
+	_objPosition = getPosATL _veh;
+} else {
+	diag_log text format ["[A2EDC:WAI:CLASS:SKIP_MISSING] mission=MV22 class=%1 role=reward-vehicle pos=%2", _vehclass, _position];
+};
 //[_veh,[_vehdir,_objPosition],_vehclass,true,"0"] call custom_publish;
 
 //Troops
@@ -100,7 +111,9 @@ while {_missiontimeout} do {
 	if ((_playerPresent) OR (_cleanmission)) then {_missiontimeout = false;};
 };
 if (_playerPresent) then {
-	[_veh,[_vehdir,_objPosition],_vehclass,true,"0"] call custom_publish;
+	if (!(isNull _veh)) then {
+		[_veh,[_vehdir,_objPosition],_vehclass,true,"0"] call custom_publish;
+	};
 	waitUntil
 	{
 		sleep 5;
@@ -112,7 +125,8 @@ if (_playerPresent) then {
 	[nil,nil,rTitleText,"Survivors have secured the MV-22!", "PLAIN",10] call RE;
 } else {
 	clean_running_mission = True;
-	deleteVehicle _veh;
+	if (!(isNull _veh)) then {deleteVehicle _veh;};
+	if (!(isNull _tent)) then {deleteVehicle _tent;};
 	deleteVehicle _box;
 	{_cleanunits = _x getVariable "missionclean";
 	if (!isNil "_cleanunits") then {

@@ -46,7 +46,11 @@ _box addMagazineCargoGlobal ["64Rnd_9x19_Bizon", 10];
 // TOOLS
 _box addWeaponCargoGlobal ["ItemToolbox", 2];
 _box addWeaponCargoGlobal ["ItemEtool", 2];
-_box addWeaponCargoGlobal ["NVGoogles", 2];
+if (isClass (configFile >> "CfgWeapons" >> "NVGoggles")) then {
+	_box addWeaponCargoGlobal ["NVGoggles", 2];
+} else {
+	diag_log text "[A2EDC:WAI:CARGO:SKIP_MISSING] context=LargeGunBox class=NVGoggles kind=CfgWeapons";
+};
 _box addWeaponCargoGlobal ["ItemKnife", 2];
 
 // BACKPACKS

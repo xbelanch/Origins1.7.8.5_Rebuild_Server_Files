@@ -1,6 +1,6 @@
 //Mayors Mansion
 
-private ["_position","_box","_missiontimeout","_cleanmission","_playerPresent","_starttime","_currenttime","_cleanunits","_rndnum"];
+private ["_position","_box","_missiontimeout","_cleanmission","_playerPresent","_starttime","_currenttime","_cleanunits","_rndnum","_mayorSkin"];
 vehclass = military_unarmed call BIS_fnc_selectRandom;
  
 _position = [getMarkerPos "center",0,5500,10,0,2000,0] call BIS_fnc_findSafePos;
@@ -21,7 +21,12 @@ _rndnum = round (random 3) + 4;
 [[_position select 0, _position select 1, 0],4,1,"Random",4,"","Bandit2_4DZ","Random",true] call spawn_group;
 
 //The Mayor Himself
-[[_position select 0, _position select 1, 0],1,1,"Random",4,"","Functionary1_EP1_DZ","Random",true] call spawn_group;
+_mayorSkin = "Functionary1_EP1_DZ";
+if (!(isClass (configFile >> "CfgVehicles" >> _mayorSkin))) then {
+	diag_log text format ["[A2EDC:WAI:CLASS:SKIP_MISSING] mission=Mayors Mansion class=%1 role=ai-skin fallback=Bandit2_4DZ pos=%2", _mayorSkin, [_position select 0, _position select 1, 0]];
+	_mayorSkin = "Bandit2_4DZ";
+};
+[[_position select 0, _position select 1, 0],1,1,"Random",4,"",_mayorSkin,"Random",true] call spawn_group;
  
 [[[(_position select 0) - 15, (_position select 1) + 15, 8]],"SectorMG_Ori",0.8,"Bandit2_4DZ",1,2,"","Random",true] call spawn_static;
 [[[(_position select 0) + 15, (_position select 1) - 15, 8]],"SectorMG_Ori",0.8,"Bandit2_4DZ",1,2,"","Random",true] call spawn_static;

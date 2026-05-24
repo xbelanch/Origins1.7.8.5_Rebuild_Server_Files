@@ -1,10 +1,10 @@
-A2EDC_BUILD_ID = "20260524-200230";
-A2EDC_BUILD_UTC = "2026-05-24T20:02:30Z";
+A2EDC_BUILD_ID = "20260524-225859";
+A2EDC_BUILD_UTC = "2026-05-24T22:58:59Z";
 A2EDC_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
 A2EDC_BUILD_PREFIX = "z\addons\dayz_server";
-A2EDC_BUILD_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v4";
-A2EDC_BUILD_EXPORT = "Export/dayz_server_20260524-200230_wai-dzms-vehicle-persistence-diagnostics-v4.pbo";
-A2EDC_BUILD_GIT_SHORT = "5268d34";
+A2EDC_BUILD_NOTE = "wai-dzms-classname-cleanup-v5";
+A2EDC_BUILD_EXPORT = "Export/dayz_server_20260524-225859_wai-dzms-classname-cleanup-v5.pbo";
+A2EDC_BUILD_GIT_SHORT = "fbeedcc";
 A2EDC_BUILD_GIT_DIRTY = "true";
 
 A2EDC_DAYZ_SERVER_BUILD_ID = A2EDC_BUILD_ID;
@@ -20,6 +20,8 @@ A2EDC_BUILD_EXPECTED_DIAGNOSTICS = [
   "A2EDC:DZMS:PROTECT:SKIP_INVALID",
   "A2EDC:DZMS:PROTECT:SKIP_NULL",
   "A2EDC:DZMS:CLASS:SKIP_MISSING",
+  "A2EDC:WAI:CLASS:SKIP_MISSING",
+  "A2EDC:WAI:CARGO:SKIP_MISSING",
   "A2EDC:OBJECT_GUARD",
   "server_updateObject = server_updatObiect"
 ];
