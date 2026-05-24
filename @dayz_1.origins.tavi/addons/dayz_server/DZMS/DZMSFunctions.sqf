@@ -128,6 +128,11 @@ DZMSSetupVehicle = {
 	private ["_object","_objectID","_ranFuel"];
 	_object = _this select 0;
 
+	if (isNull _object) exitWith {
+		diag_log text format ["[A2EDC:DZMS:SETUP:SKIP_NULL] context=DZMSSetupVehicle input=%1 monitors=%2", _this, if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts}];
+		false
+	};
+
 	_objectID = str(round(random 999999));
 	_object setVariable ["ObjectID", _objectID, true];
 	_object setVariable ["ObjectUID", _objectID, true];
@@ -169,6 +174,11 @@ DZMSSetupVehicle = {
 DZMSProtectObj = {
 	private ["_object","_objectID"];
 	_object = _this select 0;
+
+	if (isNull _object) exitWith {
+		diag_log text format ["[A2EDC:DZMS:PROTECT:SKIP_NULL] context=DZMSProtectObj input=%1 monitors=%2", _this, if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts}];
+		false
+	};
 	
 	_objectID = str(round(random 999999));
 	_object setVariable ["ObjectID", _objectID, true];

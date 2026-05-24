@@ -4,6 +4,13 @@
 	Usage: [Vehicle]
 */
 _object = _this select 0;
+if (isNull _object) exitWith {
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["DZMS:SAVE", format ["skip null before class/worldspace input=%1 DZMSEpoch=%2", _this, DZMSEpoch], _object] call A2EDC_fnc_traceObjectState;
+	} else {
+		diag_log text format ["[A2EDC:DZMS:SAVE:SKIP_NULL] input=%1 DZMSEpoch=%2", _this, DZMSEpoch];
+	};
+};
 _class = typeOf _object;
 _dir = getDir _object;
 _pos = getPos _object;

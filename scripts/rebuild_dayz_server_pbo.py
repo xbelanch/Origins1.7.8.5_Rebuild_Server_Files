@@ -2,7 +2,6 @@
 import argparse
 import hashlib
 import json
-import os
 import shutil
 import socket
 import subprocess
@@ -16,10 +15,9 @@ SOURCE = ROOT / "@dayz_1.origins.tavi" / "addons" / "dayz_server"
 ACTIVE_PBO = ROOT / "@dayz_1.origins.tavi" / "addons" / "dayz_server.pbo"
 EXPORT_DIR = ROOT / "Export"
 MAKEPBO = ROOT / "tools" / "bin" / "makepbo"
-RAPIFY = ROOT / "tools" / "bin" / "rapify"
 UNPBO = ROOT / "tools" / "bin" / "unpbo"
 PREFIX = r"z\addons\dayz_server"
-DEFAULT_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v2"
+DEFAULT_NOTE = "wai-dzms-vehicle-persistence-diagnostics-v3"
 STALE_MARKERS = [
     "bleedguard-runtime-marker-v3",
     "build_id=20260523-185536",
@@ -29,6 +27,8 @@ EXPECTED_STRINGS = [
     "A2EDC:WAI:PUBLISH",
     "A2EDC:DZMS:SETUP",
     "A2EDC:DZMS:SAVE",
+    "A2EDC:DZMS:PROTECT:SKIP_NULL",
+    "A2EDC:DZMS:CLASS:SKIP_MISSING",
     "A2EDC:OBJECT_GUARD",
     "server_updateObject = server_updatObiect",
 ]
@@ -105,6 +105,8 @@ def write_build_info(build_id, build_utc, build_note, export_path):
                 '  "A2EDC:WAI:PUBLISH",',
                 '  "A2EDC:DZMS:SETUP",',
                 '  "A2EDC:DZMS:SAVE",',
+                '  "A2EDC:DZMS:PROTECT:SKIP_NULL",',
+                '  "A2EDC:DZMS:CLASS:SKIP_MISSING",',
                 '  "A2EDC:OBJECT_GUARD",',
                 '  "server_updateObject = server_updatObiect"',
                 "];",
@@ -172,7 +174,7 @@ def sha256(path):
     return h.hexdigest()
 
 
-def pack(export_path, pipeline_manifest_path):
+def pack(export_path):
     if not MAKEPBO.is_file():
         raise FileNotFoundError(f"makepbo not found: {MAKEPBO}")
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -181,12 +183,6 @@ def pack(export_path, pipeline_manifest_path):
         str(MAKEPBO),
         "--prefix",
         PREFIX,
-        "--pipeline",
-        "--native-binarize",
-        "--rapify-tool",
-        str(RAPIFY),
-        "--manifest",
-        str(pipeline_manifest_path),
         str(SOURCE),
         str(export_path),
     ]
@@ -195,7 +191,7 @@ def pack(export_path, pipeline_manifest_path):
     finally:
         if active_bytes is not None and (not ACTIVE_PBO.is_file() or ACTIVE_PBO.read_bytes() != active_bytes):
             ACTIVE_PBO.write_bytes(active_bytes)
-    syntax_line = next((line.strip() for line in output.splitlines() if "syntax-check:" in line), "")
+    syntax_line = "skipped: raw text pack to preserve system/server_cleanup.fsm as textual FSM"
     return cmd, output, syntax_line
 
 
@@ -230,6 +226,17 @@ def verify_export(export_path, build_id, build_note):
     for marker in STALE_MARKERS:
         if marker in combined:
             missing.append(f"stale marker still packed: {marker}")
+
+    fsm_path = verify_dir / "system" / "server_cleanup.fsm"
+    if not fsm_path.is_file():
+        missing.append("system/server_cleanup.fsm missing")
+    else:
+        fsm_bytes = fsm_path.read_bytes()[:8]
+        fsm_text = fsm_path.read_text(encoding="utf-8", errors="ignore")
+        if fsm_bytes.startswith(b"\x00raP") or ".raP" in fsm_text[:64]:
+            missing.append("system/server_cleanup.fsm appears rapified/binary")
+        if "/*%FSM<" not in fsm_text[:512] and "class FSM" not in fsm_text[:512]:
+            missing.append("system/server_cleanup.fsm does not appear textual")
     if missing:
         raise RuntimeError("post-pack verification failed:\n" + "\n".join(missing))
     return {
@@ -237,6 +244,7 @@ def verify_export(export_path, build_id, build_note):
         "prefix_ok": prefix_ok,
         "verify_dir": rel(verify_dir),
         "listing_head": listing.splitlines()[:20],
+        "server_cleanup_fsm_textual": True,
     }
 
 
@@ -265,12 +273,10 @@ def main():
     pbo_name = args.output_name or f"dayz_server_{build_id}_{safe_note}.pbo"
     export_path = EXPORT_DIR / pbo_name
     manifest_path = export_path.with_suffix(".manifest.json")
-    pipeline_manifest_path = ROOT / ".audit" / "builds" / f"{export_path.stem}.pipeline.tsv"
-    pipeline_manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     write_build_info(build_id, build_utc, args.build_note, export_path)
     validate_no_stale_markers()
-    build_cmd, build_output, syntax_check = pack(export_path, pipeline_manifest_path)
+    build_cmd, build_output, syntax_check = pack(export_path)
     digest = sha256(export_path)
     verification = verify_export(export_path, build_id, args.build_note)
     manifest = {
@@ -286,8 +292,9 @@ def main():
         "build_command": shell_quote_parts(build_cmd),
         "validation_command": verification["validation_command"],
         "syntax_check_result": syntax_check,
-        "native_binarize": True,
-        "pipeline_manifest": rel(pipeline_manifest_path),
+        "native_binarize": False,
+        "pipeline_manifest": None,
+        "server_cleanup_fsm_textual": verification["server_cleanup_fsm_textual"],
         "post_pack_verify_dir": verification["verify_dir"],
         "changed_files_summary": changed_files_summary(),
     }
