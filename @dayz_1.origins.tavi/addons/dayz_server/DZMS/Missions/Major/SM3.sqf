@@ -41,11 +41,13 @@ _base4 setDir 59.42643;
 _base4 setVehicleLock "LOCKED";
 _base4 setPos [(_coords select 0) - 11.4253, (_coords select 1) - 7.628,0];
 
+_base5 = objNull;
+_base6 = objNull;
+
 if (isClass (configFile >> "CfgVehicles" >> "MedBox0")) then {
 	_base5 = createVehicle ["MedBox0",[(_coords select 0) - 7.1519, (_coords select 1) + 1.8144,0],[], 0, "CAN_COLLIDE"];
 	_base5 setDir -29.851013;
 } else {
-	_base5 = objNull;
 	diag_log text format ["[A2EDC:DZMS:CLASS:SKIP_MISSING] mission=%1 class=MedBox0 role=medical-prop pos=%2", _missName, [(_coords select 0) - 7.1519, (_coords select 1) + 1.8144,0]];
 };
 [_base5] call DZMSProtectObj;
@@ -53,7 +55,6 @@ if (isClass (configFile >> "CfgVehicles" >> "MedBox0")) then {
 if (isClass (configFile >> "CfgVehicles" >> "MedBox0")) then {
 	_base6 = createVehicle ["MedBox0",[(_coords select 0) - 7.4116, (_coords select 1) + 2.5244,0],[], 0, "CAN_COLLIDE"];
 } else {
-	_base6 = objNull;
 	diag_log text format ["[A2EDC:DZMS:CLASS:SKIP_MISSING] mission=%1 class=MedBox0 role=medical-prop pos=%2", _missName, [(_coords select 0) - 7.4116, (_coords select 1) + 2.5244,0]];
 };
 [_base6] call DZMSProtectObj;

@@ -86,9 +86,18 @@ format ["dayz_serverObjectMonitor=%1 serverObjectMonitor=%2 PVDZE_serverObjectMo
 
 A2EDC_fnc_traceObjectState = {
 private ["_channel","_label","_object","_class","_objectID","_objectUID","_characterID","_ownerPUID","_lastUpdate","_netId","_pos","_isNull","_isMan","_monitors"];
+if ((count _this) < 3) exitWith {
+	["TRACE_OBJECT_INVALID", format ["reason=too-few-args args=%1 count=%2", _this, count _this]] call A2EDC_fnc_trace;
+};
 _channel = _this select 0;
 _label = _this select 1;
+if (isNil {_this select 2}) exitWith {
+	[_channel, format ["%1 object=<undefined> reason=undefined-argument args=%2", _label, _this]] call A2EDC_fnc_trace;
+};
 _object = _this select 2;
+if ((typeName _object) != "OBJECT") exitWith {
+	[_channel, format ["%1 object=<invalid> reason=not-object type=%2 value=%3 args=%4", _label, typeName _object, _object, _this]] call A2EDC_fnc_trace;
+};
 _class = if (isNull _object) then {"<null>"} else {typeOf _object};
 _objectID = if (isNull _object) then {"<null>"} else {_object getVariable ["ObjectID","<nil>"]};
 _objectUID = if (isNull _object) then {"<null>"} else {_object getVariable ["ObjectUID","<nil>"]};

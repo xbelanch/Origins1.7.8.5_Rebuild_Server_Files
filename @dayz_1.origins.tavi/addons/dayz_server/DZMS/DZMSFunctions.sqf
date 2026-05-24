@@ -172,8 +172,24 @@ DZMSSetupVehicle = {
 
 //Prevents an object being cleaned up by the server anti-hack
 DZMSProtectObj = {
-	private ["_object","_objectID"];
+	private ["_object","_objectID","_monitors"];
+	if ((count _this) < 1) exitWith {
+		_monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts};
+		diag_log text format ["[A2EDC:DZMS:PROTECT:SKIP_INVALID] reason=no-argument input=%1 monitors=%2", _this, _monitors];
+		false
+	};
+	if (isNil {_this select 0}) exitWith {
+		_monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts};
+		diag_log text format ["[A2EDC:DZMS:PROTECT:SKIP_INVALID] reason=undefined-argument input=%1 monitors=%2", _this, _monitors];
+		false
+	};
 	_object = _this select 0;
+
+	if ((typeName _object) != "OBJECT") exitWith {
+		_monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts};
+		diag_log text format ["[A2EDC:DZMS:PROTECT:SKIP_INVALID] reason=not-object type=%1 value=%2 input=%3 monitors=%4", typeName _object, _object, _this, _monitors];
+		false
+	};
 
 	if (isNull _object) exitWith {
 		diag_log text format ["[A2EDC:DZMS:PROTECT:SKIP_NULL] context=DZMSProtectObj input=%1 monitors=%2", _this, if (isNil "A2EDC_fnc_monitorCounts") then {"<monitor-helper-missing>"} else {call A2EDC_fnc_monitorCounts}];
