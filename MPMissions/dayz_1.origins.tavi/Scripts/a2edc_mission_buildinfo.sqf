@@ -1,10 +1,10 @@
-A2EDC_MISSION_BUILD_ID = "20260524-164953";
-A2EDC_MISSION_BUILD_UTC = "2026-05-24T16:49:53Z";
+A2EDC_MISSION_BUILD_ID = "20260525-120255";
+A2EDC_MISSION_BUILD_UTC = "2026-05-25T12:02:55Z";
 A2EDC_MISSION_BUILD_SOURCE = "MPMissions/dayz_1.origins.tavi";
 A2EDC_MISSION_BUILD_PREFIX = "";
-A2EDC_MISSION_BUILD_NOTE = "mpmission-current-reconstruction-v1";
-A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260524-164953_mpmission-current-reconstruction-v1.pbo";
-A2EDC_MISSION_BUILD_GIT_SHORT = "93bd7e6";
+A2EDC_MISSION_BUILD_NOTE = "admin-vehicle-god-patrol-diagnostics-v2";
+A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260525-120255_admin-vehicle-god-patrol-diagnostics-v2.pbo";
+A2EDC_MISSION_BUILD_GIT_SHORT = "181923d";
 A2EDC_MISSION_BUILD_GIT_DIRTY = "true";
 
 diag_log format [

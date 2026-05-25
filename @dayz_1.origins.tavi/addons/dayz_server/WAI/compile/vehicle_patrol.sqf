@@ -20,7 +20,7 @@ _veh setVehicleAmmo 1;
 _veh addEventHandler ["GetOut",{(_this select 0) setFuel 0;(_this select 0) setDamage 1;}];
 _veh allowCrewInImmobile true; 
 _veh lock true;
-PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_veh];
+[_veh] call a2edc_wai_markPatrolVehicle;
 
 _pilot assignAsDriver _veh;
 _pilot moveInDriver _veh;

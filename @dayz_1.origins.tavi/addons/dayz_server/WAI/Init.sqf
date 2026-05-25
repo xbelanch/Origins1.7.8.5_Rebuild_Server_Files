@@ -4,6 +4,7 @@ spawn_static  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\com
 heli_para  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\heli_para.sqf";
 heli_patrol = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\heli_patrol.sqf";
 vehicle_patrol = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\vehicle_patrol.sqf";
+a2edc_wai_markPatrolVehicle = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\compile\a2edc_wai_markPatrolVehicle.sqf";
 
 if (isNil "PVDZE_serverObjectMonitor") then {
 	PVDZE_serverObjectMonitor = [];

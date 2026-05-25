@@ -40,16 +40,16 @@ diag_log ("LOGIN FAILED: Player [" + _playerName + "] has no login ID");
 
 diag_log ("LOGIN ATTEMPT: " + str(_playerID) + " " + _playerName);
 
-
-_doLoop = 0;
-while {_doLoop < 5} do {
-_key = format["CHILD:101:%1:%2:%3:",_playerID,dayZ_instance,_playerName];
-_primary = [_key,false,dayZ_hivePipeAuth] call server_hiveReadWrite;
-if (count _primary > 0) then {
-if ((_primary select 0) != "ERROR") then {
-_doLoop = 9;
-};
-};
+	_primary = [];
+	_doLoop = 0;
+	while {_doLoop < 5} do {
+	_key = format["CHILD:101:%1:%2:%3:",_playerID,dayZ_instance,_playerName];
+	_primary = [_key,false,dayZ_hivePipeAuth] call server_hiveReadWrite;
+	if ((typeName _primary) == "ARRAY" && {(count _primary) > 0}) then {
+	if ((_primary select 0) != "ERROR") then {
+	_doLoop = 9;
+	};
+	};
 _doLoop = _doLoop + 1;
 };
 
@@ -57,13 +57,17 @@ if (isNull _playerObj or !isPlayer _playerObj) exitWith {
 diag_log ("LOGIN RESULT: Exiting, player object null: " + str(_playerObj));
 };
 
-if ((_primary select 0) == "ERROR") exitWith {	
-diag_log format ["LOGIN RESULT: Exiting, failed to load _primary: %1 for player: %2 ",_primary,_playerID];
-};
+	if (((typeName _primary) == "ARRAY") && {(count _primary) > 0} && {(_primary select 0) == "ERROR"}) exitWith {
+	diag_log format ["LOGIN RESULT: Exiting, failed to load _primary: %1 for player: %2 ",_primary,_playerID];
+	};
+
+	if (((typeName _primary) != "ARRAY") || {(count _primary) < 5} || {(_primary select 0) == "FAIL"}) exitWith {
+	diag_log format ["A2EDC:LOGIN:HIVE_RESULT_INVALID uid=%1 result=%2 count=%3",_playerID,_primary,if ((typeName _primary) == "ARRAY") then {count _primary} else {-1}];
+	};
 
 
-_newPlayer = 	_primary select 1;
-_isNew = 		count _primary < 6; 
+	_newPlayer = 	_primary select 1;
+_isNew = 		count _primary < 6;
 _charID = 		_primary select 2;
 _randomSpot = false;
 
@@ -170,7 +174,7 @@ diag_log format ["server_playerLpg = %1",_key];
 };
 diag_log format ["LOGIN LOADED_spl: %1, Type: %2, Model %3",_playerObj,(typeOf _playerObj),_model];
 
-_isHiveOk = false;	
+_isHiveOk = false;
 if (_hiveVer >= dayz_hiveVersionNo) then {
 _isHiveOk = true;
 };

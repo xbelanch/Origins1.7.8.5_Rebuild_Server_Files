@@ -48,6 +48,7 @@ _helicopter engineOn true;
 _helicopter setVehicleAmmo 1;
 _helicopter flyInHeight 150;
 _helicopter addEventHandler ["GetOut",{(_this select 0) setFuel 0;(_this select 0) setDamage 1;}];
+[_helicopter] call a2edc_wai_markPatrolVehicle;
 
 _pilot assignAsDriver _helicopter;
 _pilot moveInDriver _helicopter;
@@ -68,7 +69,6 @@ ai_air_units = (ai_air_units +1);
 {_gunner setSkill [_x,0.7]} forEach _skillarray;
 {_gunner2 setSkill [_x,0.7]} forEach _skillarray;
 {_x addweapon "Makarov";_x addmagazine "8Rnd_9x18_Makarov";_x addmagazine "8Rnd_9x18_Makarov";} forEach (units _unitgroup);
-PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_helicopter];
 [_helicopter] spawn veh_monitor;
 
 _unitGroup allowFleeing 0;
@@ -191,6 +191,7 @@ if (_helipatrol) then {
 		sleep 20;
 		_helipos1 = getpos _helicopter;
 		if ((_helipos1 distance [(_startingpos select 0),(_startingpos select 1),100] <= 200) OR (!alive _helicopter)) then {
+			diag_log format ["A2EDC:WAI:PATROL_DAMAGE class=%1 event=cleanup damage=%2",typeOf _helicopter,damage _helicopter];
 			deleteVehicle _helicopter;
 			{deleteVehicle _x} forEach (units _unitgroup);
 			sleep 10;

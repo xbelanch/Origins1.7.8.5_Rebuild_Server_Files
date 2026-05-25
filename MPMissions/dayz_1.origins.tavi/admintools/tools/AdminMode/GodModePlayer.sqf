@@ -1,9 +1,14 @@
 // Heals all problems and removes damage
 
-private ["_playerGM"];
+private ["_playerGM","_vehicle","_isPatrolVehicle"];
 _playerGM = _this select 0;
 if (_playerGM) then
 {
+	_vehicle = vehicle player;
+	_isPatrolVehicle = _vehicle getVariable ["A2EDC_WAI_patrolVehicle",false];
+	if (_isPatrolVehicle) then {
+		diag_log format ["A2EDC:ADMIN:GODMODE_PLAYER vehicle=%1 class=%2 patrolVehicle=%3 beforeDamage=%4 godMode=%5 carGodMode=%6 adminMode=%7 action=allowDamage_false",_vehicle,typeOf _vehicle,_isPatrolVehicle,damage _vehicle,if (isNil "godMode") then {"<nil>"} else {godMode},if (isNil "carGodMode") then {"<nil>"} else {carGodMode},if (isNil "AdminMode") then {"<nil>"} else {AdminMode}];
+	};
 	player_zombieCheck = {};
 	fnc_usec_damageHandler = {};
 	fnc_usec_unconscious = {};

@@ -1,14 +1,18 @@
 if(!isServer) exitWith {};
-private ["_dot","_position","_Marker","_name"];
+private ["_dot","_position","_Marker","_name","_markerColor"];
 _position = _this select 0;
 _name = _this select 1;
+_markerColor = "ColorRed";
+if (count _this > 2) then {
+	_markerColor = _this select 2;
+};
 
 _Marker = "";
 _dot = "";
 markerready = false;
 while {missionrunning} do {
 	_Marker = createMarker ["Mission", _position];
-	_Marker setMarkerColor "ColorRed";
+	_Marker setMarkerColor _markerColor;
 	_Marker setMarkerShape "ELLIPSE";
 	_Marker setMarkerBrush "Solid";
 	_Marker setMarkerSize [300,300];

@@ -15,6 +15,18 @@ _class = typeOf _object;
 _dir = getDir _object;
 _pos = getPos _object;
 _worldspace = [_dir,_pos];
+_existingObjectID = _object getVariable ["ObjectID","0"];
+_uid = _object getVariable ["ObjectUID","0"];
+if (isNil "_existingObjectID") then {_existingObjectID = "0";};
+if (isNil "_uid") then {_uid = "0";};
+if ((typeName _existingObjectID == "STRING") && {_existingObjectID == ""}) then {_existingObjectID = "0";};
+if ((typeName _uid == "STRING") && {_uid == ""}) then {_uid = "0";};
+if (typeName _existingObjectID == "SCALAR") then {_existingObjectID = str(_existingObjectID);};
+if (typeName _uid == "SCALAR") then {_uid = str(_uid);};
+if ((parseNumber _uid) <= 0) then {
+	_uid = str(_worldspace call dayz_objectUID2);
+	_object setVariable ["ObjectUID", _uid, true];
+};
 if (!(isNil "A2EDC_fnc_traceObjectState")) then {
 	["DZMS:SAVE", format ["start saveVehicles=%1 class=%2 worldspace=%3 DZMSEpoch=%4", DZMSSaveVehicles, _class, _worldspace, DZMSEpoch], _object] call A2EDC_fnc_traceObjectState;
 };
@@ -111,10 +123,14 @@ if (DZMSEpoch) then {
 			["DZMS:SAVE", format ["origins sql lookup vehicle class=%1", _class]] call A2EDC_fnc_trace;
 		};
 		};
-		_data = "HiveEXT" callExtension _key;             
-	_result = call compile format ["%1", _data];
-	_status = _result select 0;
-	if (_status == "CustomStreamStart") then 
+		_data = "HiveEXT" callExtension _key;
+	_result = ["FAIL"];
+	_status = "";
+	if ((typeName _data == "STRING") && {_data != ""}) then {
+		_result = call compile format ["%1", _data];
+		_status = _result select 0;
+	};
+	if ((_status == "CustomStreamStart") && ((count _result) > 1)) then
 	{
 		"HiveEXT" callExtension _key;
 		_temp = _result select 1;
@@ -140,16 +156,24 @@ if (DZMSEpoch) then {
 	_key = format["CHILD:999:SELECT `id` FROM `instance_vehicle` ORDER BY `id` DESC LIMIT 1:[]:"];
 	_data = "HiveEXT" callExtension _key;
 
-	_result = call compile format ["%1", _data];
-	_status = _result select 0;
-	if (_status == "CustomStreamStart") then 
+	_status = "";
+	_result = ["FAIL"];
+	if ((typeName _data == "STRING") && {_data != ""}) then {
+		_result = call compile format ["%1", _data];
+		_status = _result select 0;
+	};
+	if ((_status == "CustomStreamStart") && ((count _result) > 1)) then
 	{
 		_temp = _result select 1;
 		if (_temp == 1) then
 		{
-			_data = "HiveEXT" callExtension _key;
-			_result = call compile format ["%1", _data];
-			_status = _result select 0;
+				_data = "HiveEXT" callExtension _key;
+				_result = ["FAIL"];
+				_status = "";
+				if ((typeName _data == "STRING") && {_data != ""}) then {
+					_result = call compile format ["%1", _data];
+					_status = _result select 0;
+				};
 		};	
 	};
 	
@@ -157,11 +181,33 @@ if (DZMSEpoch) then {
 	_object addMPEventHandler ["MPKilled",{_this call vehicle_handleServerKilled;}];
 	_object setFuel _ranFuel;
 		_object setVariable ["lastUpdate", time];
-		_object setVariable ["ObjectID", str(_status), true];
-		_object setVariable ["CharacterID", "7777", true];
-		if (!(isNil "A2EDC_fnc_traceObjectState")) then {
-			["DZMS:SAVE", format ["origins save end status=%1 before server_updateObject", _status], _object] call A2EDC_fnc_traceObjectState;
+		_oid = "";
+		_oidSource = "none";
+		if ((parseNumber str(_status)) > 0) then {
+			_oid = str(_status);
+			_oidSource = "sql";
+		} else {
+			if ((parseNumber _existingObjectID) > 0) then {
+				_oid = _existingObjectID;
+				_oidSource = "existing";
+			};
 		};
-		[_object,"all"] spawn server_updateObject;
+		if ((parseNumber _oid) > 0) then {
+			_object setVariable ["ObjectID", _oid, true];
+			_object setVariable ["CharacterID", "7777", true];
+			diag_log format ["A2EDC:DZMS:SAVE:OID_OK class=%1 objectID=%2 uid=%3 source=%4",_class,_oid,_uid,_oidSource];
+			if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+				["DZMS:SAVE", format ["origins save end status=%1 before server_updateObject", _status], _object] call A2EDC_fnc_traceObjectState;
+			};
+			[_object,"all"] spawn server_updateObject;
+		} else {
+			_object setVariable ["A2EDC_DZMS_transientVehicle", true, true];
+			_object setVariable ["ObjectID", "0", true];
+			_object setVariable ["ObjectUID", _uid, true];
+			diag_log format ["A2EDC:DZMS:SAVE:OID_FAIL class=%1 uid=%2 action=skip_server_updateObject status=%3 existingObjectID=%4",_class,_uid,_status,_existingObjectID];
+			if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+				["DZMS:SAVE", format ["origins oid fail status=%1 action=skip_server_updateObject", _status], _object] call A2EDC_fnc_traceObjectState;
+			};
+		};
 
 	};

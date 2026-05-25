@@ -1,4 +1,4 @@
-private ["_mission","_aipack","_class","_position2","_direction","_static","_position","_unitnumber","_skill","_gun","_mags","_backpack","_skin","_gear","_aiweapon","_aigear","_aiskin","_skillarray","_unitGroup","_weapon","_magazine","_weaponandmag","_gearmagazines","_geartools","_unit"];
+private ["_mission","_aipack","_class","_position2","_direction","_static","_position","_unitnumber","_skill","_gun","_mags","_backpack","_skin","_gear","_aiweapon","_aigear","_aiskin","_skillarray","_unitGroup","_weapon","_magazine","_weaponandmag","_gearmagazines","_geartools","_unit","_aiCfg","_aiClassExists","_aiScope","_aiSimulation","_aiBase","_aiPool","_aiReason","_aiFallbackSkin"];
 _position = _this select 0;
 _class = _this select 1;
 _skill = _this select 2;
@@ -23,6 +23,7 @@ _aipack = "";
 _skillarray = ["aimingAccuracy","aimingShake","aimingSpeed","endurance","spotDistance","spotTime","courage","reloadSpeed","commanding","general"];
 _unitGroup = createGroup east;
 _unitnumber = count _position;
+_aiFallbackSkin = "Bandit2_3DZ";
 
 if (!isServer) exitWith {};
 
@@ -31,8 +32,29 @@ if (!isServer) exitWith {};
 
 if (_skin == "") then {
 	_aiskin = ai_skin call BIS_fnc_selectRandom;
+	_aiPool = "ai_skin";
 } else {
-	_aiskin = _skin
+	_aiskin = _skin;
+	_aiPool = "explicit-skin";
+};
+_aiCfg = configFile >> "CfgVehicles" >> _aiskin;
+_aiClassExists = isClass _aiCfg;
+_aiScope = -1;
+_aiSimulation = "";
+_aiBase = "";
+if (_aiClassExists) then {
+	_aiScope = getNumber (_aiCfg >> "scope");
+	_aiSimulation = getText (_aiCfg >> "simulation");
+	_aiBase = configName (inheritsFrom _aiCfg);
+};
+_aiReason = "";
+if (!_aiClassExists) then {_aiReason = "missing";};
+if ((_aiReason == "") AND (_aiScope < 2)) then {_aiReason = "scope-private";};
+if ((_aiReason == "") AND (_aiSimulation == "")) then {_aiReason = "missing-simulation";};
+if ((_aiReason == "") AND (_aiBase == "Banned")) then {_aiReason = "banned-base";};
+if (_aiReason != "") then {
+	diag_log text format ["[A2EDC:WAI:AI_CLASS:SKIP_INVALID] mission=%1 pool=%2 class=%3 reason=%4 scope=%5 simulation=%6 base=%7 fallback=%8 pos=%9 static=%10", _mission, _aiPool, _aiskin, _aiReason, _aiScope, _aiSimulation, _aiBase, _aiFallbackSkin, _position2, _class];
+	_aiskin = _aiFallbackSkin;
 };
 _unit = _unitGroup createUnit [_aiskin, [0,0,0], [], 10, "PRIVATE"];
 _static = createVehicle [_class, [(_position2 select 0),(_position2 select 1),(_position2 select 2)], [], 0, "CAN_COLLIDE"];

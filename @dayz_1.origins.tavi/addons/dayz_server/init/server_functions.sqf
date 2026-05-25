@@ -104,6 +104,15 @@ _objectUID = if (isNull _object) then {"<null>"} else {_object getVariable ["Obj
 _characterID = if (isNull _object) then {"<null>"} else {_object getVariable ["CharacterID","<nil>"]};
 _ownerPUID = if (isNull _object) then {"<null>"} else {_object getVariable ["ownerPUID","<nil>"]};
 _lastUpdate = if (isNull _object) then {"<null>"} else {_object getVariable ["lastUpdate","<nil>"]};
+if (isNil "_objectID") then {_objectID = "<nil>";};
+if (isNil "_objectUID") then {_objectUID = "<nil>";};
+if (isNil "_characterID") then {_characterID = "<nil>";};
+if (isNil "_ownerPUID") then {_ownerPUID = "<nil>";};
+if (isNil "_lastUpdate") then {_lastUpdate = "<nil>";};
+if ((typeName _objectID == "STRING") && {_objectID == ""}) then {_objectID = "<empty>";};
+if ((typeName _objectUID == "STRING") && {_objectUID == ""}) then {_objectUID = "<empty>";};
+if ((typeName _characterID == "STRING") && {_characterID == ""}) then {_characterID = "<empty>";};
+if ((typeName _ownerPUID == "STRING") && {_ownerPUID == ""}) then {_ownerPUID = "<empty>";};
 _netId = if (isNull _object) then {"<null>"} else {netId _object};
 _pos = if (isNull _object) then {"<null>"} else {getPosATL _object};
 _isNull = isNull _object;
@@ -113,6 +122,8 @@ _monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<no monitor helper>"} el
 };
 
 waituntil {!isnil "bis_fnc_init"};
+
+A2EDC_fnc_adminMissionLaunch = compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\a2edc_adminMissionLaunch.sqf";
 
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\publicEH_srv.sqf";
 
@@ -223,28 +234,14 @@ fnc_buildWeightedArray = 	compile preprocessFileLineNumbers "\z\addons\dayz_code
 onPlayerDisconnected 		"[_uid,_name] call server_onPlayerDisconnect;";
 
 server_hiveWrite = {
-private["_data","_started","_elapsed","_opcode","_traceEnabled"];
+private["_key","_data","_started","_elapsed","_opcode","_traceEnabled","_payloadType"];
 
-_traceEnabled = false;
-if (!(isNil "A2EDC_TRACE")) then {
-if (A2EDC_TRACE) then {
-_traceEnabled = true;
-_opcode = _this call A2EDC_fnc_childOpcode;
-_started = diag_tickTime;
-};
-};
-_data = "HiveEXT" callExtension _this;
-if (_traceEnabled) then {
-_elapsed = diag_tickTime - _started;
-["HIVE", format ["write opcode=%1 elapsed=%2", _opcode, _elapsed]] call A2EDC_fnc_trace;
-};
-
-_data;
-};
-
-server_hiveReadWrite = {
-private["_key","_resultArray","_data","_started","_elapsed","_opcode","_traceEnabled"];
+_payloadType = typeName _this;
+if (_payloadType == "ARRAY") then {
 _key = _this select 0;
+} else {
+_key = _this;
+};
 
 _traceEnabled = false;
 if (!(isNil "A2EDC_TRACE")) then {
@@ -257,10 +254,84 @@ _started = diag_tickTime;
 _data = "HiveEXT" callExtension _key;
 if (_traceEnabled) then {
 _elapsed = diag_tickTime - _started;
+["HIVE", format ["write opcode=%1 elapsed=%2", _opcode, _elapsed]] call A2EDC_fnc_trace;
+};
+
+_data;
+};
+
+server_hiveReadWrite = {
+private["_key","_resultArray","_data","_started","_elapsed","_opcode","_traceEnabled","_payloadType","_dataType","_dataLen","_raw","_chars","_rawChars","_rawMax","_i","_compileFailed"];
+_payloadType = typeName _this;
+if (_payloadType == "ARRAY") then {
+_key = _this select 0;
+} else {
+_key = _this;
+};
+
+_traceEnabled = false;
+if (!(isNil "A2EDC_TRACE")) then {
+if (A2EDC_TRACE) then {
+_traceEnabled = true;
+_opcode = _key call A2EDC_fnc_childOpcode;
+_started = diag_tickTime;
+};
+};
+_data = "HiveEXT" callExtension _key;
+if (isNil "_opcode") then {
+_opcode = _key call A2EDC_fnc_childOpcode;
+};
+_dataType = typeName _data;
+_dataLen = -1;
+if (_dataType == "STRING") then {
+_dataLen = count (toArray _data);
+};
+if (_opcode == "388") then {
+_raw = "<non-string>";
+if (_dataType == "STRING") then {
+_chars = toArray _data;
+_rawChars = [];
+_rawMax = 180;
+if ((count _chars) < _rawMax) then {_rawMax = count _chars;};
+if (_rawMax > 0) then {
+for "_i" from 0 to (_rawMax - 1) do {
+_rawChars set [count _rawChars, _chars select _i];
+};
+};
+_raw = toString _rawChars;
+};
+diag_log format ["A2EDC:HIVE:READWRITE_RAW opcode=388 len=%1 data=%2",_dataLen,_raw];
+};
+if (_traceEnabled) then {
+_elapsed = diag_tickTime - _started;
 ["HIVE", format ["readwrite opcode=%1 elapsed=%2", _opcode, _elapsed]] call A2EDC_fnc_trace;
 };
 
+_resultArray = [];
+if (_opcode != "388") exitWith {
 _resultArray = call compile format ["%1;",_data];
+_resultArray
+};
+if (_dataType != "STRING") exitWith {
+if (_opcode == "388") then {diag_log format ["A2EDC:HIVE:READWRITE_EMPTY opcode=388 key=%1",_key];};
+["FAIL","EMPTY_RESPONSE"]
+};
+if (_dataLen <= 0) exitWith {
+if (_opcode == "388") then {diag_log format ["A2EDC:HIVE:READWRITE_EMPTY opcode=388 key=%1",_key];};
+["FAIL","EMPTY_RESPONSE"]
+};
+_compileFailed = isNil {
+call compile format ["%1;",_data]
+};
+if (_compileFailed) exitWith {
+if (_opcode == "388") then {diag_log format ["A2EDC:HIVE:READWRITE_COMPILE_ERROR opcode=388 key=%1",_key];};
+["FAIL","COMPILE_ERROR"]
+};
+_resultArray = call compile format ["%1;",_data];
+if ((typeName _resultArray) != "ARRAY") exitWith {
+if (_opcode == "388") then {diag_log format ["A2EDC:HIVE:READWRITE_COMPILE_ERROR opcode=388 key=%1 resultType=%2",_key,typeName _resultArray];};
+["FAIL","COMPILE_ERROR"]
+};
 
 _resultArray;
 };

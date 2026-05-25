@@ -1,12 +1,33 @@
-private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku","_traceClass"];
+private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku","_traceClass","_inputObject","_objectIDValue","_uidValue","_objectIDType","_uidType","_guardReason","_missingObjectID"];
 
-_object = 	_this select 0;
+_inputObject = _this select 0;
+_object = 	_inputObject;
 _type = 	toLower(_this select 1);
+if (_object isKindOf "Man") then {
+	if ((vehicle _object) != _object) then {
+		diag_log format ["[A2EDC:OBJECT_GUARD] normalized Man update to vehicle man=%1 vehicle=%2 operation=%3 vehicleClass=%4", _object, vehicle _object, _type, typeOf (vehicle _object)];
+		_object = vehicle _object;
+	};
+};
 _parachuteWest = typeOf _object == "ParachuteWest";
 _isNotOk = false;
 _allowed =["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
 _objectID =	_object getVariable ["ObjectID","0"];
 _uid = 		_object getVariable ["ObjectUID","0"];
+_missingObjectID = false;
+if (isNil "_objectID") then {
+	_objectID = "<nil>";
+	_missingObjectID = true;
+};
+if (isNil "_uid") then {
+	_uid = "0";
+};
+if ((typeName _objectID == "STRING") && {_objectID == ""}) then {
+	_missingObjectID = true;
+};
+if ((typeName _uid == "STRING") && {_uid == ""}) then {
+	_uid = "0";
+};
 if (!(isNil "A2EDC_TRACE")) then {
 if (A2EDC_TRACE) then {
 	_traceClass = typeOf _object;
@@ -26,13 +47,81 @@ if (_object isKindOf "Man") exitWith {
 	};
 };
 
-if ((typeName _objectID != "string") || (typeName _uid != "string")) then
-{ 
-diag_log(format["Non-string Object: ID %1 UID %2", _objectID, _uid]);
-
-_objectID = "0";
-_uid = "0";
+if (_object getVariable ["A2EDC_WAI_patrolVehicle", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=wai_patrol_transient_vehicle class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+	diag_log format ["A2EDC:WAI:PATROL_DAMAGE class=%1 event=guard_skip_update damage=%2 objectID=%3 uid=%4",typeOf _object,damage _object,_objectID,_uid];
 };
+
+if (_object getVariable ["A2EDC_WAI_transientVehicle", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=wai_transient_vehicle class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+};
+
+if (_object getVariable ["A2EDC_WAI_transientLoot", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=wai_transient_loot class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+};
+
+if (_object getVariable ["A2EDC_DZMS_transientVehicle", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=dzms_transient_vehicle class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+};
+
+if (_object getVariable ["A2EDC_WAI_publishPendingObjectID", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=wai_publish_pending_objectid class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+};
+
+if (_object getVariable ["A2EDC_WAI_publishFailedObjectID", false]) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=wai_publish_missing_objectid class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+};
+
+if (!_parachuteWest && {_objectID == "1"} && {_uid == "0"}) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=placeholder_objectid class=%1 objectID=%2 uid=%3 operation=%4 object=%5 inputObject=%6", typeOf _object, _objectID, _uid, _type, _object, _inputObject];
+};
+
+if ((!_parachuteWest) && {_missingObjectID}) exitWith {
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=missing_objectid class=%1 objectID=%2 uid=%3 operation=%4 object=%5", typeOf _object, _objectID, _uid, _type, _object];
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["OBJECT_GUARD", format ["reason=missing_objectid operation=%1 objectID=%2 uid=%3", _type, _objectID, _uid], _object] call A2EDC_fnc_traceObjectState;
+	};
+};
+
+_objectIDType = typeName _objectID;
+_uidType = typeName _uid;
+_objectIDValue = 0;
+_uidValue = 0;
+
+if (_objectIDType == "STRING") then {
+	_objectIDValue = parseNumber _objectID;
+} else {
+	if (_objectIDType == "SCALAR") then {
+		_objectIDValue = _objectID;
+		_objectID = str(_objectID);
+	} else {
+		diag_log format ["[A2EDC:OBJECT_GUARD] reason=invalid_objectid_type class=%1 objectID=%2 objectIDType=%3 uid=%4 uidType=%5 operation=%6", typeOf _object, _objectID, _objectIDType, _uid, _uidType, _type];
+	};
+};
+
+if (_uidType == "STRING") then {
+	_uidValue = parseNumber _uid;
+} else {
+	if (_uidType == "SCALAR") then {
+		_uidValue = _uid;
+		_uid = str(_uid);
+	} else {
+		diag_log format ["[A2EDC:OBJECT_GUARD] reason=invalid_objectuid_type class=%1 objectID=%2 objectIDType=%3 uid=%4 uidType=%5 operation=%6", typeOf _object, _objectID, _objectIDType, _uid, _uidType, _type];
+	};
+};
+
+if ((!_parachuteWest) && {_objectIDValue <= 0} && {_uidValue <= 0}) exitWith {
+	_guardReason = "invalid_object_identity";
+	if (_object isKindOf "AllVehicles") then {
+		_guardReason = "temporary_invalid_identity";
+	};
+	_object_position = getPosATL _object;
+	diag_log format ["[A2EDC:OBJECT_GUARD] reason=%1 class=%2 objectID=%3 uid=%4 operation=%5 object=%6 pos=%7", _guardReason, typeOf _object, _objectID, _uid, _type, _object, _object_position];
+	if (!(isNil "A2EDC_fnc_traceObjectState")) then {
+		["OBJECT_GUARD", format ["reason=%1 operation=%2 objectID=%3 uid=%4", _guardReason, _type, _objectID, _uid], _object] call A2EDC_fnc_traceObjectState;
+	};
+};
+
 if (!_parachuteWest) then {
 if (_objectID == "0" && _uid == "0") then
 {

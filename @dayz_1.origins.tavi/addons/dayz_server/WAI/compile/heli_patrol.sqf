@@ -21,6 +21,7 @@ _helicopter setVehicleAmmo 1;
 _helicopter flyInHeight 150;
 _helicopter lock true;
 _helicopter addEventHandler ["GetOut",{(_this select 0) setFuel 0;(_this select 0) setDamage 1;}];
+[_helicopter] call a2edc_wai_markPatrolVehicle;
 
 _pilot assignAsDriver _helicopter;
 _pilot moveInDriver _helicopter;
@@ -42,7 +43,6 @@ ai_air_units = (ai_air_units +1);
 {_gunner2 setSkill [_x,_skill]} forEach _skillarray;
 {_x addweapon "Makarov";_x addmagazine "8Rnd_9x18_Makarov";_x addmagazine "8Rnd_9x18_Makarov";} forEach (units _unitgroup);
 {_x addEventHandler ["Killed",{[_this select 0, _this select 1, "air"] call on_kill;}];} forEach (units _unitgroup);
-PVDZE_serverObjectMonitor set [count PVDZE_serverObjectMonitor,_helicopter];
 [_helicopter] spawn veh_monitor;
 
 _unitGroup allowFleeing 0;

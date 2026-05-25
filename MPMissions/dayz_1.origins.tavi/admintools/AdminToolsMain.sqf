@@ -20,6 +20,7 @@ if ((getPlayerUID player) in AdminList) then { // Admins
 		["Epoch Menu >>", [], "#USER:EpochMenu", -5, [["expression", ""]], "1", "1"],			
 		["Weapon/Item Kits >>", [], "#USER:WeaponMenu", -5, [["expression", ""]], "1", "1"],
 		["Skin Change Menu >>", [], "#USER:AdminSkinsMenu", -5, [["expression", ""]], "1", "1"],
+		["Missions >>", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
 		["Weather/Time Menu (Local Only) >>", [], "#USER:WTMenu", -5, [["expression", ""]], "1", "1"],			
 		["", [], "", -5, [["expression", ""]], "1", "0"],
 			["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]		
@@ -51,6 +52,71 @@ AdminMenu =
 	["Teleport Menu >>",[],"#USER:TeleportMenu", -5, [["expression", ""]], "1", "1"],
 	["Humanity Menu >>",[],"#USER:HumanityMenu", -5, [["expression", ""]], "1", "1"],
 	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCMissionMenu =
+[
+["",true],
+	["WAI >>", [], "#USER:A2EDCWaiMissionMenu", -5, [["expression", ""]], "1", "1"],
+	["DZMS Major >>", [], "#USER:A2EDCDzmsMajorMissionMenu", -5, [["expression", ""]], "1", "1"],
+	["DZMS Minor >>", [], "#USER:A2EDCDzmsMinorMissionMenu", -5, [["expression", ""]], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCWaiMissionMenu =
+[
+["",true],
+	["armed_vehicle", [], "", -5, [["expression",'["WAI","armed_vehicle"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["mayors_mansion", [], "", -5, [["expression",'["WAI","mayors_mansion"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["MV22", [], "", -5, [["expression",'["WAI","MV22"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["C130_crash", [], "", -5, [["expression",'["WAI","C130_crash"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["bandit_base", [], "", -5, [["expression",'["WAI","bandit_base"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["convoy", [], "", -5, [["expression",'["WAI","convoy"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["crash_spawner", [], "", -5, [["expression",'["WAI","crash_spawner"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["Next page", [], "#USER:A2EDCWaiMissionMenu2", -5, [["expression", ""]], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Missions", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCWaiMissionMenu2 =
+[
+["",true],
+	["disabled_civchopper", [], "", -5, [["expression",'["WAI","disabled_civchopper"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["disabled_milchopper", [], "", -5, [["expression",'["WAI","disabled_milchopper"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["ems_cache", [], "", -5, [["expression",'["WAI","ems_cache"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["medi_camp", [], "", -5, [["expression",'["WAI","medi_camp"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["Ural", [], "", -5, [["expression",'["WAI","Ural"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["weapon_cache", [], "", -5, [["expression",'["WAI","weapon_cache"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Previous page", [], "#USER:A2EDCWaiMissionMenu", -5, [["expression", ""]], "1", "1"],
+		["Missions", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCDzmsMajorMissionMenu =
+[
+["",true],
+	["SM1 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM1"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM2 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM2"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM3 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM3"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM4 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM4"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM5 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM5"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM6 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","SM6"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["EM1 (disabled)", [], "", -5, [["expression",'["DZMS_MAJOR","EM1"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Missions", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCDzmsMinorMissionMenu =
+[
+["",true],
+	["SM1 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM1"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM2 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM2"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM3 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM3"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM4 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM4"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM5 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM5"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["SM6 (disabled)", [], "", -5, [["expression",'["DZMS_MINOR","SM6"] execVM "admintools\tools\a2edc_adminMissionLaunch.sqf"']], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Missions", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
 		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
 ];
 ModMenu =

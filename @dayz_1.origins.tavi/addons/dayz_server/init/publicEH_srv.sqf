@@ -7,6 +7,7 @@ if (isServer) then {
 "oriUdalkaObj"    	addPublicVariableEventHandler {if (!(isNil "A2EDC_TRACE")) then {if (A2EDC_TRACE) then {["oriUdalkaObj",(_this select 1)] call A2EDC_fnc_tracePV;};};(_this select 1) call server_udalitObj};
 "DOdowndblink"      	addPublicVariableEventHandler {if (!(isNil "A2EDC_TRACE")) then {if (A2EDC_TRACE) then {["DOdowndblink",(_this select 1)] call A2EDC_fnc_tracePV;};};(_this select 1) call DO_cperg};
 "dayzOrigingsL2"		addPublicVariableEventHandler {if (!(isNil "A2EDC_TRACE")) then {if (A2EDC_TRACE) then {["dayzOrigingsL2",(_this select 1)] call A2EDC_fnc_tracePV;};};(_this select 1) call serverDO_plSp};
+"A2EDC_adminMissionLaunch" addPublicVariableEventHandler {if (!(isNil "A2EDC_TRACE")) then {if (A2EDC_TRACE) then {["A2EDC_adminMissionLaunch",(_this select 1)] call A2EDC_fnc_tracePV;};};(_this select 1) call A2EDC_fnc_adminMissionLaunch;};
 
 "dayzLoginRecord"  	addPublicVariableEventHandler {if (!(isNil "A2EDC_TRACE")) then {if (A2EDC_TRACE) then {["dayzLoginRecord",(_this select 1)] call A2EDC_fnc_tracePV;};};(_this select 1) call dayz_recordLogin};
 

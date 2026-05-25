@@ -1,4 +1,13 @@
+if (isNil "A2EDC_WAI_vehiclePersistenceMode") then {
+	A2EDC_WAI_vehiclePersistenceMode = "transient";
+};
+
 custom_publish  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\custom_publishVehicle.sqf";
+a2edc_wai_publishVehicle  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\a2edc_wai_publishVehicle_origins.sqf";
+a2edc_wai_getDifficultyProfile  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\a2edc_wai_getDifficultyProfile.sqf";
+a2edc_wai_setMissionVehicleLock  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\a2edc_wai_setMissionVehicleLock.sqf";
+a2edc_wai_validateMissionPosition  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\a2edc_wai_validateMissionPosition.sqf";
+a2edc_wai_applyRewardProfile  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\a2edc_wai_applyRewardProfile.sqf";
 spawn_ammo_box  = compile preprocessFileLineNumbers "\z\addons\dayz_server\WAI\missions\compile\ammobox.sqf";
 
 //Custom Boxes

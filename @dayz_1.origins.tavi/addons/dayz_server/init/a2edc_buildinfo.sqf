@@ -1,10 +1,10 @@
-A2EDC_BUILD_ID = "20260524-225859";
-A2EDC_BUILD_UTC = "2026-05-24T22:58:59Z";
+A2EDC_BUILD_ID = "20260525-120255";
+A2EDC_BUILD_UTC = "2026-05-25T12:02:55Z";
 A2EDC_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
 A2EDC_BUILD_PREFIX = "z\addons\dayz_server";
-A2EDC_BUILD_NOTE = "wai-dzms-classname-cleanup-v5";
-A2EDC_BUILD_EXPORT = "Export/dayz_server_20260524-225859_wai-dzms-classname-cleanup-v5.pbo";
-A2EDC_BUILD_GIT_SHORT = "fbeedcc";
+A2EDC_BUILD_NOTE = "wai-patrol-admin-entry-diagnostics-v16";
+A2EDC_BUILD_EXPORT = "Export/dayz_server_20260525-120255_wai-patrol-admin-entry-diagnostics-v16.pbo";
+A2EDC_BUILD_GIT_SHORT = "181923d";
 A2EDC_BUILD_GIT_DIRTY = "true";
 
 A2EDC_DAYZ_SERVER_BUILD_ID = A2EDC_BUILD_ID;
@@ -21,6 +21,7 @@ A2EDC_BUILD_EXPECTED_DIAGNOSTICS = [
   "A2EDC:DZMS:PROTECT:SKIP_NULL",
   "A2EDC:DZMS:CLASS:SKIP_MISSING",
   "A2EDC:WAI:CLASS:SKIP_MISSING",
+  "A2EDC:WAI:AI_CLASS:SKIP_INVALID",
   "A2EDC:WAI:CARGO:SKIP_MISSING",
   "A2EDC:OBJECT_GUARD",
   "server_updateObject = server_updatObiect"
