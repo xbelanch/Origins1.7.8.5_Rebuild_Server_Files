@@ -81,6 +81,40 @@ if (!isDedicated) then {
 	player_bbstart = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\bse_pp.sqf";
 	player_CeMix = 				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_BCeMix.sqf";
 	player_ppver =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_ppver.sqf";
+	fnc_use_item = {
+		private["_item","_action","_handled"];
+		_item = _this select 0;
+		_action = _this select 1;
+		_handled = true;
+		diag_log format["A2EDC:INV_ACTION_BRIDGE item=%1 action=%2",_item,_action];
+		switch (_action) do {
+			case "makeFire": { _item spawn player_makeFire; };
+			case "chopWood3": { _item spawn player_chopWood; };
+			case "addToolbelt": { _item spawn player_addToolbelt; };
+			case "dropWeapon": { _item spawn player_dropWeapon; };
+			case "reloadMag": { _item spawn player_reloadMag; };
+			case "useMeds": { _item spawn player_useMeds; };
+			case "drink": { _item spawn player_drink; };
+			case "fillWater": { _item spawn player_fillWater; };
+			case "reCin": { _item spawn player_reCin; };
+			case "wearClothes": { _item spawn player_wearClothes; };
+			case "mGhil6": { _item spawn player_wearClothes; };
+			case "mGhil7": { _item spawn player_wearClothes; };
+			case "mGhil8": { _item spawn player_wearClothes; };
+			case "peat": { _item spawn player_eat; };
+			case "pbuild": { _item spawn player_build; };
+			case "tentPitch": { _item spawn player_tentPitch; };
+			case "CeMix": { _item spawn player_CeMix; };
+			case "bbstart": { _item spawn player_bbstart; };
+			case "ebstart": { _item spawn player_bbstart; };
+			case "kkstart": { _item spawn player_bbstart; };
+			default { _handled = false; };
+		};
+		if (!_handled) then {
+			diag_log format["A2EDC:INV_ACTION_NONE item=%1 reason=unsupported_bridge_action action=%2",_item,_action];
+			cutText [format["Unsupported item action: %1",_action], "PLAIN DOWN"];
+		};
+	};
 	
 	//ui
 	player_selectSlot =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\ui_selectSlot.sqf";
@@ -109,7 +143,7 @@ if (!isDedicated) then {
 			_control1 = _display displayctrl 8400;
 			_control2 = _display displayctrl 102;
 			_control3 = _display displayctrl 105;
-			_control3 ctrlSetText "\z\addons\dayz_code\gui\DayzOrigins.paa";
+			_control3 ctrlSetText "\z\addons\dayz_code\gui\a2edc_loading_wallpaper_00.paa";
 		// 85 sec timeout
 			while { _timeOut < 900 && !dayz_clientPreload } do {
 				if ( isNull _display ) then {
@@ -119,14 +153,14 @@ if (!isDedicated) then {
 					_control1 = _display displayctrl 8400;
 					_control2 = _display displayctrl 102;
 					_control3 = _display displayctrl 105;
-					_control3 ctrlSetText "\z\addons\dayz_code\gui\DayzOrigins.paa";
+					_control3 ctrlSetText "\z\addons\dayz_code\gui\a2edc_loading_wallpaper_00.paa";
 				};
 				if ( dayz_loadScreenMsg != "" ) then {
 					_control1 ctrlSetText dayz_loadScreenMsg;
 					dayz_loadScreenMsg = "";
 				};
 				_control2 ctrlSetText format["%1",round(_timeOut*0.1)];
-				_control3 ctrlSetText "\z\addons\dayz_code\gui\DayzOrigins.paa";
+				_control3 ctrlSetText "\z\addons\dayz_code\gui\a2edc_loading_wallpaper_00.paa";
 				_timeOut = _timeOut + 1;
 				sleep 0.1;
 				if(_timeOut == 600) then { Origins_connect = true; }; //60sec

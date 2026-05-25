@@ -7,7 +7,7 @@ OnLoadMissionTime = False;
 disabledAI = true;
 disableChannels[]={0,6};
 enableItemsDropping = 0;
-loadScreen = "\z\addons\dayz_code\gui\DayzOrigins.paa";
+loadScreen = "\z\addons\dayz_code\gui\a2edc_loading_wallpaper_00.paa";
 class Header
 {
  gameType = COOP;            //DM, Team, Coop, ...
