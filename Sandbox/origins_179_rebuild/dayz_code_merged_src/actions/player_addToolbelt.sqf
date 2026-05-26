@@ -6,7 +6,13 @@ _current = currentWeapon player;
 _primary = primaryWeapon player;
 _lower = secondaryWeapon player;
 _hasPrimary = (_primary != "") and !(_primary in ["MeleeHatchet","MeleeCrowbar"]);
+if (!isNil "A2EDC_fnc_normalizeOnBack") then {
+	call A2EDC_fnc_normalizeOnBack;
+};
 _back = if (isNil "A2EDC_onBack") then {player getVariable ["A2EDC_onBack",""]} else {A2EDC_onBack};
+if ((typeName _back) != "STRING") then {
+	_back = "";
+};
 _action = "unknown";
 _targetSlot = "activePrimary";
 _weaponsBefore = weapons player;

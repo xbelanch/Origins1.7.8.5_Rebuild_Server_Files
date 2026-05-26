@@ -1,4 +1,7 @@
 disableSerialization;
+if (isNil "A2EDC_debugItemInfo") then {
+	A2EDC_debugItemInfo = false;
+};
 
 private["_event","_mode","_control","_display","_item","_row","_conf","_confType","_name","_picture","_description","_count","_ammo","_ammoName","_usedIn","_cfgWeapons","_weaponCfg","_weaponName","_mags","_i","_weight","_weightSource","_text","_title","_panel","_image","_lines","_value","_duplicateTitle","_visibleLines"];
 
@@ -7,7 +10,12 @@ _mode = _this select 1;
 _control = _event select 0;
 _display = findDisplay 106;
 if (isNull _display) exitWith {};
-diag_log format["A2EDC:ONBACK_STATE phase=tooltip_bridge_initialized primary=%1 current=%2 weapons=%3 magazines=%4 A2EDC_onBack=%5 anim=%6",primaryWeapon player,currentWeapon player,weapons player,magazines player,player getVariable ["A2EDC_onBack",""],animationState player];
+if (isNil "A2EDC_debugOnBack") then {
+	A2EDC_debugOnBack = true;
+};
+if (A2EDC_debugOnBack) then {
+	diag_log format["A2EDC:ONBACK_STATE phase=tooltip_bridge_initialized primary=%1 current=%2 weapons=%3 magazines=%4 A2EDC_onBack=%5 anim=%6",primaryWeapon player,currentWeapon player,weapons player,magazines player,player getVariable ["A2EDC_onBack",""],animationState player];
+};
 
 _item = "";
 if (_mode == "slot") then {
@@ -26,7 +34,9 @@ if (_mode == "list") then {
 		};
 	};
 	if ((typeName _row) != "SCALAR") exitWith {
-		diag_log "A2EDC:ITEM_INFO_PANEL item=<empty> result=fail reason=no_list_row";
+		if (A2EDC_debugItemInfo) then {
+			diag_log "A2EDC:ITEM_INFO_PANEL item=<empty> result=fail reason=no_list_row";
+		};
 	};
 	if (_row >= 0) then {
 		_item = _control lnbData [_row,0];
@@ -40,7 +50,9 @@ if (_mode == "list") then {
 };
 
 if (_item == "") exitWith {
-	diag_log "A2EDC:ITEM_INFO_PANEL item=<empty> result=fail reason=no_item";
+	if (A2EDC_debugItemInfo) then {
+		diag_log "A2EDC:ITEM_INFO_PANEL item=<empty> result=fail reason=no_item";
+	};
 };
 
 _conf = configFile >> "CfgMagazines" >> _item;

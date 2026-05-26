@@ -4501,7 +4501,7 @@ class RscDisplayGear
                     h = 0.0450000018;
                     color[] = {1, 1, 1, 0.5};
                     colorActive[] = {1, 1, 1, 0.800000012};
-	                    onMouseButtonDown = "[_this,'selectSlot'] call handleGear;";
+		                    onMouseButtonDown = "if (!isNil 'A2EDC_fnc_bSmenaTrigger') then {call A2EDC_fnc_bSmenaTrigger;} else {[_this,'selectSlot'] call handleGear;};";
                 };
                 class CA_Gear_slot_shouder: RscActiveText
                 {
