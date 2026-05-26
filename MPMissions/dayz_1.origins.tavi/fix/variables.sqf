@@ -136,6 +136,7 @@ dayz_resetSelfActions = {
 	s_player_cnbb = -1;
 	s_player_1bupd = -1;
 	s_player_packFdp = -1;
+	s_player_a2edc_onBackSwitch = -1;
 };
 call dayz_resetSelfActions;
 

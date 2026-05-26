@@ -76,6 +76,7 @@ if (!isDedicated) then {
 	player_build =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_build.sqf";
 	player_wearClothes =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_wearClothes.sqf";
 	player_dropWeapon =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_dropWeapon.sqf";
+	player_a2edcSwitchWeapon =	compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\a2edc_switchWeapon.sqf";
 	player_setTrap =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_setTrap.sqf";
 	object_pickup = 			compile preprocessFileLineNumbers "BASTARDS\object_pickup.sqf";
 	player_bbstart = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\bse_pp.sqf";
@@ -120,6 +121,7 @@ if (!isDedicated) then {
 	player_selectSlot =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\ui_selectSlot.sqf";
 	player_gearSync	=			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_gearSync.sqf";
 	player_gearSet	=			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_gearSet.sqf";
+	call compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\a2edc_gearOnBack.sqf";
 	ui_changeDisplay = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\ui_changeDisplay.sqf";
 	
 	//System

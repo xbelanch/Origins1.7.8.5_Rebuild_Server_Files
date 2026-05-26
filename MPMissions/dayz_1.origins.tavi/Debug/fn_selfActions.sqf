@@ -62,6 +62,16 @@ if (_suicideEnabled and _canDo and !_inVehicle and alive player) then {
 	s_player_a2edc_suicide = -1;
 };
 
+if (_canDo and !_inVehicle and alive player and !(isNil "A2EDC_fnc_switchOnBackWeapon")) then {
+	if (s_player_a2edc_onBackSwitch < 0) then {
+		s_player_a2edc_onBackSwitch = player addAction ["Switch weapon on back","\z\addons\dayz_code\actions\a2edc_switchWeapon.sqf","",1,false,true,"",""];
+		diag_log format["A2EDC:ONBACK_INIT action=added primary=%1 current=%2 weapons=%3 magazines=%4 A2EDC_onBack=%5 anim=%6",primaryWeapon player,currentWeapon player,weapons player,magazines player,player getVariable ["A2EDC_onBack",""],animationState player];
+	};
+} else {
+	player removeAction s_player_a2edc_onBackSwitch;
+	s_player_a2edc_onBackSwitch = -1;
+};
+
 if (_nearBackpacks) then {
 	if (_nearPlayerB) then {
 		{ _x hideObject true; } forEach _mbBackpacks;

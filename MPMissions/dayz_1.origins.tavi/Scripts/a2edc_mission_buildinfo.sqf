@@ -1,10 +1,10 @@
-A2EDC_MISSION_BUILD_ID = "20260525-191130";
-A2EDC_MISSION_BUILD_UTC = "2026-05-25T19:11:30Z";
+A2EDC_MISSION_BUILD_ID = "20260526-133155";
+A2EDC_MISSION_BUILD_UTC = "2026-05-26T13:31:55Z";
 A2EDC_MISSION_BUILD_SOURCE = "MPMissions/dayz_1.origins.tavi";
 A2EDC_MISSION_BUILD_PREFIX = "";
-A2EDC_MISSION_BUILD_NOTE = "inventory-info-loading-polish-v7";
-A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260525-191130_inventory-info-loading-polish-v7.pbo";
-A2EDC_MISSION_BUILD_GIT_SHORT = "9b6ead6";
+A2EDC_MISSION_BUILD_NOTE = "onback-v2-temp-self-action";
+A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260526-133155_onback-v2-temp-self-action.pbo";
+A2EDC_MISSION_BUILD_GIT_SHORT = "ee7eeb2";
 A2EDC_MISSION_BUILD_GIT_DIRTY = "true";
 
 diag_log format [
