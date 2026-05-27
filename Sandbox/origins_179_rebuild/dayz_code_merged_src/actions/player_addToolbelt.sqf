@@ -1,4 +1,4 @@
-private["_item","_config","_onLadder","_create","_isOk","_config2","_hasPrimary","_action","_reason","_current","_primary","_lower","_hastoolweapon","_text","_magType","_meleeNum","_muzzles","_wtype","_type","_targetSlot","_back","_valid","_magsBefore","_weaponsBefore"];
+private["_item","_config","_onLadder","_create","_isOk","_config2","_hasPrimary","_action","_reason","_current","_primary","_lower","_hastoolweapon","_text","_magType","_meleeNum","_muzzles","_wtype","_type","_targetSlot","_back","_valid","_magsBefore","_weaponsBefore","_hasSwitch","_hasTrigger","_hasFallback","_onBackSystemAvailable"];
 _item = _this;
 _type = "cfgWeapons";
 _config = configFile >> "cfgWeapons" >> _item;
@@ -51,7 +51,21 @@ if (!isClass _config2) exitWith {
 
 if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) exitWith {
 	_targetSlot = "onBack";
+	if (!isNil "A2EDC_fnc_normalizeOnBack") then {
+		call A2EDC_fnc_normalizeOnBack;
+	};
 	_back = if (isNil "A2EDC_onBack") then {player getVariable ["A2EDC_onBack",""]} else {A2EDC_onBack};
+	if ((typeName _back) != "STRING") then {
+		_back = "";
+	};
+	_hasSwitch = !(isNil "A2EDC_fnc_switchOnBackWeapon");
+	_hasTrigger = !(isNil "A2EDC_fnc_bSmenaTrigger");
+	_hasFallback = !(isNil "s_player_a2edc_onBackSwitch");
+	_onBackSystemAvailable = (!(isNil "A2EDC_onBack") and _hasSwitch and (_hasTrigger or _hasFallback) and (_back == "") and (isClass (configFile >> "CfgWeapons" >> _create)));
+	if (!_onBackSystemAvailable) exitWith {
+		diag_log format["A2EDC:HATCHET_CONVERT_FAIL reason=onback_system_unavailable item=%1 primary=%2 A2EDC_onBack=%3 hasSwitch=%4 hasTrigger=%5 hasFallback=%6 create=%7 createExists=%8",_item,_primary,_back,_hasSwitch,_hasTrigger,_hasFallback,_create,isClass (configFile >> "CfgWeapons" >> _create)];
+		cutText ["Weapon on back is not ready yet.", "PLAIN DOWN"];
+	};
 	if (_back != "") exitWith {
 		diag_log format["A2EDC:HATCHET_CONVERT_FAIL reason=onBack_occupied item=%1 create=%2 selectedTarget=%3 primary=%4 A2EDC_onBack=%5 weaponsBefore=%6 weaponsAfter=%7 magazinesBefore=%8 magazinesAfter=%9",_item,_create,_targetSlot,_primary,_back,_weaponsBefore,weapons player,_magsBefore,magazines player];
 		cutText ["Weapon on back is already occupied.", "PLAIN DOWN"];
@@ -70,6 +84,9 @@ if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) exitWith {
 	player setVariable ["A2EDC_onBack",A2EDC_onBack,true];
 	player removeWeapon _item;
 	diag_log format["A2EDC:HATCHET_CONVERT_END reason=stored_onBack item=%1 create=%2 selectedTarget=%3 primary=%4 A2EDC_onBack=%5 weaponsBefore=%6 weaponsAfter=%7 magazinesBefore=%8 magazinesAfter=%9",_item,_create,_targetSlot,primaryWeapon player,A2EDC_onBack,_weaponsBefore,weapons player,_magsBefore,magazines player];
+	if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
+		call A2EDC_fnc_refreshOnBackGearSlot;
+	};
 };
 
 if (_item in ["MeleeHatchet","MeleeCrowbar"]) then {
@@ -108,6 +125,9 @@ if (_isOk) then {
 		_reason = "converted_reselected_primary";
 	};
 	diag_log format["A2EDC:HATCHET_CONVERT_END reason=%1 item=%2 create=%3 selectedTarget=%4 primary=%5 A2EDC_onBack=%6 weaponsBefore=%7 weaponsAfter=%8 magazinesBefore=%9 magazinesAfter=%10",_reason,_item,_create,_targetSlot,primaryWeapon player,_back,_weaponsBefore,weapons player,_magsBefore,magazines player];
+	if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
+		call A2EDC_fnc_refreshOnBackGearSlot;
+	};
 } else {
 	_reason = "inventory_add_failed";
 	if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) then {

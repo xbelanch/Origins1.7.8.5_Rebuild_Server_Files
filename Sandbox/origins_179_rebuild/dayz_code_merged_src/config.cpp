@@ -4501,7 +4501,7 @@ class RscDisplayGear
                     h = 0.0450000018;
                     color[] = {1, 1, 1, 0.5};
                     colorActive[] = {1, 1, 1, 0.800000012};
-		                    onMouseButtonDown = "if (!isNil 'A2EDC_fnc_bSmenaTrigger') then {call A2EDC_fnc_bSmenaTrigger;} else {[_this,'selectSlot'] call handleGear;};";
+		                    onMouseButtonDown = "diag_log 'A2EDC:BSMENA_RAW_CLICK fired=true idc=510 source=RscDisplayGear'; if (isNil 'A2EDC_fnc_bSmenaTrigger') then {diag_log 'A2EDC:BSMENA_TRIGGER_MISSING idc=510 source=RscDisplayGear'; if (isNil 'A2EDC_bSmenaRecoverAttempted') then {A2EDC_bSmenaRecoverAttempted = true; call compile preprocessFileLineNumbers '\\z\\addons\\dayz_code\\init\\a2edc_load_onback.sqf'; ['bSmena_raw_click'] call A2EDC_fnc_loadOnBackCompile;}; diag_log format['A2EDC:BSMENA_TRIGGER_RECOVER result=%1',if (isNil 'A2EDC_fnc_bSmenaTrigger') then {'fail'} else {'ok'}];}; if (!isNil 'A2EDC_fnc_bSmenaTrigger') then {call A2EDC_fnc_bSmenaTrigger;};";
                 };
                 class CA_Gear_slot_shouder: RscActiveText
                 {

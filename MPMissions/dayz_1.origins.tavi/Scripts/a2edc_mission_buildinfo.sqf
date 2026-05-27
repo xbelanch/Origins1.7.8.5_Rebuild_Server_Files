@@ -1,19 +1,36 @@
-A2EDC_MISSION_BUILD_ID = "20260526-190939";
-A2EDC_MISSION_BUILD_UTC = "2026-05-26T19:09:39Z";
+A2EDC_MISSION_BUILD_ID = "20260527-184340";
+A2EDC_MISSION_BUILD_UTC = "2026-05-27T18:43:46Z";
 A2EDC_MISSION_BUILD_SOURCE = "MPMissions/dayz_1.origins.tavi";
 A2EDC_MISSION_BUILD_PREFIX = "";
-A2EDC_MISSION_BUILD_NOTE = "onback-v2.2-bSmena-clean";
-A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260526-190939_onback-v2.2-bSmena-clean.pbo";
-A2EDC_MISSION_BUILD_GIT_SHORT = "bae2d20";
+A2EDC_MISSION_BUILD_NOTE = "runtime-build-identity-v1.3-onback-compile-path-fix";
+A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260527-184340_runtime-build-identity-v1.3-onback-compile-path-fix.pbo";
+A2EDC_MISSION_BUILD_GIT_SHORT = "eee95b1";
 A2EDC_MISSION_BUILD_GIT_DIRTY = "true";
 
+private["_locality","_logIdentity"];
+_locality = "unknown";
+if (isDedicated) then {
+  _locality = "dedicated";
+} else {
+  if (hasInterface) then {
+    _locality = "client";
+  } else {
+    if (isServer) then {_locality = "server";};
+  };
+};
+_logIdentity = false;
+if (isNil "A2EDC_MISSION_BUILD_LOGGED") then {_logIdentity = true;};
+if (!isNil "A2EDC_BUILD_IDENTITY_DEBUG") then {if (A2EDC_BUILD_IDENTITY_DEBUG) then {_logIdentity = true;};};
+if (_logIdentity) then {
+  A2EDC_MISSION_BUILD_LOGGED = true;
 diag_log format [
-  "[A2EDC:MISSION_BUILD] dayz_1.origins.tavi.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",
-  A2EDC_MISSION_BUILD_ID,
-  A2EDC_MISSION_BUILD_UTC,
-  A2EDC_MISSION_BUILD_PREFIX,
-  A2EDC_MISSION_BUILD_NOTE,
-  A2EDC_MISSION_BUILD_EXPORT,
-  A2EDC_MISSION_BUILD_GIT_SHORT,
-  A2EDC_MISSION_BUILD_GIT_DIRTY
+    "A2EDC:MISSION_BUILD build_id=%1 build_utc=%2 note=%3 source=mission locality=%4 export=%5 git=%6 dirty=%7",
+    A2EDC_MISSION_BUILD_ID,
+    A2EDC_MISSION_BUILD_UTC,
+    A2EDC_MISSION_BUILD_NOTE,
+    _locality,
+    A2EDC_MISSION_BUILD_EXPORT,
+    A2EDC_MISSION_BUILD_GIT_SHORT,
+    A2EDC_MISSION_BUILD_GIT_DIRTY
 ];
+};

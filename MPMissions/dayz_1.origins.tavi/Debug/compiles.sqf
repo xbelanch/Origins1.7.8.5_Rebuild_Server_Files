@@ -121,7 +121,9 @@ if (!isDedicated) then {
 	player_selectSlot =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\ui_selectSlot.sqf";
 	player_gearSync	=			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_gearSync.sqf";
 	player_gearSet	=			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_gearSet.sqf";
-	call compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\a2edc_gearOnBack.sqf";
+	call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\a2edc_onback_compile_status.sqf";
+	call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\a2edc_load_onback.sqf";
+	["mission_debug_compiles"] call A2EDC_fnc_loadOnBackCompile;
 	ui_changeDisplay = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\ui_changeDisplay.sqf";
 	
 	//System

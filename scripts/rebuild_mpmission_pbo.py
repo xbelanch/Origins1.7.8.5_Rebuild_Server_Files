@@ -20,6 +20,7 @@ UNPBO = ROOT / "tools" / "bin" / "unpbo"
 PREFIX = ""
 DEFAULT_NOTE = "mpmission-current-reconstruction-v1"
 BUILDINFO_REL = Path("Scripts") / "a2edc_mission_buildinfo.sqf"
+PACKED_BUILDINFO_REL = Path("a2edc_buildinfo_mission.sqf")
 STALE_MARKERS = [
     "bleedguard-runtime-marker-v3",
     "build_id=20260523-185536",
@@ -28,6 +29,7 @@ STALE_MARKERS = [
 EXPECTED_STRINGS = [
     "A2EDC:MISSION_BUILD",
     "A2EDC_MISSION_BUILD_ID",
+    "A2EDC_PACKED_BUILDINFO_SOURCE",
     "Scripts\\a2edc_mission_buildinfo.sqf",
 ]
 
@@ -77,6 +79,10 @@ def sha256(path):
     return h.hexdigest()
 
 
+def sqf_str(value):
+    return str(value).replace('"', '""')
+
+
 def write_build_info(build_id, build_utc, build_note, export_path):
     git = git_info()
     buildinfo = SOURCE / BUILDINFO_REL
@@ -93,16 +99,50 @@ def write_build_info(build_id, build_utc, build_note, export_path):
                 f'A2EDC_MISSION_BUILD_GIT_SHORT = "{git["short"]}";',
                 f'A2EDC_MISSION_BUILD_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
                 "",
+                'private["_locality","_logIdentity"];',
+                '_locality = "unknown";',
+                'if (isDedicated) then {',
+                '  _locality = "dedicated";',
+                "} else {",
+                '  if (hasInterface) then {',
+                '    _locality = "client";',
+                "  } else {",
+                '    if (isServer) then {_locality = "server";};',
+                "  };",
+                "};",
+                "_logIdentity = false;",
+                'if (isNil "A2EDC_MISSION_BUILD_LOGGED") then {_logIdentity = true;};',
+                'if (!isNil "A2EDC_BUILD_IDENTITY_DEBUG") then {if (A2EDC_BUILD_IDENTITY_DEBUG) then {_logIdentity = true;};};',
+                "if (_logIdentity) then {",
+                "  A2EDC_MISSION_BUILD_LOGGED = true;",
                 'diag_log format [',
-                '  "[A2EDC:MISSION_BUILD] dayz_1.origins.tavi.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",',
-                "  A2EDC_MISSION_BUILD_ID,",
-                "  A2EDC_MISSION_BUILD_UTC,",
-                "  A2EDC_MISSION_BUILD_PREFIX,",
-                "  A2EDC_MISSION_BUILD_NOTE,",
-                "  A2EDC_MISSION_BUILD_EXPORT,",
-                "  A2EDC_MISSION_BUILD_GIT_SHORT,",
-                "  A2EDC_MISSION_BUILD_GIT_DIRTY",
+                '    "A2EDC:MISSION_BUILD build_id=%1 build_utc=%2 note=%3 source=mission locality=%4 export=%5 git=%6 dirty=%7",',
+                "    A2EDC_MISSION_BUILD_ID,",
+                "    A2EDC_MISSION_BUILD_UTC,",
+                "    A2EDC_MISSION_BUILD_NOTE,",
+                "    _locality,",
+                "    A2EDC_MISSION_BUILD_EXPORT,",
+                "    A2EDC_MISSION_BUILD_GIT_SHORT,",
+                "    A2EDC_MISSION_BUILD_GIT_DIRTY",
                 "];",
+                "};",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (SOURCE / PACKED_BUILDINFO_REL).write_text(
+        "\n".join(
+            [
+                'A2EDC_PACKED_BUILDINFO_SOURCE = "mission";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_ID = "{sqf_str(build_id)}";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_UTC = "{sqf_str(build_utc)}";',
+                f'A2EDC_PACKED_BUILDINFO_NOTE = "{sqf_str(build_note)}";',
+                f'A2EDC_PACKED_BUILDINFO_EXPORT = "{sqf_str(rel(export_path))}";',
+                f'A2EDC_PACKED_BUILDINFO_SOURCE_TREE = "{sqf_str(rel(SOURCE))}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_COMMIT = "{sqf_str(git["commit"])}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
+                'A2EDC_PACKED_BUILDINFO_EXPECTED_SHA256 = "<see-export-sha256>";',
                 "",
             ]
         ),

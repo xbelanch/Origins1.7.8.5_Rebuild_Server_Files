@@ -1,5 +1,7 @@
 disableSerialization;
 
+call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\a2edc_buildinfo.sqf";
+
 diag_log "[A2EDC:DAYZ_CODE_MERGED] init\\variables.sqf loaded from merged dayz_code.pbo prefix=z\\addons\\dayz_code";
 
 //Model Variables

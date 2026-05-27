@@ -1,10 +1,10 @@
-build_id=20260525-120255
-build_utc=2026-05-25T12:02:55Z
+build_id=20260527-184340
+build_utc=2026-05-27T18:43:46Z
 source=@dayz_1.origins.tavi/addons/dayz_server
-export_pbo=Export/dayz_server_20260525-120255_wai-patrol-admin-entry-diagnostics-v16.pbo
+export_pbo=Export/dayz_server_20260527-184340_runtime-build-identity-v1.3-onback-compile-path-fix.pbo
 prefix=z\addons\dayz_server
 hostname=home-X99F8
-git_commit=181923d45994147628329e7c4a6782f48510e1d7
-git_short=181923d
+git_commit=eee95b132e5b9163fb506a60d316e56bae659560
+git_short=eee95b1
 git_dirty=true
-note=wai-patrol-admin-entry-diagnostics-v16
+note=runtime-build-identity-v1.3-onback-compile-path-fix

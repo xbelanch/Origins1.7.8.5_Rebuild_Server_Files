@@ -18,6 +18,7 @@ MAKEPBO = ROOT / "tools" / "bin" / "makepbo"
 UNPBO = ROOT / "tools" / "bin" / "unpbo"
 PREFIX = r"z\addons\dayz_server"
 DEFAULT_NOTE = "wai-ai-unit-cleanup-v6"
+PACKED_BUILDINFO_REL = Path("a2edc_buildinfo_dayz_server.sqf")
 STALE_MARKERS = [
     "bleedguard-runtime-marker-v3",
     "build_id=20260523-185536",
@@ -82,6 +83,10 @@ def file_count():
     return sum(1 for path in SOURCE.rglob("*") if path.is_file())
 
 
+def sqf_str(value):
+    return str(value).replace('"', '""')
+
+
 def write_build_info(build_id, build_utc, build_note, export_path):
     git = git_info()
     export_rel = rel(export_path)
@@ -119,16 +124,50 @@ def write_build_info(build_id, build_utc, build_note, export_path):
                 '  "server_updateObject = server_updatObiect"',
                 "];",
                 "",
+                'private["_locality","_logIdentity"];',
+                '_locality = "unknown";',
+                'if (isDedicated) then {',
+                '  _locality = "dedicated";',
+                "} else {",
+                '  if (hasInterface) then {',
+                '    _locality = "client";',
+                "  } else {",
+                '    if (isServer) then {_locality = "server";};',
+                "  };",
+                "};",
+                "_logIdentity = false;",
+                'if (isNil "A2EDC_DAYZ_SERVER_BUILD_LOGGED") then {_logIdentity = true;};',
+                'if (!isNil "A2EDC_BUILD_IDENTITY_DEBUG") then {if (A2EDC_BUILD_IDENTITY_DEBUG) then {_logIdentity = true;};};',
+                "if (_logIdentity) then {",
+                "  A2EDC_DAYZ_SERVER_BUILD_LOGGED = true;",
                 'diag_log format [',
-                '  "[A2EDC:BUILD] dayz_server.pbo build_id=%1 build_utc=%2 prefix=%3 note=%4 export=%5 git=%6 dirty=%7",',
-                "  A2EDC_BUILD_ID,",
-                "  A2EDC_BUILD_UTC,",
-                "  A2EDC_BUILD_PREFIX,",
-                "  A2EDC_BUILD_NOTE,",
-                "  A2EDC_BUILD_EXPORT,",
-                "  A2EDC_BUILD_GIT_SHORT,",
-                "  A2EDC_BUILD_GIT_DIRTY",
+                '    "A2EDC:DAYZ_SERVER_BUILD build_id=%1 build_utc=%2 note=%3 source=dayz_server locality=%4 export=%5 git=%6 dirty=%7",',
+                "    A2EDC_BUILD_ID,",
+                "    A2EDC_BUILD_UTC,",
+                "    A2EDC_BUILD_NOTE,",
+                "    _locality,",
+                "    A2EDC_BUILD_EXPORT,",
+                "    A2EDC_BUILD_GIT_SHORT,",
+                "    A2EDC_BUILD_GIT_DIRTY",
                 "];",
+                "};",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (SOURCE / PACKED_BUILDINFO_REL).write_text(
+        "\n".join(
+            [
+                'A2EDC_PACKED_BUILDINFO_SOURCE = "dayz_server";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_ID = "{sqf_str(build_id)}";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_UTC = "{sqf_str(build_utc)}";',
+                f'A2EDC_PACKED_BUILDINFO_NOTE = "{sqf_str(build_note)}";',
+                f'A2EDC_PACKED_BUILDINFO_EXPORT = "{sqf_str(export_rel)}";',
+                f'A2EDC_PACKED_BUILDINFO_SOURCE_TREE = "{sqf_str(source_rel)}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_COMMIT = "{sqf_str(git["commit"])}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
+                'A2EDC_PACKED_BUILDINFO_EXPECTED_SHA256 = "<see-export-sha256>";',
                 "",
             ]
         ),
@@ -217,7 +256,7 @@ def verify_export(export_path, build_id, build_note):
         raise RuntimeError("post-pack verification failed: init/a2edc_buildinfo.sqf missing")
     build_text = buildinfo.read_text(encoding="utf-8", errors="ignore")
     missing = []
-    for needle in [build_id, build_note, "A2EDC:BUILD"]:
+    for needle in [build_id, build_note, "A2EDC:DAYZ_SERVER_BUILD"]:
         if needle not in build_text:
             missing.append(needle)
     if not prefix_ok:
@@ -231,6 +270,8 @@ def verify_export(export_path, build_id, build_note):
     for needle in EXPECTED_STRINGS:
         if needle not in combined:
             missing.append(needle)
+    if "A2EDC_PACKED_BUILDINFO_SOURCE" not in combined:
+        missing.append("A2EDC_PACKED_BUILDINFO_SOURCE")
     for marker in STALE_MARKERS:
         if marker in combined:
             missing.append(f"stale marker still packed: {marker}")

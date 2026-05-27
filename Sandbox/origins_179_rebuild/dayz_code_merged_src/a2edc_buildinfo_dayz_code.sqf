@@ -1,0 +1,10 @@
+A2EDC_PACKED_BUILDINFO_SOURCE = "dayz_code";
+A2EDC_PACKED_BUILDINFO_BUILD_ID = "20260527-184340";
+A2EDC_PACKED_BUILDINFO_BUILD_UTC = "2026-05-27T18:43:46Z";
+A2EDC_PACKED_BUILDINFO_NOTE = "runtime-build-identity-v1.3-onback-compile-path-fix";
+A2EDC_PACKED_BUILDINFO_EXPORT = "Export/dayz_code_20260527-184340_runtime-build-identity-v1.3-onback-compile-path-fix.pbo";
+A2EDC_PACKED_BUILDINFO_SOURCE_TREE = "Sandbox/origins_179_rebuild/dayz_code_merged_src";
+A2EDC_PACKED_BUILDINFO_GIT_COMMIT = "eee95b132e5b9163fb506a60d316e56bae659560";
+A2EDC_PACKED_BUILDINFO_GIT_DIRTY = "true";
+A2EDC_PACKED_BUILDINFO_EXPECTED_SHA256 = "<see-export-sha256>";
+A2EDC_PACKED_BUILDINFO_ONBACK_CODE_VERSION = "20260527-184340_runtime-build-identity-v1.3-onback-compile-path-fix";

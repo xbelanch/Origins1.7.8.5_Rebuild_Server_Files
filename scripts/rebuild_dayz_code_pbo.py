@@ -17,6 +17,9 @@ RAPIFY = ROOT / "tools" / "bin" / "rapify"
 UNPBO = ROOT / "tools" / "bin" / "unpbo"
 PREFIX = r"z\addons\dayz_code"
 DEFAULT_NOTE = "inventory-actions-bridge-fsm-text-v2"
+BUILDINFO_REL = Path("init") / "a2edc_buildinfo.sqf"
+ONBACK_STATUS_REL = Path("init") / "a2edc_onback_compile_status.sqf"
+PACKED_BUILDINFO_REL = Path("a2edc_buildinfo_dayz_code.sqf")
 
 
 def run(args, *, cwd=ROOT, check=True):
@@ -61,6 +64,142 @@ def git_info():
 
 def file_count(path):
     return sum(1 for item in path.rglob("*") if item.is_file())
+
+
+def sqf_str(value):
+    return str(value).replace('"', '""')
+
+
+def write_runtime_files(build_id, build_utc, build_note, export_path):
+    git = git_info()
+    export_rel = rel(export_path)
+    source_rel = rel(SOURCE)
+    onback_version = f"{build_id}_{build_note}"
+    buildinfo = SOURCE / BUILDINFO_REL
+    buildinfo.parent.mkdir(parents=True, exist_ok=True)
+    buildinfo.write_text(
+        "\n".join(
+            [
+                f'A2EDC_DAYZ_CODE_BUILD_ID = "{sqf_str(build_id)}";',
+                f'A2EDC_DAYZ_CODE_BUILD_UTC = "{sqf_str(build_utc)}";',
+                'A2EDC_DAYZ_CODE_BUILD_SOURCE = "dayz_code";',
+                f'A2EDC_DAYZ_CODE_BUILD_SOURCE_TREE = "{sqf_str(source_rel)}";',
+                f'A2EDC_DAYZ_CODE_BUILD_PREFIX = "{sqf_str(PREFIX)}";',
+                f'A2EDC_DAYZ_CODE_BUILD_NOTE = "{sqf_str(build_note)}";',
+                f'A2EDC_DAYZ_CODE_BUILD_EXPORT = "{sqf_str(export_rel)}";',
+                f'A2EDC_DAYZ_CODE_BUILD_GIT_SHORT = "{sqf_str(git["short"])}";',
+                f'A2EDC_DAYZ_CODE_BUILD_GIT_COMMIT = "{sqf_str(git["commit"])}";',
+                f'A2EDC_DAYZ_CODE_BUILD_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
+                'A2EDC_DAYZ_CODE_BUILD_EXPECTED_SHA256 = "<see-export-sha256>";',
+                "",
+                'private["_locality","_logIdentity"];',
+                '_locality = "unknown";',
+                'if (isDedicated) then {',
+                '  _locality = "dedicated";',
+                "} else {",
+                '  if (hasInterface) then {',
+                '    _locality = "client";',
+                "  } else {",
+                '    if (isServer) then {_locality = "server";};',
+                "  };",
+                "};",
+                "_logIdentity = false;",
+                'if (isNil "A2EDC_dayzCodeBuildLogged") then {_logIdentity = true;};',
+                'if (!isNil "A2EDC_BUILD_IDENTITY_DEBUG") then {if (A2EDC_BUILD_IDENTITY_DEBUG) then {_logIdentity = true;};};',
+                "if (_logIdentity) then {",
+                "  A2EDC_dayzCodeBuildLogged = true;",
+                "  A2EDC_DAYZ_CODE_BUILD_LOGGED = true;",
+                "  diag_log format [",
+                '    "A2EDC:DAYZ_CODE_BUILD build_id=%1 build_utc=%2 note=%3 source=%4 locality=%5 export=%6 git=%7 dirty=%8",',
+                "    A2EDC_DAYZ_CODE_BUILD_ID,",
+                "    A2EDC_DAYZ_CODE_BUILD_UTC,",
+                "    A2EDC_DAYZ_CODE_BUILD_NOTE,",
+                "    A2EDC_DAYZ_CODE_BUILD_SOURCE,",
+                "    _locality,",
+                "    A2EDC_DAYZ_CODE_BUILD_EXPORT,",
+                "    A2EDC_DAYZ_CODE_BUILD_GIT_SHORT,",
+                "    A2EDC_DAYZ_CODE_BUILD_GIT_DIRTY",
+                "  ];",
+                "};",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (SOURCE / ONBACK_STATUS_REL).write_text(
+        "\n".join(
+            [
+                f'A2EDC_onBackCodeVersion = "{sqf_str(onback_version)}";',
+                "",
+                'if (isNil "A2EDC_fnc_logOnBackCompileStatus") then {',
+                "  A2EDC_fnc_logOnBackCompileStatus = {",
+                '    private["_logIdentity","_version","_ready"];',
+                '    _ready = (!(isNil "A2EDC_fnc_bSmenaTrigger") && !(isNil "A2EDC_fnc_switchOnBackWeapon") && !(isNil "A2EDC_fnc_refreshOnBackGearSlot") && !(isNil "A2EDC_fnc_dumpGearControls"));',
+                "    if (!_ready) then {",
+                '      if (isNil "A2EDC_ONBACK_COMPILE_STATUS_EARLY_LOGGED") then {',
+                "        A2EDC_ONBACK_COMPILE_STATUS_EARLY_LOGGED = true;",
+                '        _version = if (isNil "A2EDC_onBackCodeVersion") then {"<nil>"} else {A2EDC_onBackCodeVersion};',
+                "        diag_log format [",
+                '          "A2EDC:ONBACK_COMPILE_STATUS_EARLY isNil_bSmenaTrigger=%1 isNil_switchOnBackWeapon=%2 isNil_refreshOnBackGearSlot=%3 isNil_dumpGearControls=%4 A2EDC_onBackCodeVersion=%5",',
+                '          isNil "A2EDC_fnc_bSmenaTrigger",',
+                '          isNil "A2EDC_fnc_switchOnBackWeapon",',
+                '          isNil "A2EDC_fnc_refreshOnBackGearSlot",',
+                '          isNil "A2EDC_fnc_dumpGearControls",',
+                "          _version",
+                "        ];",
+                "      };",
+                "    };",
+                "    _logIdentity = false;",
+                '    if (isNil "A2EDC_ONBACK_COMPILE_STATUS_LOGGED") then {_logIdentity = true;};',
+                '    if (!isNil "A2EDC_BUILD_IDENTITY_DEBUG") then {if (A2EDC_BUILD_IDENTITY_DEBUG) then {_logIdentity = true;};};',
+                "    if (!_ready && _logIdentity) exitWith {};",
+                "    if (_logIdentity) then {",
+                "      A2EDC_ONBACK_COMPILE_STATUS_LOGGED = true;",
+                '      _version = if (isNil "A2EDC_onBackCodeVersion") then {"<nil>"} else {A2EDC_onBackCodeVersion};',
+                "      diag_log format [",
+                '        "A2EDC:ONBACK_COMPILE_STATUS_LATE isNil_bSmenaTrigger=%1 isNil_switchOnBackWeapon=%2 isNil_refreshOnBackGearSlot=%3 isNil_dumpGearControls=%4 A2EDC_onBackCodeVersion=%5",',
+                '        isNil "A2EDC_fnc_bSmenaTrigger",',
+                '        isNil "A2EDC_fnc_switchOnBackWeapon",',
+                '        isNil "A2EDC_fnc_refreshOnBackGearSlot",',
+                '        isNil "A2EDC_fnc_dumpGearControls",',
+                "        _version",
+                "      ];",
+                "    };",
+                "  };",
+                "};",
+                "",
+                "call A2EDC_fnc_logOnBackCompileStatus;",
+                "",
+                'if (!isDedicated && isNil "A2EDC_ONBACK_COMPILE_STATUS_WATCH_STARTED") then {',
+                "  A2EDC_ONBACK_COMPILE_STATUS_WATCH_STARTED = true;",
+                "  [] spawn {",
+                '    waitUntil {!(isNil "A2EDC_fnc_bSmenaTrigger") && !(isNil "A2EDC_fnc_switchOnBackWeapon") && !(isNil "A2EDC_fnc_refreshOnBackGearSlot") && !(isNil "A2EDC_fnc_dumpGearControls")};',
+                "    call A2EDC_fnc_logOnBackCompileStatus;",
+                "  };",
+                "};",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (SOURCE / PACKED_BUILDINFO_REL).write_text(
+        "\n".join(
+            [
+                'A2EDC_PACKED_BUILDINFO_SOURCE = "dayz_code";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_ID = "{sqf_str(build_id)}";',
+                f'A2EDC_PACKED_BUILDINFO_BUILD_UTC = "{sqf_str(build_utc)}";',
+                f'A2EDC_PACKED_BUILDINFO_NOTE = "{sqf_str(build_note)}";',
+                f'A2EDC_PACKED_BUILDINFO_EXPORT = "{sqf_str(export_rel)}";',
+                f'A2EDC_PACKED_BUILDINFO_SOURCE_TREE = "{sqf_str(source_rel)}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_COMMIT = "{sqf_str(git["commit"])}";',
+                f'A2EDC_PACKED_BUILDINFO_GIT_DIRTY = "{str(git["dirty"]).lower()}";',
+                'A2EDC_PACKED_BUILDINFO_EXPECTED_SHA256 = "<see-export-sha256>";',
+                f'A2EDC_PACKED_BUILDINFO_ONBACK_CODE_VERSION = "{sqf_str(onback_version)}";',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
 
 def stage_source(stage):
@@ -111,6 +250,9 @@ def verify_export(export_path, build_id, build_note):
         if path.is_file() and path.suffix.lower() in {".sqf", ".hpp", ".fsm"}
     )
     for needle in [
+        "A2EDC:DAYZ_CODE_BUILD",
+        "A2EDC:ONBACK_COMPILE_STATUS",
+        "A2EDC_PACKED_BUILDINFO_SOURCE",
         "A2EDC:INV_ACTION",
         "A2EDC:INV_ACTION_BRIDGE",
         "player_selectSlot",
@@ -147,6 +289,8 @@ def main():
     pbo_name = args.output_name or f"dayz_code_{build_id}_{safe_note}.pbo"
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
     export_path = EXPORT_DIR / pbo_name
+
+    write_runtime_files(build_id, build_utc, args.build_note, export_path)
 
     with tempfile.TemporaryDirectory(prefix="a2edc_dayz_code_") as tmp:
         stage = Path(tmp) / "dayz_code"
