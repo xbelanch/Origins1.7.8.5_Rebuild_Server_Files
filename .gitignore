@@ -1,3 +1,4 @@
+Repositories/*
 Sandbox/*
 Export/*
 dayz_server.pbo
@@ -13,3 +14,5 @@ tools/db/a2edc-db.env
 tools/db/a2edc-db-shadow.env
 backups/mysql/
 !Sandbox/origins_179_rebuild
+.audit/*
+.vscode/*

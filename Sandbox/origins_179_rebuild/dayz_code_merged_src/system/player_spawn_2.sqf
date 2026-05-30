@@ -1,5 +1,18 @@
 private["_timeOut","_messTimer","_lastSave","_lastTemp","_debug","_isBandit","_isHero","_refObj","_size","_vel","_speed","_saveTime","_randomSpot","_tempPos","_distance","_mylastPos","_isSync","_veh","_humanity","_isBandit3","_model","_isBandit2","_lastUpdate","_hunger","_thirst","_listTalk","_rnd","_foodVal","_thirstVal","_result","_id","_lowBlood","_display","_control","_headShots","_kills","_killsH","_killsB","_zombies","_zombiesA","_groups","_dead","_loot","_wrecks","_lootL","_freeTarget","_startcombattimer","_combattimeout","_timeleft","_color","_pmon1","_combatdisplay","_combatcontrol","_myPos","_lastPos","_debugAlex"];
 disableSerialization;
+if (isNil "A2EDC_disableLegacyPlayerStatus") then {
+	A2EDC_disableLegacyPlayerStatus = true;
+};
+if (A2EDC_disableLegacyPlayerStatus && isNil "A2EDC_LEGACY_PLAYER_STATUS_SEARCH_LOGGED") then {
+	A2EDC_LEGACY_PLAYER_STATUS_SEARCH_LOGGED = true;
+	diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Player Status found=true path=\z\addons\dayz_code\system\player_spawn_2.sqf";
+	diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Bandits Killed found=true path=\z\addons\dayz_code\system\player_spawn_2.sqf";
+	diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Heroes Killed found=true path=\z\addons\dayz_code\system\player_spawn_2.sqf";
+	diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Not In Combat found=true path=\z\addons\dayz_code\system\player_spawn_2.sqf";
+	hintSilent "";
+	diag_log "A2EDC:LEGACY_PANEL_CLEAR result=hintSilent_empty";
+	diag_log "A2EDC:LEGACY_PANEL_DISABLE source=\z\addons\dayz_code\system\player_spawn_2.sqf function=player_spawn_2 result=disabled";
+};
 _timeOut = 	0;
 _messTimer = 0;
 _lastSave = 0;
@@ -372,13 +385,17 @@ while {true} do {
 			_color = "color='#ff0000'";
 			//hintSilent format["In Combat: %1",round(_timeleft)];
 			_pmon1 = parseText format["Player Status: <br/><br/>Bandits Killed: %1<br/>Heroes Killed: %2<br/>Murders: %3<br/>Zombies Killed: %4<br/>Humanity: %5<br/><br/><t %6>In Combat: %7</t>",_killsB,_headShots,_killsH,_kills,_humanity,_color,round(_timeleft)];
-			hintSilent _pmon1;
+			if (!A2EDC_disableLegacyPlayerStatus) then {
+				hintSilent _pmon1;
+			};
 		} else {
 			//hintSilent "Not in Combat";
 			_color = "color='#99bb00'";
 			_pmon1 = parseText format["Player Status: <br/><br/>Bandits Killed: %1<br/>Heroes Killed: %2<br/>Murders: %3<br/>Zombies Killed: %4<br/>Humanity: %5<br/><br/><t %6>Not In Combat</t>",_killsB,_headShots,_killsH,_kills,_humanity,_color];
 			
-			hintSilent _pmon1;
+			if (!A2EDC_disableLegacyPlayerStatus) then {
+				hintSilent _pmon1;
+			};
 
 			player setVariable["combattimeout", 0, true];
 			dayz_combat = 0;
@@ -391,7 +408,9 @@ while {true} do {
 		_color = "color='#99bb00'";
 		_pmon1 = parseText format["Player Status: <br/><br/>Bandits Killed: %1<br/>Heroes Killed: %2<br/>Murders: %3<br/>Zombies Killed: %4<br/>Humanity: %5<br/><br/><t %6>Not In Combat</t>",_killsB,_headShots,_killsH,_kills,_humanity,_color];
 		
-		hintSilent _pmon1;
+		if (!A2EDC_disableLegacyPlayerStatus) then {
+			hintSilent _pmon1;
+		};
 		dayz_combat = 0;
 		_combatdisplay = uiNamespace getVariable 'DAYZ_GUI_display';
 		_combatcontrol = 	_combatdisplay displayCtrl 1307;

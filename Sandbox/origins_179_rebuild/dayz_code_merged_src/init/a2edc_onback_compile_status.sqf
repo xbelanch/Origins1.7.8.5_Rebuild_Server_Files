@@ -1,4 +1,4 @@
-A2EDC_onBackCodeVersion = "20260527-184340_runtime-build-identity-v1.3-onback-compile-path-fix";
+A2EDC_onBackCodeVersion = "20260529-213640_runtime-build-identity-v1.12-disable-legacy-player-status-panel";
 
 if (isNil "A2EDC_fnc_logOnBackCompileStatus") then {
   A2EDC_fnc_logOnBackCompileStatus = {

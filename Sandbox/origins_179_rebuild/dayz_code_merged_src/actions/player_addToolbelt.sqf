@@ -84,10 +84,13 @@ if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) exitWith {
 	player setVariable ["A2EDC_onBack",A2EDC_onBack,true];
 	player removeWeapon _item;
 	diag_log format["A2EDC:HATCHET_CONVERT_END reason=stored_onBack item=%1 create=%2 selectedTarget=%3 primary=%4 A2EDC_onBack=%5 weaponsBefore=%6 weaponsAfter=%7 magazinesBefore=%8 magazinesAfter=%9",_item,_create,_targetSlot,primaryWeapon player,A2EDC_onBack,_weaponsBefore,weapons player,_magsBefore,magazines player];
-	if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
-		call A2EDC_fnc_refreshOnBackGearSlot;
+		if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
+			call A2EDC_fnc_refreshOnBackGearSlot;
+		};
+		if (!isNil "A2EDC_fnc_scheduleOnBackGearRefresh") then {
+			"toolbelt_convert" call A2EDC_fnc_scheduleOnBackGearRefresh;
+		};
 	};
-};
 
 if (_item in ["MeleeHatchet","MeleeCrowbar"]) then {
 	_magType = ([] + getArray (configFile >> "cfgWeapons" >> _item >> "magazines")) select 0;
@@ -125,10 +128,13 @@ if (_isOk) then {
 		_reason = "converted_reselected_primary";
 	};
 	diag_log format["A2EDC:HATCHET_CONVERT_END reason=%1 item=%2 create=%3 selectedTarget=%4 primary=%5 A2EDC_onBack=%6 weaponsBefore=%7 weaponsAfter=%8 magazinesBefore=%9 magazinesAfter=%10",_reason,_item,_create,_targetSlot,primaryWeapon player,_back,_weaponsBefore,weapons player,_magsBefore,magazines player];
-	if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
-		call A2EDC_fnc_refreshOnBackGearSlot;
-	};
-} else {
+		if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {
+			call A2EDC_fnc_refreshOnBackGearSlot;
+		};
+		if (!isNil "A2EDC_fnc_scheduleOnBackGearRefresh") then {
+			"toolbelt_convert" call A2EDC_fnc_scheduleOnBackGearRefresh;
+		};
+	} else {
 	_reason = "inventory_add_failed";
 	if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) then {
 		_reason = "primary_slot_occupied";

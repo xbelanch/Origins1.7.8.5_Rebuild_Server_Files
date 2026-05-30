@@ -343,8 +343,13 @@ while {true} do {
 		dayz_combat = 1;
 	};
 	
-//Debug Info
-            _headShots =    player getVariable["headShots",0];
+	//Debug Info
+	if (isNil "A2EDC_LEGACY_PANEL_DISABLED_LOGGED") then {
+		A2EDC_LEGACY_PANEL_DISABLED_LOGGED = true;
+		hintSilent "";
+		diag_log "A2EDC:LEGACY_PANEL_DISABLE source=MPMissions/dayz_1.origins.tavi/Debug/player_spawn_2.sqf function=hintSilent_monitor result=disabled";
+	};
+	        _headShots =    player getVariable["headShots",0];
             _kills =                player getVariable["PlayerKills",0];
             _killsH =               player getVariable["heroKills",0];
             _killsB =               player getVariable["banditKills",0];
@@ -357,7 +362,7 @@ while {true} do {
         _timeleft = _combattimeout - time;
         
 		if (_timeleft > 0) then {
-            		  hintSilent parseText format ["
+	            		  _pmon1 = parseText format ["
 	<t size='1.15' font='Bitstream' color='#5882FA'>Visit: www.epm-gaming.co.uk</t><br/><br/>				
 	<t size='1.25'font='Bitstream'align='center'color='#2ECCFA'>In Combat %5</t><br/>
 	<t size='0.95' font='Bitstream' align='left'>Players Online: </t><t size='0.95 'font='Bitstream' align='right'>%10</t><br/>
@@ -381,7 +386,7 @@ while {true} do {
 	(_killsH)
 	];
         } else {
-            hintSilent parseText format ["
+	            _pmon1 = parseText format ["
 	<t size='1.15' font='Bitstream' color='#5882FA'>Visit: www.epm-gaming.co.uk</t><br/><br/>				
 	<t size='1.25'font='Bitstream'align='center'color='#2ECCFA'>Not in Combat</t><br/>
 	<t size='0.95' font='Bitstream' align='left'>Players Online: </t><t size='0.95 'font='Bitstream' align='right'>%10</t><br/>
@@ -412,7 +417,7 @@ while {true} do {
             _combatcontrol ctrlShow true;
         };
         } else {
-          hintSilent parseText format ["
+	          _pmon1 = parseText format ["
 	<t size='1.15' font='Bitstream' color='#5882FA'>Visit: www.epm-gaming.co.uk</t><br/><br/>				
 	<t size='1.25'font='Bitstream'align='center'color='#2ECCFA'>Not in Combat</t><br/>
 	<t size='0.95' font='Bitstream' align='left'>Players Online: </t><t size='0.95 'font='Bitstream' align='right'>%10</t><br/>

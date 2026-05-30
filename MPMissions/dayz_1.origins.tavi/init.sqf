@@ -34,7 +34,11 @@ progressLoadingScreen 0.4;
 call compile preprocessFileLineNumbers "Debug\compiles.sqf";				//Compile regular functions
 progressLoadingScreen 1.0;
 
-player_spawn_2 = compile preprocessFileLineNumbers "debug\player_spawn_2.sqf";
+player_spawn_2 = compile preprocessFileLineNumbers "\z\addons\dayz_code\system\player_spawn_2.sqf";
+diag_log "A2EDC:LEGACY_PANEL_DISABLE path=MPMissions/dayz_1.origins.tavi/init.sqf function=player_spawn_2 result=disabled";
+diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=www.epm-gaming.co.uk found=true";
+diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Players Online found=true";
+diag_log "A2EDC:LEGACY_PANEL_SEARCH marker=Hero's Murdered found=true";
 
 "filmic" setToneMappingParams [0.153, 0.357, 0.231, 0.1573, 0.011, 3.750, 6, 4]; setToneMapping "Filmic";
 

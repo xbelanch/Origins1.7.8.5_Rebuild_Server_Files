@@ -3907,6 +3907,7 @@ class RscDisplayGear
 {
     idd = 106;
     enableDisplay = 1;
+    onLoad = "disableSerialization; private ['_d','_back','_target']; _d = _this select 0; _back = if (isNil 'A2EDC_onBack') then {player getVariable ['A2EDC_onBack','']} else {A2EDC_onBack}; _target = if (isNil 'A2EDC_onBackVisualTargetIDC') then {511} else {A2EDC_onBackVisualTargetIDC}; diag_log format['A2EDC:GEAR_ONLOAD_RAW this=%1 displayFromThisNull=%2 findDisplay106Null=%3 A2EDC_onBack=%4 targetIDC=%5',_this,isNull _d,isNull (findDisplay 106),_back,_target]; [_this,'initDialog'] call handleGear; if (!isNil 'A2EDC_fnc_onBackGearOpenRefresh') then {[_d,'onLoad'] spawn A2EDC_fnc_onBackGearOpenRefresh;};";
 	    onUnload = "[_this,'gearSync'] call handleGear;";
     class controls
     {
@@ -4749,7 +4750,7 @@ class RscDisplayGear
     emptyMag2 = "\\origins_pack\\ui\\gear\\ui_gear_mag2_gs_ca.paa";
     emptyHGun = "\\origins_pack\\ui\\gear\\ui_gear_hgun_gs_ca.paa";
     emptyHGunMag = "\\origins_pack\\ui\\gear\\ui_gear_hgunmag_gs_ca.paa";
-    onLoad = "[_this,'initDialog'] call handleGear;";
+    onLoad = "disableSerialization; private ['_d','_back','_target']; _d = _this select 0; _back = if (isNil 'A2EDC_onBack') then {player getVariable ['A2EDC_onBack','']} else {A2EDC_onBack}; _target = if (isNil 'A2EDC_onBackVisualTargetIDC') then {511} else {A2EDC_onBackVisualTargetIDC}; diag_log format['A2EDC:GEAR_ONLOAD_RAW this=%1 displayFromThisNull=%2 findDisplay106Null=%3 A2EDC_onBack=%4 targetIDC=%5',_this,isNull _d,isNull (findDisplay 106),_back,_target]; [_this,'initDialog'] call handleGear; if (!isNil 'A2EDC_fnc_onBackGearOpenRefresh') then {[_d,'onLoad'] spawn A2EDC_fnc_onBackGearOpenRefresh;};";
     class ControlsBackground
     {
         class Mainback: RscPicture
