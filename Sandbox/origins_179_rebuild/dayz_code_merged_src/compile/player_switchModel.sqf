@@ -1,10 +1,12 @@
-private["_class","_position","_dir","_group","_oldUnit","_newUnit","_currentWpn","_muzzles","_currentAnim","_currentCamera"];
+private["_class","_position","_dir","_group","_oldUnit","_newUnit","_currentWpn","_muzzles","_currentAnim","_currentCamera","_a2edcOnBack"];
 _class 			= _this;
 
 _position 		= getPosATL player;
 _dir 			= getDir player;
 _currentAnim 	= animationState player;
 //_currentCamera	= cameraView;
+_a2edcOnBack = if (isNil "A2EDC_onBack") then {player getVariable ["A2EDC_onBack",""]} else {A2EDC_onBack};
+if ((typeName _a2edcOnBack) != "STRING") then {_a2edcOnBack = "";};
 
 
 //Get PlayerID
@@ -186,6 +188,11 @@ private ["_newBackpackType","_backpackWpn","_backpackMag"];
 	player disableConversation true;
 	
 	player setVariable ["bodyName",dayz_playerName,true];
+	A2EDC_onBack = _a2edcOnBack;
+	dayz_onBack = _a2edcOnBack;
+	player setVariable ["A2EDC_onBack",_a2edcOnBack,true];
+	player setVariable ["dayz_onBack",_a2edcOnBack,true];
+	diag_log format["A2EDC:ONBACK_SKIN_TRANSFER uid=%1 class=%2 onBack=%3 weapons=%4 primary=%5",_playerUID,_class,_a2edcOnBack,weapons player,primaryWeapon player];
 
 	_playerUID=getPlayerUID player;
 	_playerObjName = format["player%1",_playerUID];

@@ -1,4 +1,4 @@
-private ["_characterID","_minutes","_newObject","_playerID","_playerName","_source","_method","_humm_s","_distance","_sourceName","_humanity","_weapon","_playerIDk","_deathMessage","_key","_eh","_body"];
+private ["_characterID","_minutes","_newObject","_playerID","_playerName","_source","_method","_humm_s","_distance","_sourceName","_humanity","_weapon","_playerIDk","_deathMessage","_key","_eh","_body","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcCorpseWeapons"];
 
 
 _characterID = _this select 0;
@@ -59,6 +59,22 @@ _source setVariable["humanity",_humanity,true];
 dayz_disco = dayz_disco - [_playerID];
 _newObject setVariable["processedDeath",time];
 
+_a2edcRawOnBack = _newObject getVariable ["A2EDC_onBack",""];
+if (((typeName _a2edcRawOnBack) != "STRING") or (_a2edcRawOnBack == "")) then {
+_a2edcRawOnBack = _newObject getVariable ["dayz_onBack",""];
+};
+_a2edcCorpseWeapons = weapons _newObject;
+_a2edcNorm = [_a2edcRawOnBack,_a2edcCorpseWeapons,primaryWeapon _newObject,_playerID,_characterID,"server_playerDied"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+if (_a2edcNorm != "") then {
+_newObject addWeapon _a2edcNorm;
+_newObject setVariable ["A2EDC_onBack","",true];
+_newObject setVariable ["dayz_onBack","",true];
+};
+diag_log format["A2EDC:ONBACK_DEATH uid=%1 charID=%2 raw=%3 normalized=%4 reason=%5 duplicate=%6 corpseWeaponsBefore=%7 corpseWeaponsAfter=%8",_playerID,_characterID,_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,_a2edcCorpseWeapons,weapons _newObject];
+
 
 
 
@@ -87,7 +103,6 @@ deleteVehicle _newObject;
 };
 
 diag_log ("PDEATH: Player Died " + _playerID);
-
 
 
 

@@ -1,10 +1,10 @@
-build_id=20260528-191031
-build_utc=2026-05-28T19:10:37Z
+build_id=20260531-155005
+build_utc=2026-05-31T15:50:12Z
 source=@dayz_1.origins.tavi/addons/dayz_server
-export_pbo=Export/dayz_server_20260528-191031_runtime-build-identity-v1.7-onback-visual-slot-511.pbo
+export_pbo=Export/dayz_server_20260531-155005_onback-persistence-v3.pbo
 prefix=z\addons\dayz_server
 hostname=home-X99F8
-git_commit=478e07d32f10e8c35ef0c585b0409f455d72eafd
-git_short=478e07d
+git_commit=fe4ccc14dc31115eae01c55b41565a829fe3f361
+git_short=fe4ccc1
 git_dirty=true
-note=runtime-build-identity-v1.7-onback-visual-slot-511
+note=onback-persistence-v3

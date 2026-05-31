@@ -212,8 +212,41 @@ diag_log ("CLEANUP: DELETED A " + str(_type) );
 }];
 };
 
+A2EDC_fnc_normalizeOnBackPersist = {
+private["_raw","_weapons","_primary","_uid","_characterID","_path","_normalized","_reason","_duplicate"];
+_raw = _this select 0;
+_weapons = _this select 1;
+_primary = _this select 2;
+_uid = _this select 3;
+_characterID = _this select 4;
+_path = _this select 5;
+_normalized = "";
+_reason = "ok";
+_duplicate = false;
+
+if ((typeName _raw) != "STRING") exitWith {
+diag_log format["A2EDC:ONBACK_LOAD_NORMALIZE side=server path=%1 uid=%2 charID=%3 raw=%4 normalized=%5 reason=not_string duplicate=%6 primary=%7 weapons=%8",_path,_uid,_characterID,_raw,"",false,_primary,_weapons];
+["","not_string",false]
+};
+if (_raw == "") exitWith {["","empty",false]};
+if (!(isClass(configFile >> "CfgWeapons" >> _raw))) exitWith {
+diag_log format["A2EDC:ONBACK_LOAD_NORMALIZE side=server path=%1 uid=%2 charID=%3 raw=%4 normalized=%5 reason=missing_cfgWeapons_class duplicate=%6 primary=%7 weapons=%8",_path,_uid,_characterID,_raw,"",false,_primary,_weapons];
+["","missing_cfgWeapons_class",false]
+};
+if (_raw in _weapons) exitWith {
+diag_log format["A2EDC:ONBACK_DUP_GUARD_PERSIST side=server path=%1 uid=%2 charID=%3 raw=%4 normalized=%5 reason=duplicate_active_weapon primary=%6 weapons=%7",_path,_uid,_characterID,_raw,"",_primary,_weapons];
+["","duplicate_active_weapon",true]
+};
+if ((_primary != "") and (_raw == _primary)) exitWith {
+diag_log format["A2EDC:ONBACK_DUP_GUARD_PERSIST side=server path=%1 uid=%2 charID=%3 raw=%4 normalized=%5 reason=duplicate_primary primary=%6 weapons=%7",_path,_uid,_characterID,_raw,"",_primary,_weapons];
+["","duplicate_primary",true]
+};
+_normalized = _raw;
+[_normalized,_reason,_duplicate]
+};
+
 server_characterSync = {
-private ["_characterID","_playerPos","_playerGear","_playerBackp","_medical","_currentState","_currentModel","_key"];
+private ["_characterID","_playerPos","_playerGear","_playerBackp","_medical","_currentState","_currentModel","_key","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcWeapons"];
 _characterID = 	_this select 0;
 _playerPos =	_this select 1;
 _playerGear =	_this select 2;
@@ -221,6 +254,35 @@ _playerBackp =	_this select 3;
 _medical = 		_this select 4;
 _currentState =	_this select 5;
 _currentModel = _this select 6;
+_a2edcRawOnBack = "";
+_a2edcWeapons = [];
+if ((typeName _playerGear) == "ARRAY") then {
+if ((count _playerGear) > 0) then {
+if ((typeName (_playerGear select 0)) == "ARRAY") then {
+_a2edcWeapons = _playerGear select 0;
+};
+};
+if ((count _playerGear) > 3) then {
+_a2edcRawOnBack = _playerGear select 3;
+};
+};
+if ((count _this) > 7) then {
+_a2edcRawOnBack = _this select 7;
+};
+_a2edcNorm = [_a2edcRawOnBack,_a2edcWeapons,"","<server>",_characterID,"server_characterSync"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+if ((typeName _playerGear) == "ARRAY") then {
+if ((count _playerGear) > 1) then {
+_playerGear set [2,_playerBackp];
+_playerGear set [3,_a2edcNorm];
+};
+};
+if (((typeName _a2edcRawOnBack) == "STRING") and (_a2edcRawOnBack != "") and (_a2edcNorm == "")) then {
+diag_log format["A2EDC:ONBACK_SAVE_SKIP_INVALID side=server path=server_characterSync uid=%1 charID=%2 rawOnBack=%3 reason=%4 duplicate=%5 gear=%6", "<server>",_characterID,_a2edcRawOnBack,_a2edcReason,_a2edcDup,_playerGear];
+};
+diag_log format["A2EDC:ONBACK_SAVE side=server path=server_characterSync uid=%1 charID=%2 rawOnBack=%3 normalizedOnBack=%4 reason=%5 duplicate=%6 gear=%7", "<server>",_characterID,_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,_playerGear];
 
 _key = format["CHILD:201:%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12:%13:%14:%15:%16:",_characterID,_playerPos,_playerGear,_playerBackp,_medical,false,false,0,0,0,0,_currentState,0,0,_currentModel,0];
 

@@ -3,7 +3,7 @@ if (isNil "A2EDC_debugItemInfo") then {
 	A2EDC_debugItemInfo = false;
 };
 
-private["_event","_mode","_control","_display","_item","_row","_conf","_confType","_name","_picture","_description","_count","_ammo","_ammoName","_usedIn","_cfgWeapons","_weaponCfg","_weaponName","_mags","_i","_weight","_weightSource","_text","_title","_panel","_image","_lines","_duplicateTitle","_visibleLines"];
+private["_event","_mode","_control","_display","_item","_row","_conf","_confType","_name","_picture","_description","_count","_ammo","_ammoName","_usedIn","_cfgWeapons","_weaponCfg","_weaponName","_mags","_i","_weight","_weightSource","_showRounds","_text","_title","_panel","_image","_lines","_duplicateTitle","_visibleLines"];
 
 _event = _this select 0;
 _mode = _this select 1;
@@ -77,6 +77,7 @@ if ((isNil "A2EDC_fnc_getItemWeightKg") or (isNil "A2EDC_fnc_formatItemWeightKg"
 };
 _weight = [_item,_confType] call A2EDC_fnc_getItemWeightKg;
 _weightSource = if (_weight >= 0) then {"A2EDC_reconstructed"} else {"none"};
+_showRounds = (_weight < 0);
 
 _lines = [];
 if (_description != "") then {
@@ -85,7 +86,7 @@ if (_description != "") then {
 
 if (_confType == "CfgMagazines") then {
 	_count = getNumber (_conf >> "count");
-	if (_count > 0) then {
+	if (_showRounds and (_count > 0)) then {
 		_lines set [count _lines,format["Rounds: %1",_count]];
 	};
 	_ammo = getText (_conf >> "ammo");

@@ -1,4 +1,4 @@
-private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid","_a2edcOwner","_a2edcAllowConnection","_a2edcSmDone","_a2edcServerObjectMonitor","_a2edcServerMonitor"];
+private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid","_a2edcOwner","_a2edcAllowConnection","_a2edcSmDone","_a2edcServerObjectMonitor","_a2edcServerMonitor","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcWeapons"];
 
 
 diag_log ("STARTING LOGIN: " + str(_this));
@@ -26,6 +26,7 @@ _tent =			[];
 _state = 		[];
 _direction =	0;
 _model =		"";
+_a2edcNorm = "";
 _newUnit =		objNull;
 _botActive = false;
 
@@ -139,7 +140,29 @@ _survival =		_primary select 6;
 _model =		_primary select 7;
 _hiveVer =		_primary select 8;
 
-
+_a2edcRawOnBack = "";
+_a2edcWeapons = [];
+if ((typeName _inventory) == "ARRAY") then {
+if ((count _inventory) > 0) then {
+if ((typeName (_inventory select 0)) == "ARRAY") then {
+_a2edcWeapons = _inventory select 0;
+};
+};
+if ((count _inventory) > 3) then {
+_a2edcRawOnBack = _inventory select 3;
+};
+};
+_a2edcNorm = [_a2edcRawOnBack,_a2edcWeapons,"",_playerID,_charID,"server_playLogni"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+if ((typeName _inventory) == "ARRAY") then {
+if ((count _inventory) > 1) then {
+_inventory set [2,_backpack];
+_inventory set [3,_a2edcNorm];
+};
+};
+diag_log format["A2EDC:ONBACK_LOAD side=server path=server_playLogni uid=%1 charID=%2 inventoryCount=%3 rawOnBack=%4 normalizedOnBack=%5 reason=%6 duplicate=%7 weapons=%8",_playerID,_charID,if ((typeName _inventory) == "ARRAY") then {count _inventory} else {-1},_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,_a2edcWeapons];
 
 
 
@@ -168,7 +191,7 @@ _bcpk = getText (_config >> "backpack");
 _randomSpot = true;
 
 
-_key = format["CHILD:203:%1:%2:%3:",_charID,[_wpns,_mags],[_bcpk,[],[]]];
+_key = format["CHILD:203:%1:%2:%3:",_charID,[_wpns,_mags,[_bcpk,[],[]],""],[_bcpk,[],[]]];
 _key call server_hiveWrite;
 diag_log format ["server_playerLpg = %1",_key];
 };
@@ -179,7 +202,7 @@ if (_hiveVer >= dayz_hiveVersionNo) then {
 _isHiveOk = true;
 };
 
-dayzPlayerLogin = [_charID,_inventory,_backpack,_survival,_isNew,dayz_versionNo,_model,_isHiveOk,_newPlayer,_a2edcNeedsGenderSelect];
+dayzPlayerLogin = [_charID,_inventory,_backpack,_survival,_isNew,dayz_versionNo,_model,_isHiveOk,_newPlayer,_a2edcNeedsGenderSelect,_a2edcNorm];
 _a2edcOwner = owner _playerObj;
 _a2edcAllowConnection = if (isNil "allowConnection") then {"<nil>"} else {allowConnection};
 _a2edcSmDone = if (isNil "sm_done") then {"<nil>"} else {sm_done};

@@ -119,6 +119,8 @@ if (count _array > 0) then {
 	_body setVariable ["deathType",_method,true];
 	_body setVariable ["nameKillerP",_nameKillerP,true];
 	_body setVariable ["typedeP",_typedeP,true];
+	_body setVariable ["A2EDC_onBack",if (isNil "A2EDC_onBack") then {player getVariable ["A2EDC_onBack",""]} else {A2EDC_onBack},true];
+	_body setVariable ["dayz_onBack",if (isNil "dayz_onBack") then {player getVariable ["dayz_onBack",""]} else {dayz_onBack},true];
 };
 //Send Death Notice
 dayzDeath = [dayz_characterID,0,_body,_playerID,dayz_playerName,_source,_method,_humanity_s];

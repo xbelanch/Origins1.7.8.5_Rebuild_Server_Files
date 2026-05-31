@@ -5,7 +5,7 @@ if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {"<nil>"} else {A2EDC_DAYZ_SERVER_
 if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"<nil>"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE}
 ];
 
-private ["_object","_playerID","_characterID","_penalty","_playerName","_model","_position","_dir","_currentAnim","_updates","_humanity","_temp","_worldspace","_zombieKills","_headShots","_humanKills","_banditKills","_medical","_messing","_weapons","_magazines","_primweapon","_secweapon","_newBackpackType","_backpackWpn","_backpackMag","_currentWpn","_muzzles","_doLoop","_key","_primary","_newUnit","_newBackpack","_backpackWpnTypes","_backpackWpnQtys","_countr","_backpackmagTypes","_backpackmagQtys","_backpackmag","_fractures","_mydamage_eh1","_isDead","_playerGear","_playerBackp","_a2edcBleedFn"];
+private ["_object","_playerID","_characterID","_penalty","_playerName","_model","_position","_dir","_currentAnim","_updates","_humanity","_temp","_worldspace","_zombieKills","_headShots","_humanKills","_banditKills","_medical","_messing","_weapons","_magazines","_primweapon","_secweapon","_newBackpackType","_backpackWpn","_backpackMag","_currentWpn","_muzzles","_doLoop","_key","_primary","_newUnit","_newBackpack","_backpackWpnTypes","_backpackWpnQtys","_countr","_backpackmagTypes","_backpackmagQtys","_backpackmag","_fractures","_mydamage_eh1","_isDead","_playerGear","_playerBackp","_a2edcBleedFn","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup"];
 _object 	= _this select 0;
 
 _playerID 	= _this select 1; 
@@ -45,6 +45,15 @@ _weapons 	= weapons _object;
 _magazines	= magazines _object;
 _primweapon	= primaryWeapon _object;
 _secweapon	= secondaryWeapon _object;
+_a2edcRawOnBack = _object getVariable ["A2EDC_onBack",""];
+if (((typeName _a2edcRawOnBack) != "STRING") or (_a2edcRawOnBack == "")) then {
+_a2edcRawOnBack = _object getVariable ["dayz_onBack",""];
+};
+_a2edcNorm = [_a2edcRawOnBack,_weapons,_primweapon,_playerID,_characterID,"disco_playerMorph"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+diag_log format["A2EDC:ONBACK_DISCO_CAPTURE uid=%1 charID=%2 rawOnBack=%3 normalizedOnBack=%4 reason=%5 duplicate=%6 primary=%7 weapons=%8",_playerID,_characterID,_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,_primweapon,_weapons];
 
 
 if(!(_primweapon in _weapons) && _primweapon != "") then {
@@ -247,6 +256,8 @@ _newUnit setVariable["bodyName",_playerName,true];
 _newUnit setVariable["playerID",_playerID,true];
 _newUnit setVariable["temperature",_temp,true];
 _newUnit setVariable["messing",_messing,true];
+_newUnit setVariable["A2EDC_onBack",_a2edcNorm,true];
+_newUnit setVariable["dayz_onBack",_a2edcNorm,true];
 
 
 _newUnit allowDamage true;
@@ -282,13 +293,22 @@ _newUnit removeAllEventHandlers "handleDamage";
 if (!_isDead) then {
 _medical = _newUnit call player_sumMedical;
 _newBackpack = unitBackpack _newUnit;
-_playerGear = [_weapons,_magazines];
 _playerBackp = [typeOf _newBackpack,getWeaponCargo _newBackpack,getMagazineCargo _newBackpack];
+_a2edcRawOnBack = _newUnit getVariable ["A2EDC_onBack",_a2edcNorm];
+_a2edcNorm = [_a2edcRawOnBack,_weapons,_primweapon,_playerID,_characterID,"disco_playerMorph_save"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+_playerGear = [_weapons,_magazines,_playerBackp,_a2edcNorm];
+if (((typeName _a2edcRawOnBack) == "STRING") and (_a2edcRawOnBack != "") and (_a2edcNorm == "")) then {
+diag_log format["A2EDC:ONBACK_SAVE_SKIP_INVALID side=server path=disco_playerMorph uid=%1 charID=%2 rawOnBack=%3 reason=%4 duplicate=%5 primary=%6 weapons=%7",_playerID,_characterID,_a2edcRawOnBack,_a2edcReason,_a2edcDup,_primweapon,_weapons];
+};
+diag_log format["A2EDC:ONBACK_SAVE side=server path=disco_playerMorph uid=%1 charID=%2 rawOnBack=%3 normalizedOnBack=%4 reason=%5 duplicate=%6 primary=%7 weapons=%8",_playerID,_characterID,_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,_primweapon,_weapons];
 
 deleteVehicle _newUnit;
 deleteGroup _group;
 
-[_characterID,_worldspace,_playerGear,_playerBackp,_medical,[],""] call server_characterSync;
+[_characterID,_worldspace,_playerGear,_playerBackp,_medical,[],"",_a2edcNorm] call server_characterSync;
 };
 botPlayers = botPlayers - [_playerID];
 diag_log format["DEBUG: Player %1 [%2] removed from botPlayers: %3",_playerName,_playerID,botPlayers];

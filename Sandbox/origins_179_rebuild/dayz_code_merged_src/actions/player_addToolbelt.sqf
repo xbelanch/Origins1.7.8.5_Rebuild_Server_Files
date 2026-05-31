@@ -82,6 +82,7 @@ if ((_create in ["MeleeHatchet","MeleeCrowbar"]) and _hasPrimary) exitWith {
 	A2EDC_onBack = _create;
 	dayz_onBack = A2EDC_onBack;
 	player setVariable ["A2EDC_onBack",A2EDC_onBack,true];
+	player setVariable ["dayz_onBack",dayz_onBack,true];
 	player removeWeapon _item;
 	diag_log format["A2EDC:HATCHET_CONVERT_END reason=stored_onBack item=%1 create=%2 selectedTarget=%3 primary=%4 A2EDC_onBack=%5 weaponsBefore=%6 weaponsAfter=%7 magazinesBefore=%8 magazinesAfter=%9",_item,_create,_targetSlot,primaryWeapon player,A2EDC_onBack,_weaponsBefore,weapons player,_magsBefore,magazines player];
 		if (!isNil "A2EDC_fnc_refreshOnBackGearSlot") then {

@@ -1,4 +1,4 @@
-private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos","_traceName"];
+private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos","_traceName","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup"];
 
 diag_log ("UPDATE: " + str(_this) );
 
@@ -118,9 +118,21 @@ _character setVariable ["posForceUpdate",false,true];
 };
 if (_isNewGear) then {
 
-_playerGear = [weapons _character,_magazines];
 _backpack = unitBackpack _character;
 _playerBackp = [typeOf _backpack,getWeaponCargo _backpack,getMagazineCargo _backpack];
+_a2edcRawOnBack = _character getVariable ["A2EDC_onBack",""];
+if (((typeName _a2edcRawOnBack) != "STRING") or (_a2edcRawOnBack == "")) then {
+_a2edcRawOnBack = _character getVariable ["dayz_onBack",""];
+};
+_a2edcNorm = [_a2edcRawOnBack,weapons _character,primaryWeapon _character,_PlayerID,_characterID,"server_playerSync"] call A2EDC_fnc_normalizeOnBackPersist;
+_a2edcReason = _a2edcNorm select 1;
+_a2edcDup = _a2edcNorm select 2;
+_a2edcNorm = _a2edcNorm select 0;
+_playerGear = [weapons _character,_magazines,_playerBackp,_a2edcNorm];
+if (((typeName _a2edcRawOnBack) == "STRING") and (_a2edcRawOnBack != "") and (_a2edcNorm == "")) then {
+diag_log format["A2EDC:ONBACK_SAVE_SKIP_INVALID side=server path=server_playerSync uid=%1 charID=%2 rawOnBack=%3 reason=%4 duplicate=%5 primary=%6 weapons=%7",_PlayerID,_characterID,_a2edcRawOnBack,_a2edcReason,_a2edcDup,primaryWeapon _character,weapons _character];
+};
+diag_log format["A2EDC:ONBACK_SAVE side=server path=server_playerSync uid=%1 charID=%2 rawOnBack=%3 normalizedOnBack=%4 reason=%5 duplicate=%6 primary=%7 weapons=%8",_PlayerID,_characterID,_a2edcRawOnBack,_a2edcNorm,_a2edcReason,_a2edcDup,primaryWeapon _character,weapons _character];
 };
 if (_isNewMed or _force) then {
 

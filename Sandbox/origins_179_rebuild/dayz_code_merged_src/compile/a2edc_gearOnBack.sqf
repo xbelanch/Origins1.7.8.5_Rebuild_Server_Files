@@ -22,18 +22,21 @@ if (isNil "A2EDC_onBackVisualTargetIDC") then {
 if (isNil "A2EDC_onBackNonPersistentWarningLast") then {
 	A2EDC_onBackNonPersistentWarningLast = "";
 };
+if (isNil "A2EDC_onBackPersistenceEnabled") then {
+	A2EDC_onBackPersistenceEnabled = true;
+};
 
 A2EDC_fnc_warnOnBackNonPersistent = {
 	private["_back"];
+	if (isNil "A2EDC_onBackPersistenceEnabled") then {A2EDC_onBackPersistenceEnabled = true;};
+	if ((typeName A2EDC_onBackPersistenceEnabled) != "BOOL") then {A2EDC_onBackPersistenceEnabled = true;};
+	if (A2EDC_onBackPersistenceEnabled) exitWith {};
 	_back = _this;
 	if ((typeName _back) != "STRING") exitWith {};
 	if (_back == "") exitWith {
 		A2EDC_onBackNonPersistentWarningLast = "";
 	};
-	if (A2EDC_onBackNonPersistentWarningLast != _back) then {
-		A2EDC_onBackNonPersistentWarningLast = _back;
-		diag_log format["A2EDC:ONBACK_NONPERSISTENT_WARNING A2EDC_onBack=%1 note=onBack is client-only before v3; disconnect/relog may lose this item",_back];
-	};
+	A2EDC_onBackNonPersistentWarningLast = _back;
 };
 
 A2EDC_fnc_normalizeOnBack = {
@@ -77,6 +80,7 @@ A2EDC_fnc_normalizeOnBack = {
 	A2EDC_onBack = _normalized;
 	dayz_onBack = A2EDC_onBack;
 	player setVariable ["A2EDC_onBack",A2EDC_onBack,true];
+	player setVariable ["dayz_onBack",dayz_onBack,true];
 	if (isNil "dayz_onBack") then {
 		dayz_onBack = A2EDC_onBack;
 		_changed = true;
@@ -511,6 +515,7 @@ A2EDC_fnc_switchOnBackWeapon = {
 		A2EDC_onBack = "";
 		dayz_onBack = "";
 		player setVariable ["A2EDC_onBack","",true];
+		player setVariable ["dayz_onBack","",true];
 		diag_log format["A2EDC:ONBACK_VALIDATE_FAIL reason=onBack_not_string weapons=%1 magazines=%2",_weaponsBefore,_magsBefore];
 	};
 	_existsBack = if (_back == "") then {true} else {isClass (configFile >> "CfgWeapons" >> _back)};
@@ -536,6 +541,7 @@ A2EDC_fnc_switchOnBackWeapon = {
 		A2EDC_onBack = "";
 		dayz_onBack = "";
 		player setVariable ["A2EDC_onBack","",true];
+		player setVariable ["dayz_onBack","",true];
 		diag_log format["A2EDC:ONBACK_DUP_GUARD reason=held_equals_onBack normalized=clear_onBack class=%1 weapons=%2 magazines=%3",_held,_weaponsBefore,_magsBefore];
 		call A2EDC_fnc_refreshOnBackGearSlot;
 	};
@@ -577,6 +583,7 @@ A2EDC_fnc_switchOnBackWeapon = {
 	A2EDC_onBack = _held;
 	dayz_onBack = A2EDC_onBack;
 	player setVariable ["A2EDC_onBack",A2EDC_onBack,true];
+	player setVariable ["dayz_onBack",dayz_onBack,true];
 	if (_back != "") then {
 		_back call A2EDC_fnc_selectOnBackWeapon;
 	};

@@ -1,4 +1,4 @@
-A2EDC_onBackCodeVersion = "20260531-091436_gear-visual-weight-tooltip-v2";
+A2EDC_onBackCodeVersion = "20260531-155005_onback-persistence-v3";
 
 if (isNil "A2EDC_fnc_logOnBackCompileStatus") then {
   A2EDC_fnc_logOnBackCompileStatus = {

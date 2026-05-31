@@ -462,6 +462,7 @@ class FSM
        "" \n
        "" \n
        "" \n
+       "_a2edcLoginOnBack = """";" \n
        "_isHiveOk = false;" \n
        "_newPlayer = false;" \n
        "" \n
@@ -469,6 +470,12 @@ class FSM
        "	_isHiveOk = _msg select 7;" \n
        "	_newPlayer = _msg select 8;" \n
        "	diag_log (""PLAYER RESULT: "" + str(_isHiveOk));" \n
+       "};" \n
+       "if (count _msg > 10) then {" \n
+       "	_a2edcLoginOnBack = _msg select 10;" \n
+       "	if ((typeName _a2edcLoginOnBack) != ""STRING"") then {_a2edcLoginOnBack = """";};" \n
+       "	if (((typeName _inventory) == ""ARRAY"") and ((count _inventory) > 1)) then {_inventory set [3,_a2edcLoginOnBack];};" \n
+       "	diag_log format[""A2EDC:ONBACK_LOAD side=client path=player_monitor payloadCount=%1 explicitOnBack=%2 inventoryCount=%3"",count _msg,_a2edcLoginOnBack,if ((typeName _inventory) == ""ARRAY"") then {count _inventory} else {-1}];" \n
        "};" \n
        "" \n
        "dayz_loadScreenMsg = (localize ""str_player_17""); " \n
