@@ -3,7 +3,7 @@ if (isNil "A2EDC_debugItemInfo") then {
 	A2EDC_debugItemInfo = false;
 };
 
-private["_event","_mode","_control","_display","_item","_row","_conf","_confType","_name","_picture","_description","_count","_ammo","_ammoName","_usedIn","_cfgWeapons","_weaponCfg","_weaponName","_mags","_i","_weight","_weightSource","_text","_title","_panel","_image","_lines","_value","_duplicateTitle","_visibleLines"];
+private["_event","_mode","_control","_display","_item","_row","_conf","_confType","_name","_picture","_description","_count","_ammo","_ammoName","_usedIn","_cfgWeapons","_weaponCfg","_weaponName","_mags","_i","_weight","_weightSource","_text","_title","_panel","_image","_lines","_duplicateTitle","_visibleLines"];
 
 _event = _this select 0;
 _mode = _this select 1;
@@ -72,17 +72,11 @@ if (_name == "") then {
 _picture = getText (_conf >> "picture");
 _description = getText (_conf >> "descriptionShort");
 
-_weight = -1;
-_weightSource = "none";
-{
-	if ((_weight < 0) and (isNumber (_conf >> _x))) then {
-		_value = getNumber (_conf >> _x);
-		if (_value > 0) then {
-			_weight = _value;
-			_weightSource = format["config:%1",_x];
-		};
-	};
-} forEach ["weight","mass","itemWeight","magazineWeight"];
+if ((isNil "A2EDC_fnc_getItemWeightKg") or (isNil "A2EDC_fnc_formatItemWeightKg")) then {
+	call compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\A2EDC_itemWeights.sqf";
+};
+_weight = [_item,_confType] call A2EDC_fnc_getItemWeightKg;
+_weightSource = if (_weight >= 0) then {"A2EDC_reconstructed"} else {"none"};
 
 _lines = [];
 if (_description != "") then {
@@ -129,7 +123,7 @@ if (_confType == "CfgWeapons") then {
 };
 
 if (_weight >= 0) then {
-	_lines set [count _lines,format["Weight: %1 kg",_weight]];
+	_lines set [count _lines,format["<t color='#ffffff'>Weight: %1 kg</t>",[_weight] call A2EDC_fnc_formatItemWeightKg]];
 };
 
 _duplicateTitle = false;

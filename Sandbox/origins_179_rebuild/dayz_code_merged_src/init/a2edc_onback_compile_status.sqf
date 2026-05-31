@@ -1,4 +1,4 @@
-A2EDC_onBackCodeVersion = "20260529-213640_runtime-build-identity-v1.12-disable-legacy-player-status-panel";
+A2EDC_onBackCodeVersion = "20260531-091436_gear-visual-weight-tooltip-v2";
 
 if (isNil "A2EDC_fnc_logOnBackCompileStatus") then {
   A2EDC_fnc_logOnBackCompileStatus = {

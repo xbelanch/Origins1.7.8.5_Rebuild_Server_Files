@@ -4770,7 +4770,7 @@ class RscDisplayGear
             y = "0.43";
             w = 0.172999993;
             h = 0.119000003;
-            text = "";
+            text = "\\origins_pack\\ui\\gear\\ui_gear_secondary_ca.paa";
         };
         class Ori_slot_vestH_bg: RscPicture
         {
@@ -4789,7 +4789,7 @@ class RscDisplayGear
             y = "0.2445";
             w = 0.111000001;
             h = 0.151999995;
-            text = "";
+            text = "\\origins_pack\\ui\\gear\\ui_gear_vest_ca.paa";
         };
         class CA_Gear_slot_vest2_bg: RscPicture
         {
@@ -4807,7 +4807,7 @@ class RscDisplayGear
             y = "0.552";
             w = 0.0549999997;
             h = 0.150000006;
-            text = "";
+            text = "\\origins_pack\\ui\\gear\\ui_gear_medbg_empty_ca.paa";
         };
         class CA_Gear_slot_medbs_bg: RscPicture
         {

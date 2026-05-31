@@ -1,10 +1,10 @@
-A2EDC_MISSION_BUILD_ID = "20260529-192245";
-A2EDC_MISSION_BUILD_UTC = "2026-05-29T19:22:45Z";
+A2EDC_MISSION_BUILD_ID = "20260531-083418";
+A2EDC_MISSION_BUILD_UTC = "2026-05-31T08:34:18Z";
 A2EDC_MISSION_BUILD_SOURCE = "MPMissions/dayz_1.origins.tavi";
 A2EDC_MISSION_BUILD_PREFIX = "";
-A2EDC_MISSION_BUILD_NOTE = "mission-v1.9-disable-legacy-panel-hints";
-A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260529-192245_mission-v1.9-disable-legacy-panel-hints.pbo";
-A2EDC_MISSION_BUILD_GIT_SHORT = "478e07d";
+A2EDC_MISSION_BUILD_NOTE = "gear-visual-weight-tooltip-v1";
+A2EDC_MISSION_BUILD_EXPORT = "Export/dayz_1.origins.tavi_20260531-083418_gear-visual-weight-tooltip-v1.pbo";
+A2EDC_MISSION_BUILD_GIT_SHORT = "c631edf";
 A2EDC_MISSION_BUILD_GIT_DIRTY = "true";
 
 private["_locality","_logIdentity"];
