@@ -1,10 +1,10 @@
-A2EDC_BUILD_ID = "20260531-155005";
-A2EDC_BUILD_UTC = "2026-05-31T15:50:12Z";
+A2EDC_BUILD_ID = "20260605-213646";
+A2EDC_BUILD_UTC = "2026-06-05T19:36:55Z";
 A2EDC_BUILD_SOURCE = "@dayz_1.origins.tavi/addons/dayz_server";
 A2EDC_BUILD_PREFIX = "z\addons\dayz_server";
-A2EDC_BUILD_NOTE = "onback-persistence-v3";
-A2EDC_BUILD_EXPORT = "Export/dayz_server_20260531-155005_onback-persistence-v3.pbo";
-A2EDC_BUILD_GIT_SHORT = "fe4ccc1";
+A2EDC_BUILD_NOTE = "house-l1-preview-confirm-cancel-v2";
+A2EDC_BUILD_EXPORT = "Export/dayz_server_20260605-213646_house-l1-preview-confirm-cancel-v2.pbo";
+A2EDC_BUILD_GIT_SHORT = "c1f8a77";
 A2EDC_BUILD_GIT_DIRTY = "true";
 
 A2EDC_DAYZ_SERVER_BUILD_ID = A2EDC_BUILD_ID;

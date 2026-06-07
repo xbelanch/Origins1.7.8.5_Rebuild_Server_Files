@@ -246,6 +246,17 @@ _playerObj setVariable["characterID",_characterID,true];
 _playerObj setVariable["humanity",_humanity,true];
 _playerObj setVariable["humanity_CHK",_humanity];
 
+_bbase = [];
+if (_playerID in bb_base_level1b) then {_bbase set [0,1];} else {_bbase set [0,0];};
+if (_playerID in bb_base_level2b) then {_bbase set [1,1];} else {_bbase set [1,0];};
+if (_playerID in bb_base_level3b) then {_bbase set [2,1];} else {_bbase set [2,0];};
+if (_playerID in bb_base_level1g) then {_bbase set [3,1];} else {_bbase set [3,0];};
+if (_playerID in bb_base_level2g) then {_bbase set [4,1];} else {_bbase set [4,0];};
+if (_playerID in bb_base_level1f) then {_bbase set [5,1];} else {_bbase set [5,0];};
+if (_playerID in bb_base_level2f) then {_bbase set [6,1];} else {_bbase set [6,0];};
+if (_playerID in bb_base_level3f) then {_bbase set [7,1];} else {_bbase set [7,0];};
+_playerObj setVariable ["bb_base",_bbase,true];
+diag_log format ["A2EDC:HOUSE_BUILD_SYNC_LOGIN_PUBLISH variable=bb_base value=%1 expectedCount=8 uid=%2 player=%3 time=%4 source=serverDO_plSp2",_bbase,_playerID,_playerObj,time];
 
 _playerObj setVariable["lastPos",getPosATL _playerObj];
 

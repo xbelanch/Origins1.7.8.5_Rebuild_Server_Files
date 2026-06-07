@@ -1,4 +1,4 @@
-private ["_object","_objectLevel","_playerID","_passUch","_dobav","_dobavL","_dobavR","_fill_house","_objIdKey","_type","_intentory","_result","_result2","_key","_data","_key2","_data2","_strArr","_strCount","_key3","_result3","_objWpnTypes","_objWpnQty","_countr","_isOK","_block","_howmany","_stopGo","_objectC","_playerC","_objectLevelC","_playerIDC","_passwordC","_flagTo","_RealPass","_playerIDS","_objectLevelS","_objectID","_object_position","_isNotOk","_naObnovku","_inventoryEnd"];
+private ["_object","_objectLevel","_playerID","_passUch","_dobav","_dobavL","_dobavR","_fill_house","_objIdKey","_type","_rawType","_intentory","_result","_result2","_key","_data","_key2","_data2","_strArr","_strCount","_key3","_result3","_objWpnTypes","_objWpnQty","_countr","_isOK","_block","_howmany","_stopGo","_objectC","_playerC","_objectLevelC","_playerIDC","_passwordC","_flagTo","_RealPass","_playerIDS","_objectLevelS","_objectID","_object_position","_isNotOk","_naObnovku","_inventoryEnd"];
 
 diag_log format ["START verbb _this=%1",_this];
 _dobav = true;
@@ -187,7 +187,9 @@ _objIdKey = "netego";
 _playerIDS = getPlayerUID _playerC;
 diag_log format ["1_objectC=%1,_playerC=%2,_objectLevelC=%3,_playerIDC=%4,_passwordC=%5,_flagTo=%6",_objectC,_playerC,_objectLevelC,_playerIDC,_passwordC,_flagTo];
 if (typeName _objectC != "OBJECT") exitWith { diag_log format ["ERROR_PAS _objectC(%1) ERROR",_objectC]; };
-_type = typeOf _objectC;
+_rawType = typeOf _objectC;
+_type = _objectC getVariable ["A2EDC_DBHouseType",_rawType];
+if (_type == "Uroven1VelkaBudka") then {_type = "large_shed_lvl_1";};
 if (!(_type in ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"])) exitWith { diag_log format ["ERROR_PAS _type(%1) ERROR",_type]; };
 
 _RealPass = _objectC getVariable ["passwordtut", 929909929];

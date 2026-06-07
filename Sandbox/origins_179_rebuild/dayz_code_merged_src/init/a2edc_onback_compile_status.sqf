@@ -1,4 +1,4 @@
-A2EDC_onBackCodeVersion = "20260531-155005_onback-persistence-v3";
+A2EDC_onBackCodeVersion = "20260606-162055_house-l1-preview-forward-movement-fix-v2";
 
 if (isNil "A2EDC_fnc_logOnBackCompileStatus") then {
   A2EDC_fnc_logOnBackCompileStatus = {

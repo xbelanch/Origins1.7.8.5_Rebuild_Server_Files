@@ -1,4 +1,4 @@
-private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid","_a2edcOwner","_a2edcAllowConnection","_a2edcSmDone","_a2edcServerObjectMonitor","_a2edcServerMonitor","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcWeapons"];
+private["_botActive","_int","_newModel","_doLoop","_wait","_hiveVer","_isHiveOk","_playerID","_playerObj","_randomSpot","_publishTo","_primary","_secondary","_key","_result","_charID","_playerObj","_playerName","_finished","_spawnPos","_spawnDir","_items","_counter","_magazines","_weapons","_group","_backpack","_worldspace","_direction","_newUnit","_score","_position","_isNew","_inventory","_backpack","_medical","_survival","_stats","_state","_a2edcRawModel","_a2edcNeedsGenderSelect","_a2edcInvalidGenderModels","_a2edcModelInvalid","_a2edcOwner","_a2edcAllowConnection","_a2edcSmDone","_a2edcServerObjectMonitor","_a2edcServerMonitor","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcWeapons","_a2edcBotState","_a2edcDiscoState"];
 
 
 diag_log ("STARTING LOGIN: " + str(_this));
@@ -38,6 +38,22 @@ if ((_playerID == "") or (isNil "_playerID")) exitWith {
 diag_log ("LOGIN FAILED: Player [" + _playerName + "] has no login ID");
 };
 
+_a2edcBotState = if (isNil "botPlayers") then {[]} else {botPlayers};
+_a2edcDiscoState = if (isNil "dayz_disco") then {[]} else {dayz_disco};
+diag_log format ["A2EDC:REJOIN:SERVER_LOGIN_ATTEMPT uid=%1 name=%2 object=%3 owner=%4 botPlayers=%5 dayz_disco=%6 dayz_players=%7",_playerID,_playerName,_playerObj,owner _playerObj,_a2edcBotState,_a2edcDiscoState,if (isNil "dayz_players") then {"<nil>"} else {dayz_players}];
+diag_log format ["A2EDC:REJOIN:BOTPLAYERS_STATE uid=%1 inBotPlayers=%2 botPlayers=%3 inDisco=%4 dayz_disco=%5",_playerID,if (isNil "botPlayers") then {false} else {_playerID in botPlayers},_a2edcBotState,if (isNil "dayz_disco") then {false} else {_playerID in dayz_disco},_a2edcDiscoState];
+if (!isNil "botPlayers") then {
+if (_playerID in botPlayers) then {
+	botPlayers = botPlayers - [_playerID];
+	diag_log format ["A2EDC:REJOIN:STALE_CLEANUP_CLEAR uid=%1 name=%2 reason=login_while_botplayers_pending oldBotPlayers=%3 newBotPlayers=%4",_playerID,_playerName,_a2edcBotState,botPlayers];
+};
+};
+if (!isNil "dayz_disco") then {
+if (_playerID in dayz_disco) then {
+	dayz_disco = dayz_disco - [_playerID];
+	diag_log format ["A2EDC:REJOIN:STALE_CLEANUP_CLEAR uid=%1 name=%2 reason=login_while_dayz_disco_pending oldDisco=%3 newDisco=%4",_playerID,_playerName,_a2edcDiscoState,dayz_disco];
+};
+};
 
 diag_log ("LOGIN ATTEMPT: " + str(_playerID) + " " + _playerName);
 
@@ -59,10 +75,12 @@ diag_log ("LOGIN RESULT: Exiting, player object null: " + str(_playerObj));
 };
 
 	if (((typeName _primary) == "ARRAY") && {(count _primary) > 0} && {(_primary select 0) == "ERROR"}) exitWith {
+	diag_log format ["A2EDC:REJOIN:SERVER_LOGIN_REFUSED uid=%1 name=%2 reason=hive_error result=%3",_playerID,_playerName,_primary];
 	diag_log format ["LOGIN RESULT: Exiting, failed to load _primary: %1 for player: %2 ",_primary,_playerID];
 	};
 
 	if (((typeName _primary) != "ARRAY") || {(count _primary) < 5} || {(_primary select 0) == "FAIL"}) exitWith {
+	diag_log format ["A2EDC:REJOIN:SERVER_LOGIN_REFUSED uid=%1 name=%2 reason=invalid_hive_result result=%3 type=%4 count=%5",_playerID,_playerName,_primary,typeName _primary,if ((typeName _primary) == "ARRAY") then {count _primary} else {-1}];
 	diag_log format ["A2EDC:LOGIN:HIVE_RESULT_INVALID uid=%1 result=%2 count=%3",_playerID,_primary,if ((typeName _primary) == "ARRAY") then {count _primary} else {-1}];
 	};
 
@@ -236,4 +254,16 @@ _newPlayer,
 _a2edcNeedsGenderSelect
 ];
 _a2edcOwner publicVariableClient "dayzPlayerLogin";
+diag_log format ["A2EDC:REJOIN:LOGIN_PAYLOAD_PUBLISHED uid=%1 name=%2 charID=%3 owner=%4 payloadCount=%5",_playerID,_playerName,_charID,_a2edcOwner,count dayzPlayerLogin];
 diag_log format ["[A2EDC:LOGIN_PAYLOAD:PUBLISHED] uid=%1 owner=%2 variable=dayzPlayerLogin",_playerID,_a2edcOwner];
+if (isNil "A2EDC_serverBuildInfo") then {
+	A2EDC_serverBuildInfo = [
+		if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"UNKNOWN"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+		if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"UNKNOWN"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE},
+		if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {""} else {A2EDC_DAYZ_SERVER_BUILD_UTC},
+		if (isNil "A2EDC_DAYZ_SERVER_BUILD_SOURCE") then {""} else {A2EDC_DAYZ_SERVER_BUILD_SOURCE},
+		if (isNil "A2EDC_BUILD_EXPORT") then {""} else {A2EDC_BUILD_EXPORT}
+	];
+};
+_a2edcOwner publicVariableClient "A2EDC_serverBuildInfo";
+diag_log format ["A2EDC:BUILD_ID_SERVER_PUBLISH target=%1 uid=%2 name=%3 server=%4",_a2edcOwner,_playerID,_playerName,A2EDC_serverBuildInfo];

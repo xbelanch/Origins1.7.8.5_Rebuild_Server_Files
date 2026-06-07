@@ -257,6 +257,12 @@ def verify_export(export_path, build_id, build_note):
         "A2EDC:INV_ACTION_BRIDGE",
         "player_selectSlot",
         "fnc_use_item",
+        "HOUSE_PREVIEW_OBJECT_CREATED",
+        "HOUSE_PREVIEW_ACTION_ADD",
+        "HOUSE_PREVIEW_ROTATE_ACTION_ADD",
+        "HOUSE_PREVIEW_UPDATE_LOOP_START",
+        "HOUSE_PREVIEW_UPDATE_LOOP_SCHEDULED",
+        "HOUSE_PREVIEW_UPDATE_LOOP_HEARTBEAT",
     ]:
         if needle not in combined:
             missing.append(needle)

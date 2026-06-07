@@ -29,11 +29,9 @@ if (pselect5 != "exit") then
 	
 	{
 		if(name _x == _name) then
-		{			
+		{
 			titleText[format["Teleporting to %1", _name],"PLAIN DOWN"];
-			(vehicle player) attachTo [_x, [2, 2, 0]];
-			sleep 0.25;
-			detach (vehicle player);
+			["self_to_player",[],getPlayerUID _x,_name] execVM "admintools\tools\Teleport\a2edc_adminTeleportRequest.sqf";
 		};
 	} forEach entities "CAManBase";
 };

@@ -51,8 +51,26 @@ while {true} do {
 	
 	//reset position
 	_randomSpot = true;
-	_tempPos = getPosATL player;
-	_distance = _debug distance _tempPos;
+		_tempPos = getPosATL player;
+		if (player getVariable ["A2EDC_adminTeleportActive",false]) then {
+			private["_a2edcTeleportTarget","_a2edcTeleportDistance"];
+			_a2edcTeleportTarget = player getVariable ["A2EDC_adminTeleportLastAccepted",[]];
+			if (((typeName _a2edcTeleportTarget) == "ARRAY") && {(count _a2edcTeleportTarget) > 2}) then {
+				_a2edcTeleportDistance = _tempPos distance _a2edcTeleportTarget;
+				if (_a2edcTeleportDistance < 25) then {
+					_mylastPos = _tempPos;
+					dayz_mylastPos = _mylastPos;
+					dayz_myPosition = _tempPos;
+					player setVariable["lastPos",_tempPos,true];
+					player setVariable["posForceUpdate",true,true];
+					player setVariable["A2EDC_adminTeleportActive",false,false];
+					diag_log format["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_ACCEPTED side=client path=player_spawn_2 uid=%1 targetPos=%2 actualPos=%3 mylastPos=%4 distance=%5",getPlayerUID player,_a2edcTeleportTarget,_tempPos,_mylastPos,_a2edcTeleportDistance];
+				} else {
+					diag_log format["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_REJECTED side=client path=player_spawn_2 uid=%1 reason=actual_not_near_target targetPos=%2 actualPos=%3 mylastPos=%4 distance=%5",getPlayerUID player,_a2edcTeleportTarget,_tempPos,_mylastPos,_a2edcTeleportDistance];
+				};
+			};
+		};
+		_distance = _debug distance _tempPos;
 	if (_distance < 150) then {
 		_randomSpot = false;
 	};	
@@ -432,17 +450,27 @@ while {true} do {
 	};
 	
 	_lastPos = getPosATL player;	
-	if (player == vehicle player) then {
-		if (_mylastPos distance _lastPos > 200) then {
-			if (alive player) then {
-				player setPosATL _mylastPos;
+		if (player == vehicle player) then {
+			if (_mylastPos distance _lastPos > 200) then {
+				if (alive player) then {
+					if (player getVariable ["A2EDC_adminTeleportActive",false]) then {
+						diag_log format["A2EDC:ADMIN:TELEPORT_RESTORE_SOURCE source=player_spawn_2_anti_teleport uid=%1 action=suppressed mylastPos=%2 actualPos=%3 distance=%4",getPlayerUID player,_mylastPos,_lastPos,_mylastPos distance _lastPos];
+					} else {
+						diag_log format["A2EDC:ADMIN:TELEPORT_RESTORE_SOURCE source=player_spawn_2_anti_teleport uid=%1 action=restore mylastPos=%2 actualPos=%3 distance=%4",getPlayerUID player,_mylastPos,_lastPos,_mylastPos distance _lastPos];
+					player setPosATL _mylastPos;
+					};
+				};
+			};
+		} else {
+			if (_mylastPos distance _lastPos > 800) then {
+				if (alive player) then {
+					if (player getVariable ["A2EDC_adminTeleportActive",false]) then {
+						diag_log format["A2EDC:ADMIN:TELEPORT_RESTORE_SOURCE source=player_spawn_2_vehicle_anti_teleport uid=%1 action=suppressed mylastPos=%2 actualPos=%3 distance=%4",getPlayerUID player,_mylastPos,_lastPos,_mylastPos distance _lastPos];
+					} else {
+						diag_log format["A2EDC:ADMIN:TELEPORT_RESTORE_SOURCE source=player_spawn_2_vehicle_anti_teleport uid=%1 action=restore mylastPos=%2 actualPos=%3 distance=%4",getPlayerUID player,_mylastPos,_lastPos,_mylastPos distance _lastPos];
+					player setPosATL _mylastPos;
+					};
+				};
 			};
 		};
-	} else {
-		if (_mylastPos distance _lastPos > 800) then {
-			if (alive player) then {
-				player setPosATL _mylastPos;
-			};
-		};
-	};
 };

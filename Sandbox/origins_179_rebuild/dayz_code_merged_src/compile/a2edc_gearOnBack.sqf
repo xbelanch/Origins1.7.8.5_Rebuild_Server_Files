@@ -160,6 +160,9 @@ A2EDC_fnc_dumpGearControls = {
 	for "_idc" from 5011 to 5022 do {
 		_ranges set [count _ranges,_idc];
 	};
+	for "_idc" from 85011 to 85022 do {
+		_ranges set [count _ranges,_idc];
+	};
 	{
 		_idc = _x;
 		_ctrl = _display displayCtrl _idc;
@@ -177,6 +180,60 @@ A2EDC_fnc_dumpGearControls = {
 		};
 		diag_log format["A2EDC:GEAR_CTRL_DUMP idc=%1 isNull=%2 ctrlType=%3 ctrlText=%4 ctrlShown=%5 ctrlEnabled=%6 ctrlFade=%7 ctrlPosition=%8",_idc,_isNull,_ctrlType,_text,_shown,_enabled,_fade,_position];
 	} forEach _ranges;
+};
+
+A2EDC_fnc_updateGearSlotBackgrounds = {
+	private["_display","_source","_force","_playerGroup","_bagGroup","_closeBagButton","_playerShown","_bagGroupShown","_closeBagShown","_bagShown","_showPlayerSlotBackgrounds","_idcs","_idc","_ctrl","_state","_reason"];
+	disableSerialization;
+	_display = findDisplay 999999;
+	_source = "manual";
+	_force = false;
+	if (!isNil "_this") then {
+		if ((typeName _this) == "ARRAY") then {
+			if ((count _this) > 0) then {
+				_display = _this select 0;
+			};
+			if ((count _this) > 1) then {
+				_source = _this select 1;
+			};
+			if ((count _this) > 2) then {
+				_force = _this select 2;
+			};
+		};
+	};
+	if (isNull _display) then {
+		_display = findDisplay 106;
+	};
+	if (isNull _display) exitWith {false};
+
+	_playerGroup = _display displayCtrl 160;
+	_bagGroup = _display displayCtrl 159;
+	_closeBagButton = _display displayCtrl 158;
+	_playerShown = (!isNull _playerGroup) && {ctrlShown _playerGroup};
+	_bagGroupShown = (!isNull _bagGroup) && {ctrlShown _bagGroup};
+	_closeBagShown = (!isNull _closeBagButton) && {ctrlShown _closeBagButton};
+	_bagShown = _bagGroupShown && {_closeBagShown || {!_playerShown}};
+	_showPlayerSlotBackgrounds = _playerShown && {!_bagShown};
+	_state = [_playerShown,_bagGroupShown,_closeBagShown,_bagShown,_showPlayerSlotBackgrounds];
+	if (isNil "A2EDC_gearSlotBackgroundStateLast") then {
+		A2EDC_gearSlotBackgroundStateLast = [];
+	};
+	if ((!_force) && {(str A2EDC_gearSlotBackgroundStateLast) == (str _state)}) exitWith {_showPlayerSlotBackgrounds};
+	A2EDC_gearSlotBackgroundStateLast = _state;
+
+	_idcs = [5011,5013,5015,85011,85013,85015];
+	{
+		_idc = _x;
+		_ctrl = _display displayCtrl _idc;
+		if (!isNull _ctrl) then {
+			_ctrl ctrlShow _showPlayerSlotBackgrounds;
+			_ctrl ctrlSetFade 0;
+			_ctrl ctrlCommit 0;
+		};
+	} forEach _idcs;
+	_reason = if (_showPlayerSlotBackgrounds) then {"player_gear"} else {"bag_or_container"};
+	diag_log format["A2EDC:GEAR_SLOT_BACKGROUNDS source=%1 playerGroupShown=%2 bagGroupShown=%3 closeBagShown=%4 bagContext=%5 showBackgrounds=%6 reason=%7 idcs=%8",_source,_playerShown,_bagGroupShown,_closeBagShown,_bagShown,_showPlayerSlotBackgrounds,_reason,_idcs];
+	_showPlayerSlotBackgrounds
 };
 
 A2EDC_fnc_callEpochRefGearRefresh = {
@@ -461,12 +518,13 @@ A2EDC_fnc_onBackGearOpenRefresh = {
 				_display = findDisplay 106;
 				_fallbackFindDisplay = true;
 			};
-			diag_log format["A2EDC:ONBACK_GEAR_OPEN_REFRESH pass=%1 source=%2 displayFromArg=%3 fallbackFindDisplay=%4 displayFound=%5 targetIDC=%6 A2EDC_onBack=%7",_pass,_source,_displayFromArg,_fallbackFindDisplay,!isNull _display,_targetIDC,player getVariable ["A2EDC_onBack",""]];
-			[_display] call A2EDC_fnc_callEpochRefGearRefresh;
-			[_display,_source,_pass] call A2EDC_fnc_refreshOnBackGearSlot;
-		} forEach _delays;
+				diag_log format["A2EDC:ONBACK_GEAR_OPEN_REFRESH pass=%1 source=%2 displayFromArg=%3 fallbackFindDisplay=%4 displayFound=%5 targetIDC=%6 A2EDC_onBack=%7",_pass,_source,_displayFromArg,_fallbackFindDisplay,!isNull _display,_targetIDC,player getVariable ["A2EDC_onBack",""]];
+				[_display] call A2EDC_fnc_callEpochRefGearRefresh;
+				[_display,_source,_pass] call A2EDC_fnc_refreshOnBackGearSlot;
+				[_display,format["%1_%2",_source,_pass],true] call A2EDC_fnc_updateGearSlotBackgrounds;
+			} forEach _delays;
+		};
 	};
-};
 
 A2EDC_fnc_scheduleOnBackGearRefresh = {
 	private["_source","_display"];
@@ -482,21 +540,25 @@ A2EDC_fnc_scheduleOnBackGearRefresh = {
 if (!isDedicated and isNil "A2EDC_onBackGearWatcherStarted") then {
 	A2EDC_onBackGearWatcherStarted = true;
 	[] spawn {
-		private["_wasOpen","_display"];
-		disableSerialization;
-		_wasOpen = false;
-		while {true} do {
-			_display = findDisplay 106;
-			if ((!isNull _display) and !_wasOpen) then {
+			private["_wasOpen","_display"];
+			disableSerialization;
+			_wasOpen = false;
+			while {true} do {
+				_display = findDisplay 106;
+				if ((!isNull _display) and !_wasOpen) then {
 				_wasOpen = true;
-				diag_log format["A2EDC:ONBACK_GEAR_WATCH openDetected=true displayFound=%1 targetIDC=511 A2EDC_onBack=%2",true,player getVariable ["A2EDC_onBack",""]];
-				[_display,"watch"] call A2EDC_fnc_onBackGearOpenRefresh;
+					diag_log format["A2EDC:ONBACK_GEAR_WATCH openDetected=true displayFound=%1 targetIDC=511 A2EDC_onBack=%2",true,player getVariable ["A2EDC_onBack",""]];
+					[_display,"watch"] call A2EDC_fnc_onBackGearOpenRefresh;
+				};
+				if (!isNull _display) then {
+					[_display,"watch_state",false] call A2EDC_fnc_updateGearSlotBackgrounds;
+				};
+				if (isNull _display) then {
+					_wasOpen = false;
+					A2EDC_gearSlotBackgroundStateLast = [];
+				};
+				sleep 0.25;
 			};
-			if (isNull _display) then {
-				_wasOpen = false;
-			};
-			sleep 0.25;
-		};
 	};
 };
 

@@ -1,5 +1,5 @@
 private ["_objects"];
-_objects = nearestObjects [getPosATL player,["Car","Helicopter","Motorcycle","Ship","TentStorage","TentStorageR","wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage"],15];
+_objects = nearestObjects [getPosATL player,["Car","Helicopter","Motorcycle","Ship","TentStorage","TentStorageR","wooden_shed_lvl_1","Uroven1VelkaBudka","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage"],15];
 {
 	dayUpdateVehlcle = [_x,"all"];
 	publicVariableServer "dayUpdateVehlcle";

@@ -1,4 +1,4 @@
-private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku","_traceClass","_inputObject","_objectIDValue","_uidValue","_objectIDType","_uidType","_guardReason","_missingObjectID"];
+private ["_object","_type","_objectID","_uid","_lastUpdate","_needUpdate","_object_position","_object_inventory","_object_damage","_isNotOk","_allowed","_naObnovku","_typeofObj","_dbTypeObj","_traceClass","_inputObject","_objectIDValue","_uidValue","_objectIDType","_uidType","_guardReason","_missingObjectID"];
 
 _inputObject = _this select 0;
 _object = 	_inputObject;
@@ -11,7 +11,7 @@ if (_object isKindOf "Man") then {
 };
 _parachuteWest = typeOf _object == "ParachuteWest";
 _isNotOk = false;
-_allowed =["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
+_allowed =["wooden_shed_lvl_1","Uroven1VelkaBudka","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
 _objectID =	_object getVariable ["ObjectID","0"];
 _uid = 		_object getVariable ["ObjectUID","0"];
 _missingObjectID = false;
@@ -141,7 +141,9 @@ _lastUpdate = _object getVariable ["lastUpdate",time];
 _needUpdate = _object in needUpdate_objects;
 _naObnovku = true;
 _typeofObj = typeOf _object;
-if (_typeofObj in ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"]) then {
+_dbTypeObj = _object getVariable ["A2EDC_DBHouseType",_typeofObj];
+if (_dbTypeObj == "Uroven1VelkaBudka") then {_dbTypeObj = "large_shed_lvl_1";};
+if (_dbTypeObj in ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"]) then {
 _naObnovku = _object getVariable["CanBeUpdated",false];
 if (typeName _naObnovku != "BOOL") then { _naObnovku = false; };
 } else {

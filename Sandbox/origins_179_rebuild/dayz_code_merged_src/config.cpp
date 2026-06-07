@@ -10472,6 +10472,202 @@ class CfgBuildingLoot
     {
         maxRoaming = 4;
     };
+    class Uroven1DrevenaBudka;
+    class Uroven2KladaDomek;
+    class Uroven3DrevenyDomek;
+    class Uroven1VelkaBudka;
+    class Uroven2MalyDomek;
+    class Uroven3VelkyDomek;
+    class malaGaraz;
+    class velkaGaraz;
+    class wooden_shed_lvl_1: Uroven1DrevenaBudka
+    {
+        scope = 2;
+        displayName = "Bandits - Wooden Shed (Level 1)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniDvaStupenDruhy {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniTriStupenTreti {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupen4tvrty {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaSkrytJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaPojevitJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class log_house_lvl_2: Uroven2KladaDomek
+    {
+        scope = 2;
+        displayName = "Bandits - Log House (Level 2)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class wooden_house_lvl_3: Uroven3DrevenyDomek
+    {
+        scope = 2;
+        displayName = "Bandits - Wooden House (Level 3)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniDvaStupenDruhy {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniTriStupenTreti {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupen4tvrty {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaSkrytJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaPojevitJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class large_shed_lvl_1: Uroven1VelkaBudka
+    {
+        scope = 2;
+        displayName = "Heroes - Large Shed (Level 1)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniDvaStupenDruhy {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniTriStupenTreti {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupen4tvrty {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaSkrytJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaPojevitJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class small_house_lvl_2: Uroven2MalyDomek
+    {
+        scope = 2;
+        displayName = "Heroes - Small House (Level 2)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class big_house_lvl_3: Uroven3VelkyDomek
+    {
+        scope = 2;
+        displayName = "Heroes - Big House (Level 3)";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniDvaStupenDruhy {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniTriStupenTreti {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaStupen4tvrty {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaSkrytJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class povyseniJednaPojevitJedna {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+        };
+    };
+    class small_garage: malaGaraz
+    {
+        scope = 2;
+        displayName = "Small Garage";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereGarazLeveDva {source = "user"; animPeriod = 2; initPhase = 0;};
+            class dvereGarazPraveDva {source = "user"; animPeriod = 2; initPhase = 0;};
+        };
+    };
+    class big_garage: velkaGaraz
+    {
+        scope = 2;
+        displayName = "Big Garage";
+        class AnimationSources: AnimationSources
+        {
+            class stupenJeden {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDva {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenDvaSkryt {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupenTri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class stupen4tiri {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereJednaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereJednaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaADira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class dvereDvaBDira {source = "user"; animPeriod = 1; initPhase = 0;};
+            class vratkaDva {source = "user"; animPeriod = 1; initPhase = 0;};
+            class prapor {source = "user"; animPeriod = 1; initPhase = 1;};
+            class dvereGarazLeveDva {source = "user"; animPeriod = 2; initPhase = 0;};
+            class dvereGarazPraveDva {source = "user"; animPeriod = 2; initPhase = 0;};
+        };
+    };
 };
 
 enum { DestructNo = 0 };

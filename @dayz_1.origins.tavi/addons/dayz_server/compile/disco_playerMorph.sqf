@@ -273,6 +273,7 @@ _newUnit setCaptive false;
 
 
 botPlayers = botPlayers + [_playerID];
+diag_log format["A2EDC:REJOIN:BOTPLAYERS_STATE uid=%1 charID=%2 action=add botPlayers=%3 pos=%4",_playerID,_characterID,botPlayers,_position];
 
 _mydamage_eh1 = _newUnit addeventhandler ["HandleDamage",{ _this call disco_damageHandler; }];
 
@@ -311,4 +312,5 @@ deleteGroup _group;
 [_characterID,_worldspace,_playerGear,_playerBackp,_medical,[],"",_a2edcNorm] call server_characterSync;
 };
 botPlayers = botPlayers - [_playerID];
+diag_log format["A2EDC:REJOIN:BOTPLAYERS_STATE uid=%1 charID=%2 action=remove botPlayers=%3",_playerID,_characterID,botPlayers];
 diag_log format["DEBUG: Player %1 [%2] removed from botPlayers: %3",_playerName,_playerID,botPlayers];

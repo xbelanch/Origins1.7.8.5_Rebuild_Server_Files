@@ -78,6 +78,92 @@ class RscProgressNotFreeze
 	h = 0.039216;
 	texture = "#(argb,8,8,3)color(0,0,0,0)";
 };
+
+class A2EDC_BuildIdText : RscText
+{
+	style = 0;
+	font = Zeppelin32;
+	sizeEx = 0.020;
+	colorText[] = {0.92,0.96,1,0.92};
+	colorBackground[] = {0,0,0,0};
+	shadow = 1;
+};
+
+class RscTitles
+{
+	class A2EDC_BuildIdOverlay
+	{
+		idd = 860620;
+		movingEnable = 0;
+		duration = 10e10;
+		fadein = 0;
+		fadeout = 0;
+		name = "A2EDC_BuildIdOverlay";
+		onLoad = "uiNamespace setVariable ['A2EDC_BuildIdOverlayDisplay',_this select 0];";
+		onUnload = "uiNamespace setVariable ['A2EDC_BuildIdOverlayDisplay',displayNull];";
+		class controls
+		{
+				class A2EDC_BuildIdBg : RscText
+				{
+					idc = 860620;
+					x = safeZoneX + 0.010;
+					y = safeZoneY + 0.035;
+						w = 0.50;
+						h = 0.144;
+					text = "";
+					colorText[] = {1,1,1,0};
+					colorBackground[] = {0,0,0,0.45};
+				};
+				class A2EDC_BuildIdHeader : A2EDC_BuildIdText
+				{
+					idc = 860621;
+					x = safeZoneX + 0.018;
+					y = safeZoneY + 0.039;
+					w = 0.484;
+					h = 0.026;
+					sizeEx = 0.022;
+					text = "A2EDC BUILD";
+				};
+				class A2EDC_BuildIdMission : A2EDC_BuildIdText
+				{
+					idc = 860622;
+					x = safeZoneX + 0.018;
+					y = safeZoneY + 0.068;
+					w = 0.484;
+					h = 0.026;
+					text = "MIS UNKNOWN";
+				};
+				class A2EDC_BuildIdClient : A2EDC_BuildIdText
+				{
+					idc = 860623;
+					x = safeZoneX + 0.018;
+					y = safeZoneY + 0.094;
+					w = 0.484;
+					h = 0.026;
+					text = "CLI UNKNOWN";
+				};
+					class A2EDC_BuildIdServer : A2EDC_BuildIdText
+					{
+						idc = 860624;
+						x = safeZoneX + 0.018;
+						y = safeZoneY + 0.120;
+						w = 0.484;
+						h = 0.026;
+						text = "SRV UNKNOWN";
+					};
+					class A2EDC_BuildIdHumanity : A2EDC_BuildIdText
+					{
+						idc = 860625;
+						x = safeZoneX + 0.018;
+						y = safeZoneY + 0.146;
+						w = 0.484;
+						h = 0.026;
+						text = "HUM UNKNOWN";
+					};
+		};
+	};
+};
+
 //
 // the loading screen itself
 //

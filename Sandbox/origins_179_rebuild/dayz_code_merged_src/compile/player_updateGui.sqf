@@ -1,4 +1,4 @@
-private["_display","_ctrlBlood","_ctrlBleed","_bloodVal","_ctrlFood","_ctrlThirst","_thirstVal","_foodVal","_ctrlTemp","_tempVal","_combatVal","_array","_ctrlEar","_ctrlEye"/*,"_ctrlHumanity"*/,"_ctrlCombat","_ctrlFracture","_visualText","_visual","_audibleText","_audible"];
+private["_display","_ctrlBlood","_ctrlBleed","_bloodVal","_ctrlFood","_ctrlThirst","_thirstVal","_foodVal","_ctrlTemp","_tempVal","_combatVal","_array","_ctrlEar","_ctrlEye"/*,"_ctrlHumanity"*/,"_ctrlHumanityText","_ctrlCombat","_ctrlFracture","_visualText","_visual","_audibleText","_audible","_humanityValue","_humanityText"];
 disableSerialization;
 
 _foodVal = 		1 - (dayz_hunger / SleepFood);
@@ -22,6 +22,7 @@ _ctrlTemp 	= 	_display displayCtrl 1306;					//TeeChange
 _ctrlEar = 		_display displayCtrl 1304;
 _ctrlEye = 		_display displayCtrl 1305;
 //_ctrlHumanity = _display displayCtrl 1207;
+_ctrlHumanityText = _display displayCtrl 1314;
 _ctrlCombat = _display displayCtrl 1307;
 _ctrlFracture = 	_display displayCtrl 1203;
 
@@ -96,6 +97,17 @@ _audibletext = "";
 _audible = round((dayz_disAudial / 50) * 4) min 5;
 if (_audible > 0) then {_audibletext = "\z\addons\dayz_code\gui\val_" + str(_audible) + "_ca.paa"};
 _ctrlEar ctrlSetText _audibletext;
+
+/*
+	Origins humanity numeric HUD:
+	IDC 1314 is the visible number below the humanity hand icon. The older
+	picture-control code below targets a commented/unused icon path.
+*/
+_humanityValue = player getVariable["humanity",0];
+_humanityText = format ["%1",_humanityValue];
+if (!isNull _ctrlHumanityText) then {
+	_ctrlHumanityText ctrlSetText _humanityText;
+};
 
 /*
 	Fracture:

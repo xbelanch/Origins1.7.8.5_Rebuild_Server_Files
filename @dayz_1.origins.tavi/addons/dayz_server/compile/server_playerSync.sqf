@@ -1,4 +1,4 @@
-private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos","_traceName","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup"];
+private ["_character","_magazines","_force","_characterID","_charPos","_isInVehicle","_timeSince","_humanity","_debug","_debugspS","_distance","_isNewMed","_isNewPos","_isNewGear","_basebbm","_playerIDs","_bbases","_playerID","_playerPos","_playerGear","_playerBackp","_medical","_distanceFoot","_PlayerID","_bb_baseserver","_player","_lastPos","_backpack","_kills","_killsB","_killsH","_headShots","_lastTime","_timeGross","_timeLeft","_currentWpn","_currentAnim","_config","_onLadder","_isTerminal","_wpnDisabled","_currentModel","_modelChk","_muzzles","_temp","_currentState","_array","_key","_pos","_traceName","_a2edcRawOnBack","_a2edcNorm","_a2edcReason","_a2edcDup","_a2edcTeleportSync","_a2edcTeleportTarget","_a2edcTeleportLastPos","_a2edcTeleportDistance","_a2edcTeleportLastDistance"];
 
 diag_log ("UPDATE: " + str(_this) );
 
@@ -22,9 +22,35 @@ _force =	true;
 
 _characterID =	_character getVariable ["characterID","0"];
 _charPos = 		getPosATL _character;
+_a2edcTeleportSync = _character getVariable ["A2EDC_adminTeleportSync",false];
+_a2edcTeleportTarget = _character getVariable ["A2EDC_adminTeleportTarget",[]];
+_a2edcTeleportLastPos = _character getVariable ["lastPos",[]];
+if (_a2edcTeleportSync) then {
+	diag_log format ["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_RECEIVED uid=%1 charID=%2 targetVar=%3 lastPos=%4 actualPos=%5 locality=%6 owner=%7",getPlayerUID _character,_characterID,_a2edcTeleportTarget,_a2edcTeleportLastPos,_charPos,local _character,owner _character];
+	if (((typeName _a2edcTeleportTarget) == "ARRAY") && {(count _a2edcTeleportTarget) > 2}) then {
+		_a2edcTeleportDistance = _charPos distance _a2edcTeleportTarget;
+		_a2edcTeleportLastDistance = 999999;
+		if (((typeName _a2edcTeleportLastPos) == "ARRAY") && {(count _a2edcTeleportLastPos) > 2}) then {
+			_a2edcTeleportLastDistance = _a2edcTeleportLastPos distance _a2edcTeleportTarget;
+		};
+		if ((_a2edcTeleportDistance < 30) || {_a2edcTeleportLastDistance < 30}) then {
+			_charPos = +_a2edcTeleportTarget;
+			_character setVariable ["lastPos",_charPos,true];
+			diag_log format ["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_ACCEPTED uid=%1 charID=%2 targetPos=%3 actualPos=%4 lastPosDistance=%5 actualDistance=%6 reason=%7",getPlayerUID _character,_characterID,_a2edcTeleportTarget,getPosATL _character,_a2edcTeleportLastDistance,_a2edcTeleportDistance,if (_a2edcTeleportDistance < 30) then {"actual_near_target"} else {"lastPos_near_target_remote_lag"}];
+		} else {
+			diag_log format ["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_REJECTED uid=%1 charID=%2 targetPos=%3 actualPos=%4 lastPos=%5 lastPosDistance=%6 actualDistance=%7 reason=target_not_confirmed",getPlayerUID _character,_characterID,_a2edcTeleportTarget,_charPos,_a2edcTeleportLastPos,_a2edcTeleportLastDistance,_a2edcTeleportDistance];
+		};
+	} else {
+		diag_log format ["A2EDC:ADMIN:TELEPORT_SERVER_SYNC_REJECTED uid=%1 charID=%2 targetPos=%3 actualPos=%4 reason=missing_target_var",getPlayerUID _character,_characterID,_a2edcTeleportTarget,_charPos];
+	};
+};
 _isInVehicle = 	vehicle _character != _character;
 _timeSince = 	0;
 _humanity =		0;
+if (_character getVariable ["A2EDC_adminTeleportSync",false]) then {
+	diag_log format ["A2EDC:ADMIN:TELEPORT_SYNC side=server uid=%1 charID=%2 oldLastPos=%3 targetVar=%4 actualPos=%5 locality=%6 owner=%7",getPlayerUID _character,_characterID,_character getVariable ["lastPos",[]],_character getVariable ["A2EDC_adminTeleportTarget",[]],_charPos,local _character,owner _character];
+	_character setVariable ["A2EDC_adminTeleportSync",false,true];
+};
 
 
 
@@ -266,7 +292,7 @@ _pos = _this select 0;
 {
 [_x, "all"] call server_updatObiect;
 diag_log ("Gear Update");
-} forEach nearestObjects [_pos, ["Car", "Helicopter", "Motorcycle", "Ship", "TentStorage", "TentStorageR","wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage"], 10];
+} forEach nearestObjects [_pos, ["Car", "Helicopter", "Motorcycle", "Ship", "TentStorage", "TentStorageR","wooden_shed_lvl_1","Uroven1VelkaBudka","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage"], 10];
 
 
 

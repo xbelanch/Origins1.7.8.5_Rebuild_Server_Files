@@ -1,4 +1,4 @@
-private ["_itOKbu","_stopGo","_flagTo","_Ok","_deagOK","_passUch","_objects","_object","_chePsw","_codeArray","_codeString","_status","_passwordN","_pcount","_msg","_playerID","_objectID","_objectLevel","_type","_naObnovkuOld"];
+private ["_itOKbu","_stopGo","_flagTo","_Ok","_deagOK","_passUch","_objects","_object","_chePsw","_codeArray","_codeString","_status","_passwordN","_pcount","_msg","_playerID","_objectID","_objectLevel","_type","_rawType","_naObnovkuOld"];
 
 diag_log format ["START ppver ,_this =%1 ",_this];
 _itOKbu = false;
@@ -48,7 +48,9 @@ _chePsw = {
 _playerID =	getPlayerUID player;
 _objectID = _object getVariable ["CharacterID","0"];
 _objectLevel = _object getVariable ["levelhouse",0];
-_type = typeOf _object;
+_rawType = typeOf _object;
+_type = _object getVariable ["A2EDC_DBHouseType",_rawType];
+if (_type == "Uroven1VelkaBudka") then {_type = "large_shed_lvl_1";};
 if (_objectLevel == 0) exitWith { titletext ["House Level Undefined, Something wrong", "PLAIN DOWN"]; _stopGo = true; };
 if ((_type == "wooden_shed_lvl_1") OR (_type == "large_shed_lvl_1") OR (_type == "big_house_lvl_3")) then {
 	_stopGo = _objectLevel < 2;

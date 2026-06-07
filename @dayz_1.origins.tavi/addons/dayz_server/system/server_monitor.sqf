@@ -27,6 +27,39 @@ _newinvhouse = [];
 _dobav = true;
 _dobavL = true;
 _dobavR = true;
+_a2edcHouseTypes = ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
+_a2edcHouseCreateClass = {
+	private["_dbType","_createType"];
+	_dbType = _this;
+	_createType = _dbType;
+	if (_dbType == "wooden_shed_lvl_1") then {_createType = "Uroven1DrevenaBudka";};
+	if (_dbType == "log_house_lvl_2") then {_createType = "Uroven2KladaDomek";};
+	if (_dbType == "wooden_house_lvl_3") then {_createType = "Uroven3DrevenyDomek";};
+	if (_dbType == "large_shed_lvl_1") then {_createType = "Uroven1VelkaBudka";};
+	if (_dbType == "small_house_lvl_2") then {_createType = "Uroven2MalyDomek";};
+	if (_dbType == "big_house_lvl_3") then {_createType = "Uroven3VelkyDomek";};
+	if (_dbType == "small_garage") then {_createType = "malaGaraz";};
+	if (_dbType == "big_garage") then {_createType = "velkaGaraz";};
+	_createType
+};
+_a2edcHouseAnimationSource = {
+    private["_selection","_objectType","_source"];
+    _selection = _this select 0;
+    _objectType = _this select 1;
+    _source = _selection;
+    if (_selection == "stage_1") then {_source = "stupenJeden";};
+    if (_selection == "stage_2") then {_source = "stupenDva";};
+    if (_selection == "stage_2_hide") then {_source = "stupenDvaSkryt";};
+    if (_selection == "stage_3") then {_source = "stupenTri";};
+    if (_selection == "stage_4") then {_source = "stupen4tiri";};
+    if (_selection == "upgrd_1_stage_1") then {_source = "povyseniJednaStupenJeden";};
+    if (_selection == "upgrd_1_stage_2") then {_source = "povyseniDvaStupenDruhy";};
+    if (_selection == "upgrd_1_stage_3") then {_source = "povyseniTriStupenTreti";};
+    if (_selection == "upgrd_1_stage_4") then {_source = "povyseniJednaStupen4tvrty";};
+    if (_selection == "upgrd_1_hide_1") then {_source = "povyseniJednaSkrytJedna";};
+    if (_selection == "upgrd_1_show_1") then {_source = "povyseniJednaPojevitJedna";};
+	_source
+};
 _fnc_dump = { 
 diag_log format ["Exec Time server_monitor = %1",_this];
 };
@@ -155,10 +188,30 @@ _dobav = true;
 _dobavL = true;
 _dobavR = true;
 
-_object = createVehicle [_type, _pos, [], 0, "CAN_COLLIDE"];
+_a2edcCreateType = _type call _a2edcHouseCreateClass;
+_a2edcMonitorIsHouse = _type in _a2edcHouseTypes;
+if (_a2edcMonitorIsHouse) then {
+diag_log format ["A2EDC:HOUSE_FOUNDATION_CLASS source=server_monitor dbHouseType=%1 runtimeClass=%2 createVehicleClass=%3 objectID=%4 owner=%5 stageAr=%6",_type,_a2edcCreateType,_a2edcCreateType,_idKey,_ownerID,_hitpoints];
+diag_log format ["A2EDC:HOUSE_SERVER_CREATE_BEGIN source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 objectID=%4 owner=%5 position=%6 direction=%7 damage=%8",_type,_a2edcCreateType,_a2edcCreateType,_idKey,_ownerID,_pos,_dir,_damage];
+diag_log format ["A2EDC:HOUSE_SERVER_CREATE_CLASS_CHECK source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 dbIsClass=%4 createIsClass=%5 dbScope=%6 createScope=%7 dbSimulation=%8 createSimulation=%9 dbModel=%10 createModel=%11",_type,_a2edcCreateType,_a2edcCreateType,isClass (configFile >> "CfgVehicles" >> _type),isClass (configFile >> "CfgVehicles" >> _a2edcCreateType),getNumber (configFile >> "CfgVehicles" >> _type >> "scope"),getNumber (configFile >> "CfgVehicles" >> _a2edcCreateType >> "scope"),getText (configFile >> "CfgVehicles" >> _type >> "simulation"),getText (configFile >> "CfgVehicles" >> _a2edcCreateType >> "simulation"),getText (configFile >> "CfgVehicles" >> _type >> "model"),getText (configFile >> "CfgVehicles" >> _a2edcCreateType >> "model")];
+diag_log format ["A2EDC:HOUSE_SERVER_CREATE_ATTEMPT source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 position=%4 direction=%5",_type,_a2edcCreateType,_a2edcCreateType,_pos,_dir];
+};
+_object = createVehicle [_a2edcCreateType, _pos, [], 0, "CAN_COLLIDE"];
+if (_a2edcMonitorIsHouse) then {
+diag_log format ["A2EDC:HOUSE_FOUNDATION_CREATE source=server_monitor dbHouseType=%1 runtimeClass=%2 object=%3 isNull=%4 typeOf=%5 objectID=%6 owner=%7 position=%8 direction=%9",_type,_a2edcCreateType,_object,isNull _object,if (isNull _object) then {"<null>"} else {typeOf _object},_idKey,_ownerID,_pos,_dir];
+diag_log format ["A2EDC:HOUSE_SERVER_CREATE_RESULT source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 resultObject=%4 isNull=%5 typeOf=%6 position=%7 direction=%8",_type,_a2edcCreateType,_a2edcCreateType,_object,isNull _object,if (isNull _object) then {"<null>"} else {typeOf _object},_pos,_dir];
+diag_log format ["A2EDC:HOUSE_FOUNDATION_INIT_BEGIN source=server_monitor object=%1 typeOf=%2 model=%3 dbHouseType=%4 runtimeClass=%5 objectID=%6 owner=%7 stageAr=%8",_object,typeOf _object,getText (configFile >> "CfgVehicles" >> typeOf _object >> "model"),_type,_a2edcCreateType,_idKey,_ownerID,_hitPoints];
+};
+if (isNull _object) exitWith {
+if (_a2edcMonitorIsHouse) then {
+diag_log format ["A2EDC:HOUSE_SERVER_CREATE_FAIL source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 objectID=%4 owner=%5 position=%6 direction=%7 reason=create_returned_null",_type,_a2edcCreateType,_a2edcCreateType,_idKey,_ownerID,_pos,_dir];
+};
+};
 _object setVariable ["lastUpdate",time];
 _object setVariable ["ObjectID", _idKey, true];
 _object setVariable ["CharacterID", _ownerID, true];
+_object setVariable ["A2EDC_DBHouseType",_type,true];
+_object setVariable ["A2EDC_CreateClass",_a2edcCreateType,true];
 
 
 clearWeaponCargoGlobal  _object;
@@ -176,7 +229,8 @@ _object setVectorUp (_worldspace select 2);
 
 };
 
-if (!(_type in ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"])) then {
+// Houses use their own stage state below, but their cargo must still be restored here.
+if (true) then {
 
 if (count _intentory > 0) then {
 
@@ -340,6 +394,8 @@ _object call fnc_vehicleEventHandler;
 };
 if (_type in ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"]) then 
 {
+_object setVariable["CanBeUpdated",false];
+_object setVariable["DaBeUpd",false,true];
 _levelhouse = 0;
 
 {
@@ -351,7 +407,10 @@ _object setVariable ["Name",_selection,false];
 _object setVariable ["PName",_selection,true];
 
 } else {
-_object animate [_selection,_dam];
+_animSource = [_selection,typeOf _object] call _a2edcHouseAnimationSource;
+diag_log format ["A2EDC:HOUSE_STAGE_ANIMATION_SOURCE source=server_monitor object=%1 typeOf=%2 dbHouseType=%3 logicalSelection=%4 animationSource=%5 value=%6",_object,typeOf _object,_type,_selection,_animSource,_dam];
+diag_log format ["A2EDC:HOUSE_STAGE_ANIMATION_APPLY source=server_monitor object=%1 typeOf=%2 dbHouseType=%3 logicalSelection=%4 animationSource=%5 value=%6 mapped=%7 evidence=p3d_animation_name",_object,typeOf _object,_type,_selection,_animSource,_dam,(_animSource != _selection)];
+_object animate [_animSource,_dam];
 
 if (_type == "object_x") then {
 if(_selection == "stage_1") then {
@@ -504,16 +563,23 @@ _object setVariable ["passwordtut",_dam,false];
 };
 
 } forEach _hitpoints;
+diag_log format ["A2EDC:HOUSE_SERVER_STAGE_SELECTIONS source=server_monitor dbHouseType=%1 createVehicleClass=%2 mappedVisualClass=%3 object=%4 typeOf=%5 stageAr=%6 levelhouse=%7 owner=%8",_type,_a2edcCreateType,_a2edcCreateType,_object,typeOf _object,_hitpoints,_levelhouse,_ownerID];
 _object setVariable ["Slevelhouse",_levelhouse,false];
 _object setVariable ["SOwner", _ownerID, false];
 _object setVariable ["HObjectID", _idKey, false];
 _object setVariable ["levelhouse",_levelhouse,true];
+diag_log format ["A2EDC:HOUSE_FOUNDATION_PUBLISH_INIT source=server_monitor object=%1 typeOf=%2 dbHouseType=%3 objectID=%4 objectUID=%5 owner=%6 levelhouse=%7 hObjectID=%8 sOwner=%9 cargo=%10",_object,typeOf _object,_type,_object getVariable ["ObjectID","<missing>"],_object getVariable ["ObjectUID","net"],_object getVariable ["CharacterID","<missing>"],_object getVariable ["levelhouse","<missing>"],_object getVariable ["HObjectID","<missing>"],_object getVariable ["SOwner","<missing>"],getMagazineCargo _object];
+diag_log format ["A2EDC:HOUSE_FOUNDATION_CARGO_CAPACITY source=server_monitor object=%1 typeOf=%2 dbHouseType=%3 transportMaxMagazines=%4 transportMaxWeapons=%5 transportMaxBackpacks=%6",_object,typeOf _object,_type,getNumber (configFile >> "CfgVehicles" >> typeOf _object >> "transportMaxMagazines"),getNumber (configFile >> "CfgVehicles" >> typeOf _object >> "transportMaxWeapons"),getNumber (configFile >> "CfgVehicles" >> typeOf _object >> "transportMaxBackpacks")];
+diag_log format ["A2EDC:HOUSE_FOUNDATION_INIT_DONE source=server_monitor object=%1 typeOf=%2 model=%3 dbHouseType=%4 runtimeClass=%5 objectID=%6 objectUID=%7 owner=%8 levelhouse=%9 stageAr=%10",_object,typeOf _object,getText (configFile >> "CfgVehicles" >> typeOf _object >> "model"),_type,_a2edcCreateType,_idKey,_object getVariable ["ObjectUID","net"],_ownerID,_levelhouse,_hitPoints];
 
 };
 
 
 
 ori_servObjMonitor set [count ori_servObjMonitor,_object];
+if (_a2edcMonitorIsHouse) then {
+diag_log format ["A2EDC:HOUSE_FOUNDATION_MONITOR_ADD source=server_monitor object=%1 typeOf=%2 dbHouseType=%3 monitor=ori_servObjMonitor monitorCount=%4",_object,typeOf _object,_type,count ori_servObjMonitor];
+};
 
 
 

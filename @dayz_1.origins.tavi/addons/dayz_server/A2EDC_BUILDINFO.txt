@@ -1,10 +1,10 @@
-build_id=20260531-155005
-build_utc=2026-05-31T15:50:12Z
+build_id=20260605-213646
+build_utc=2026-06-05T19:36:55Z
 source=@dayz_1.origins.tavi/addons/dayz_server
-export_pbo=Export/dayz_server_20260531-155005_onback-persistence-v3.pbo
+export_pbo=Export/dayz_server_20260605-213646_house-l1-preview-confirm-cancel-v2.pbo
 prefix=z\addons\dayz_server
 hostname=home-X99F8
-git_commit=fe4ccc14dc31115eae01c55b41565a829fe3f361
-git_short=fe4ccc1
+git_commit=c1f8a77682d1b9c1857e3a527c5ed81ff9f43ff3
+git_short=c1f8a77
 git_dirty=true
-note=onback-persistence-v3
+note=house-l1-preview-confirm-cancel-v2

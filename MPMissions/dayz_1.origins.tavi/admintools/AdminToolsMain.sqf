@@ -21,6 +21,8 @@ if ((getPlayerUID player) in AdminList) then { // Admins
 		["Weapon/Item Kits >>", [], "#USER:WeaponMenu", -5, [["expression", ""]], "1", "1"],
 		["Skin Change Menu >>", [], "#USER:AdminSkinsMenu", -5, [["expression", ""]], "1", "1"],
 		["Missions >>", [], "#USER:A2EDCMissionMenu", -5, [["expression", ""]], "1", "1"],
+		["Buildings >>", [], "#USER:A2EDCBuildingMenu", -5, [["expression", ""]], "1", "1"],
+		["Debug >>", [], "#USER:A2EDCDebugMenu", -5, [["expression", ""]], "1", "1"],
 		["Weather/Time Menu (Local Only) >>", [], "#USER:WTMenu", -5, [["expression", ""]], "1", "1"],			
 		["", [], "", -5, [["expression", ""]], "1", "0"],
 			["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]		
@@ -61,6 +63,38 @@ A2EDCMissionMenu =
 	["DZMS Major >>", [], "#USER:A2EDCDzmsMajorMissionMenu", -5, [["expression", ""]], "1", "1"],
 	["DZMS Minor >>", [], "#USER:A2EDCDzmsMinorMissionMenu", -5, [["expression", ""]], "1", "1"],
 	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCBuildingMenu =
+[
+["",true],
+		["House Level 1 Hero Kit", [], "", -5, [["expression",'["house_l1_hero"] execVM "admintools\tools\a2edc_adminBuildingKit.sqf"']], "1", "1"],
+		["House Level 1 Bandit Kit", [], "", -5, [["expression",'["house_l1_bandit"] execVM "admintools\tools\a2edc_adminBuildingKit.sqf"']], "1", "1"],
+		["Cleanup temporary building kit boxes", [], "", -5, [["expression",'["cleanup_temp"] execVM "admintools\tools\a2edc_adminBuildingKit.sqf"']], "1", "1"],
+		["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCDebugMenu =
+[
+["",true],
+	["Humanity >>", [], "#USER:A2EDCDebugHumanityMenu", -5, [["expression", ""]], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
+];
+A2EDCDebugHumanityMenu =
+[
+["",true],
+	["Set Hero L1 test humanity: +3000", [], "", -5, [["expression",'[3000,"hero_l1"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Hero L2 test humanity: +7000", [], "", -5, [["expression",'[7000,"hero_l2"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Hero L3 test humanity: +16000", [], "", -5, [["expression",'[16000,"hero_l3"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Hero L4 test humanity: +21000", [], "", -5, [["expression",'[21000,"hero_l4"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Neutral test humanity: 0", [], "", -5, [["expression",'[0,"neutral"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Bandit L1 test humanity: -3000", [], "", -5, [["expression",'[-3000,"bandit_l1"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Bandit L2 test humanity: -7000", [], "", -5, [["expression",'[-7000,"bandit_l2"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Bandit L3 test humanity: -16000", [], "", -5, [["expression",'[-16000,"bandit_l3"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["Set Bandit L4 test humanity: -21000", [], "", -5, [["expression",'[-21000,"bandit_l4"] execVM "admintools\tools\a2edc_adminHumanityDebug.sqf"']], "1", "1"],
+	["", [], "", -5,[["expression", ""]], "1", "0"],
+		["Debug", [], "#USER:A2EDCDebugMenu", -5, [["expression", ""]], "1", "1"],
 		["Main Menu", [20], "#USER:epochmenustart", -5, [["expression", ""]], "1", "1"]
 ];
 A2EDCWaiMissionMenu =

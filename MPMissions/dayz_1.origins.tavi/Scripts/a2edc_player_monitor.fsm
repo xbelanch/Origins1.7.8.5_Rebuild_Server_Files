@@ -429,6 +429,7 @@ class FSM
        "" \n
        "DOdowndblink = [_playerUID,player];" \n
        "dayzPlayerLogin = [];" \n
+       "diag_log format [""A2EDC:REJOIN:LOGIN_REQUEST uid=%1 player=%2 oldPayloadReset=%3"",_playerUID,player,dayzPlayerLogin];" \n
        "publicVariableServer ""DOdowndblink"";"/*%FSM</STATEINIT""">*/;
       precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
       class Links
@@ -451,6 +452,7 @@ class FSM
     {
       name = "Parse_Login";
       init = /*%FSM<STATEINIT""">*/"progressLoadingScreen 0.6;" \n
+       "diag_log format [""A2EDC:REJOIN:CLIENT_PAYLOAD_RECEIVED uid=%1 payloadCount=%2 payload=%3"",getPlayerUID player,count _msg,_msg];" \n
        "_charID		= _msg select 0;" \n
        "_inventory	= _msg select 1;" \n
        "_backpack	= _msg select 2;" \n

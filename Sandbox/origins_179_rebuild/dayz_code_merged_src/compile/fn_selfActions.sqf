@@ -4,7 +4,7 @@ scriptName "Functions\misc\fn_selfActions.sqf";
 	- Function
 	- [] call fnc_usec_selfActions;
 ************************************************************/
-private ["_vehicle","_inVehicle","_bag","_classbag","_isWater","_hasAntiB","_hasFuelE","_hasFuelBE","_hasRawMeat","_hasKnife","_hasToolbox","_hasTent","_onLadder","_nearLight","_mbBackpacks","_nearBackpacks","_nearPlayerB","_playerID","_canPickLight","_canRest","_nextVehicle","_shwmsg","_newCuTyp","_isOwnerName","_newTypeB","_keep2","_typedeP","_nameKillerP","_canDo","_text","_ownerID","_maxbbLevel","_levelhouse","_naObnovku","_nextlvl","_isHarvested","_isVehicle","_isMan","_isAnimal","_isZombie","_isDestructable","_isTent","_isFuel","_isAlive","_isCruse","_object","_nummsg","_takemes","_maxbbLevelt","_isUpsideDown","_notManned","_mates","_totpa","_allFixed","_hitpoints","_damage","_part","_cmpt","_damagePercent","_color","_string","_handle","_cfg","_tc","_mt","_mti","_nameClass1","_st","_statuss","_stname"];
+private ["_vehicle","_inVehicle","_bag","_classbag","_isWater","_hasAntiB","_hasFuelE","_hasFuelBE","_hasRawMeat","_hasKnife","_hasToolbox","_hasTent","_onLadder","_nearLight","_mbBackpacks","_nearBackpacks","_nearPlayerB","_playerID","_canPickLight","_canRest","_nextVehicle","_shwmsg","_newCuTyp","_newCuTypRaw","_isOwnerName","_newTypeB","_keep2","_typedeP","_nameKillerP","_canDo","_text","_ownerID","_maxbbLevel","_levelhouse","_naObnovku","_nextlvl","_isHarvested","_isVehicle","_isMan","_isAnimal","_isZombie","_isDestructable","_isTent","_isFuel","_isAlive","_isCruse","_object","_nummsg","_takemes","_maxbbLevelt","_isUpsideDown","_notManned","_mates","_totpa","_allFixed","_hitpoints","_damage","_part","_cmpt","_damagePercent","_color","_string","_handle","_cfg","_tc","_mt","_mti","_nameClass1","_st","_statuss","_stname","_houseCfg","_houseModel","_houseObjectID","_houseObjectUID","_houseCargo","_houseMaxMags","_houseMaxWeapons","_houseMaxBackpacks","_stage2RejectReason"];
 
 if(!isnil("dayzLogin")) exitWith {
 	0 cutText ["", "BLACK",10];
@@ -43,7 +43,10 @@ _canPickLight = false;
 _canRest = false;
 _nextVehicle = false;
 _shwmsg = true;
-_newCuTyp = typeOf cursorTarget;
+_newCuTypRaw = typeOf cursorTarget;
+_newCuTyp = _newCuTypRaw;
+if (!isNull cursorTarget) then {_newCuTyp = cursorTarget getVariable ["A2EDC_DBHouseType",_newCuTypRaw];};
+if (_newCuTyp == "Uroven1VelkaBudka") then {_newCuTyp = "large_shed_lvl_1";};
 _isOwnerName = "Unknown";
 _newTypeB = ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage","object_x"];
 
@@ -95,14 +98,36 @@ if (!isNull cursorTarget and !_inVehicle and (player distance cursorTarget < 30)
 			if ((_newCuTyp == "wooden_house_lvl_3") OR (_newCuTyp == "big_house_lvl_3")) 	then { _maxbbLevel = 8; };
 			if ((_newCuTyp == "small_garage") OR (_newCuTyp == "big_garage")) 	then { _maxbbLevel = 4; };
 			if (_newCuTyp == "object_x") 	then { _maxbbLevel = 1; };
-			_levelhouse = cursorTarget getVariable["levelhouse",10];
-			_naObnovku = cursorTarget getVariable["DaBeUpd",false];
-			_nextlvl = _levelhouse + 1;
+				_levelhouse = cursorTarget getVariable["levelhouse",10];
+				_naObnovku = cursorTarget getVariable["DaBeUpd",false];
+				_nextlvl = _levelhouse + 1;
+				_houseCfg = configFile >> "CfgVehicles" >> _newCuTypRaw;
+				_houseModel = getText (_houseCfg >> "model");
+				_houseObjectID = cursorTarget getVariable ["ObjectID","<missing>"];
+				_houseObjectUID = cursorTarget getVariable ["ObjectUID","net"];
+				_houseCargo = getMagazineCargo cursorTarget;
+				_houseMaxMags = getNumber (_houseCfg >> "transportMaxMagazines");
+				_houseMaxWeapons = getNumber (_houseCfg >> "transportMaxWeapons");
+				_houseMaxBackpacks = getNumber (_houseCfg >> "transportMaxBackpacks");
+				diag_log format ["A2EDC:HOUSE_FOUNDATION_CARGO_OPENABLE object=%1 typeOf=%2 model=%3 dbHouseType=%4 objectID=%5 objectUID=%6 owner=%7 levelhouse=%8 cargoMagazineTypes=%9 openableInference=%10",cursorTarget,_newCuTypRaw,_houseModel,_newCuTyp,_houseObjectID,_houseObjectUID,_ownerID,_levelhouse,count (_houseCargo select 0),((_houseMaxMags > 0) or (_houseMaxWeapons > 0) or (_houseMaxBackpacks > 0))];
+				diag_log format ["A2EDC:HOUSE_FOUNDATION_CARGO_CAPACITY object=%1 typeOf=%2 dbHouseType=%3 transportMaxMagazines=%4 transportMaxWeapons=%5 transportMaxBackpacks=%6",cursorTarget,_newCuTypRaw,_newCuTyp,_houseMaxMags,_houseMaxWeapons,_houseMaxBackpacks];
+				diag_log format ["A2EDC:HOUSE_FOUNDATION_GEAR_TITLE object=%1 typeOf=%2 dbHouseType=%3 displayName=%4",cursorTarget,_newCuTypRaw,_newCuTyp,getText (_houseCfg >> "displayName")];
+				diag_log format ["A2EDC:HOUSE_FOUNDATION_ACTION_SCAN object=%1 rawType=%2 dbHouseType=%3 createClass=%4 model=%5 owner=%6 playerID=%7 levelhouse=%8 maxLevel=%9 nextLevel=%10 distance=%11 objectID=%12 objectUID=%13 hObjectID=%14 canAddStageAction=%15 reason=%16",cursorTarget,_newCuTypRaw,_newCuTyp,cursorTarget getVariable ["A2EDC_CreateClass","<missing>"],_houseModel,_ownerID,_playerID,_levelhouse,_maxbbLevel,_nextlvl,player distance cursorTarget,_houseObjectID,_houseObjectUID,cursorTarget getVariable ["HObjectID","<missing>"],((_levelhouse < _maxbbLevel) and (player distance cursorTarget > 8) and (player distance cursorTarget < 30)),"owner_house_cursor_scan"];
 			if (_levelhouse < _maxbbLevel) then {
 				if ((s_player_1bupd < 0) and (player distance cursorTarget > 8) and (player distance cursorTarget < 30)) then {
 					s_player_1bupd = player addAction [format[localize "STR_BUILDING_STAGE_2",_nextlvl], "\z\addons\dayz_code\actions\bse_pp.sqf",[cursorTarget,_levelhouse], 0, false, true, "",""];
+					diag_log format ["A2EDC:HOUSE_FOUNDATION_ACTION_AVAILABLE object=%1 rawType=%2 dbHouseType=%3 owner=%4 playerID=%5 levelhouse=%6 maxLevel=%7 nextLevel=%8 actionId=%9 distance=%10 reason=%11",cursorTarget,_newCuTypRaw,_newCuTyp,_ownerID,_playerID,_levelhouse,_maxbbLevel,_nextlvl,s_player_1bupd,player distance cursorTarget,"owner_house_upgrade_range"];
+						diag_log format ["A2EDC:HOUSE_STAGE2_ACTION_AVAILABLE object=%1 rawType=%2 dbHouseType=%3 owner=%4 playerID=%5 levelhouse=%6 maxLevel=%7 nextLevel=%8 actionId=%9 distance=%10 reason=%11",cursorTarget,_newCuTypRaw,_newCuTyp,_ownerID,_playerID,_levelhouse,_maxbbLevel,_nextlvl,s_player_1bupd,player distance cursorTarget,"owner_house_upgrade_range"];
+					};
 				};
-			};
+				if (!((_levelhouse < _maxbbLevel) and (player distance cursorTarget > 8) and (player distance cursorTarget < 30))) then {
+					_stage2RejectReason = "unknown";
+					if (_levelhouse >= _maxbbLevel) then {_stage2RejectReason = "already_max_level";};
+					if (player distance cursorTarget <= 8) then {_stage2RejectReason = "too_close_action_requires_more_than_8m";};
+					if (player distance cursorTarget >= 30) then {_stage2RejectReason = "too_far_action_requires_less_than_30m";};
+					diag_log format ["A2EDC:HOUSE_FOUNDATION_ACTION_REJECTED object=%1 rawType=%2 dbHouseType=%3 owner=%4 playerID=%5 levelhouse=%6 maxLevel=%7 distance=%8 objectID=%9 objectUID=%10 reason=%11",cursorTarget,_newCuTypRaw,_newCuTyp,_ownerID,_playerID,_levelhouse,_maxbbLevel,player distance cursorTarget,_houseObjectID,_houseObjectUID,_stage2RejectReason];
+					diag_log format ["A2EDC:HOUSE_STAGE2_ACTION_REJECTED object=%1 rawType=%2 dbHouseType=%3 owner=%4 playerID=%5 levelhouse=%6 maxLevel=%7 distance=%8 objectID=%9 objectUID=%10 reason=%11",cursorTarget,_newCuTypRaw,_newCuTyp,_ownerID,_playerID,_levelhouse,_maxbbLevel,player distance cursorTarget,_houseObjectID,_houseObjectUID,_stage2RejectReason];
+				};
 			if ((_levelhouse == 1)&&(_newCuTyp != "object_x") ) then {
 				if ((s_player_packFdp < 0) and (player distance cursorTarget > 8) and (player distance cursorTarget < 30)) then {
 					s_player_packFdp = player addAction [localize "STR_BUILDING_STAGE_U", "\z\addons\dayz_code\actions\player_dFp.sqf",cursorTarget, 0, false, true, "",""];
@@ -155,7 +180,10 @@ if (!isNull cursorTarget and !_inVehicle and (player distance cursorTarget < 30)
 			s_player_packFdp = -1;
 		};
 	} else {
-		_newCuTyp = typeOf cursorTarget;
+		_newCuTypRaw = typeOf cursorTarget;
+		_newCuTyp = _newCuTypRaw;
+		if (!isNull cursorTarget) then {_newCuTyp = cursorTarget getVariable ["A2EDC_DBHouseType",_newCuTypRaw];};
+		if (_newCuTyp == "Uroven1VelkaBudka") then {_newCuTyp = "large_shed_lvl_1";};
 		if(_newCuTyp in _newTypeB) then {
 			if (player distance cursorTarget < 30) then {
 				if (_shwmsg) then {

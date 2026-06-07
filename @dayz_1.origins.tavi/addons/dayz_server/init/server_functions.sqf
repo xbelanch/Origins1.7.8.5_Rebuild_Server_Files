@@ -1,5 +1,15 @@
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\a2edc_buildinfo.sqf";
 
+A2EDC_serverBuildInfo = [
+	if (isNil "A2EDC_DAYZ_SERVER_BUILD_ID") then {"UNKNOWN"} else {A2EDC_DAYZ_SERVER_BUILD_ID},
+	if (isNil "A2EDC_DAYZ_SERVER_BUILD_NOTE") then {"UNKNOWN"} else {A2EDC_DAYZ_SERVER_BUILD_NOTE},
+	if (isNil "A2EDC_DAYZ_SERVER_BUILD_UTC") then {""} else {A2EDC_DAYZ_SERVER_BUILD_UTC},
+	if (isNil "A2EDC_DAYZ_SERVER_BUILD_SOURCE") then {""} else {A2EDC_DAYZ_SERVER_BUILD_SOURCE},
+	if (isNil "A2EDC_BUILD_EXPORT") then {""} else {A2EDC_BUILD_EXPORT}
+];
+publicVariable "A2EDC_serverBuildInfo";
+diag_log format ["A2EDC:BUILD_ID_SERVER_PUBLISH target=all server=%1",A2EDC_serverBuildInfo];
+
 A2EDC_TRACE = true;
 A2EDC_TRACE_DEEP = false;
 
@@ -124,6 +134,9 @@ _monitors = if (isNil "A2EDC_fnc_monitorCounts") then {"<no monitor helper>"} el
 waituntil {!isnil "bis_fnc_init"};
 
 A2EDC_fnc_adminMissionLaunch = compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\a2edc_adminMissionLaunch.sqf";
+A2EDC_fnc_adminBuildingKit = compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\a2edc_adminBuildingKit.sqf";
+A2EDC_fnc_adminTeleport = compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\a2edc_adminTeleport.sqf";
+A2EDC_fnc_adminHumanityDebug = compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\a2edc_adminHumanityDebug.sqf";
 
 call compile preprocessFileLineNumbers "\z\addons\dayz_server\init\publicEH_srv.sqf";
 

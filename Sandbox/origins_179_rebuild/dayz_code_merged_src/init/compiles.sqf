@@ -80,12 +80,23 @@ if (!isDedicated) then {
 	player_CeMix = 				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_BCeMix.sqf";
 	player_ppver =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_ppver.sqf";
 	fnc_use_item = {
-		private["_item","_action","_handled"];
+			private["_item","_action","_handled","_playerID","_playerPos","_target","_buildobj","_gearDisplay","_gearWasOpen"];
 		_item = _this select 0;
 		_action = _this select 1;
 		_handled = true;
 		diag_log format["A2EDC:INV_ACTION_BRIDGE item=%1 action=%2",_item,_action];
-		switch (_action) do {
+		diag_log format["A2EDC:INV_ACTION_EXECUTE_BEGIN item=%1 action=%2 uid=%3 player=%4 gearOpen=%5 execution=synchronous_bridge_action_spawn_pending",_item,_action,getPlayerUID player,player,!isNull (findDisplay 106)];
+		if (_action in ["CeMix","bbstart","ebstart","kkstart"]) then {
+			_playerID = getPlayerUID player;
+			_playerPos = getPosATL player;
+			_target = cursorTarget;
+			_buildobj = "";
+			if (_item in ["ItemBpt_b1","ItemBpt_b2","ItemBpt_b3","ItemBpt_h1","ItemBpt_h2","ItemBpt_h3","ItemBpt_g_s","ItemBpt_g_b"]) then {
+				_buildobj = getText (configFile >> "CfgMagazines" >> _item >> "ItemActions" >> "Build" >> "create");
+			};
+			diag_log format["A2EDC:HOUSE_BUILD_ACTION item=%1 action=%2 uid=%3 player=%4 playerPos=%5 cursorTarget=%6 selectedBlueprint=%7 selectedBuilding=%8",_item,_action,_playerID,player,_playerPos,_target,_item,_buildobj];
+		};
+			switch (_action) do {
 			case "makeFire": { _item spawn player_makeFire; };
 			case "chopWood3": { _item spawn player_chopWood; };
 			case "addToolbelt": { _item spawn player_addToolbelt; };
@@ -106,9 +117,33 @@ if (!isDedicated) then {
 			case "bbstart": { _item spawn player_bbstart; };
 			case "ebstart": { _item spawn player_bbstart; };
 			case "kkstart": { _item spawn player_bbstart; };
-			default { _handled = false; };
-		};
-		if (!_handled) then {
+				default { _handled = false; };
+			};
+			if (_handled) then {
+				diag_log format["A2EDC:INV_ACTION_EXECUTE_CONTINUED item=%1 action=%2 uid=%3 player=%4 execution=action_spawned_before_gear_close",_item,_action,getPlayerUID player,player];
+			};
+			if (_handled) then {
+				_gearDisplay = findDisplay 106;
+				_gearWasOpen = !isNull _gearDisplay;
+				diag_log format["A2EDC:INV_ACTION_CLOSE_GEAR_BEGIN item=%1 action=%2 displayId=106 wasOpen=%3 reason=supported_action_executed",_item,_action,_gearWasOpen];
+				if (_gearWasOpen) then {
+					[_item,_action] spawn {
+						private["_item","_action"];
+						_item = _this select 0;
+						_action = _this select 1;
+						diag_log format["A2EDC:INV_ACTION_CLOSE_GEAR_DELAYED item=%1 action=%2 displayId=106 delay=0.05 reason=allow_spawned_action_to_start",_item,_action];
+						sleep 0.05;
+						closeDialog 0;
+						diag_log format["A2EDC:INV_ACTION_EXECUTE_AFTER_CLOSE item=%1 action=%2 displayId=106 immediateClosed=%3 execution=spawned_action_independent",_item,_action,isNull (findDisplay 106)];
+						sleep 0.25;
+						diag_log format["A2EDC:INV_ACTION_CLOSE_GEAR_DONE item=%1 action=%2 displayId=106 closed=%3 delay=0.30 reason=supported_action_executed",_item,_action,isNull (findDisplay 106)];
+					};
+				} else {
+					diag_log format["A2EDC:INV_ACTION_CLOSE_GEAR_SKIP item=%1 action=%2 displayId=106 reason=gear_not_open",_item,_action];
+				};
+			};
+			if (!_handled) then {
+			diag_log format["A2EDC:INV_ACTION_EXECUTE_ABORTED item=%1 action=%2 uid=%3 player=%4 reason=unsupported_bridge_action",_item,_action,getPlayerUID player,player];
 			diag_log format["A2EDC:INV_ACTION_NONE item=%1 reason=unsupported_bridge_action action=%2",_item,_action];
 			cutText [format["Unsupported item action: %1",_action], "PLAIN DOWN"];
 		};

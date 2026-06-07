@@ -3,6 +3,7 @@ diag_log format["DELETE: Deleted %1",_this];
 _id 	= _this select 0;
 _uid 	= _this select 1;
 _type	= _this select 2;
+if (_type == "Uroven1VelkaBudka") then {_type = "large_shed_lvl_1";};
 _goStop = false;
 _allowedTo  = ["wooden_shed_lvl_1","log_house_lvl_2","wooden_house_lvl_3","large_shed_lvl_1","small_house_lvl_2","big_house_lvl_3","small_garage","big_garage"];
 _basebbm = {
@@ -29,7 +30,7 @@ _playerID 	=	getPlayerUID _player;
 _sOwners 	= _obj getVariable ["SOwner","Net"];
 _sObjId 	= _obj getVariable ["HObjectID","0"];
 _gObjId 	= _obj getVariable ["ObjectID","0"];
-_slevel = _object getVariable ["Slevelhouse",0];
+_slevel = _obj getVariable ["Slevelhouse",0];
 if (_playerID !=_sOwners) then { diag_log format ["ERROR_DEL_OBJ _playerID:%1, _sOwners:%2, _obj:%3, _sObjId:%4, _type:%5",_playerID,_sOwners,_obj,_sObjId,_type]; _goStop = true; };
 if (_slevel >1) then { diag_log format ["ERROR_DEL_OBJ Level>0 _playerID:%1, _sOwners:%2, _obj:%3, _sObjId:%4, _type:%5,_slevel:%6",_playerID,_sOwners,_obj,_sObjId,_type,_slevel]; _goStop = true; };
 if (!_goStop) then {
