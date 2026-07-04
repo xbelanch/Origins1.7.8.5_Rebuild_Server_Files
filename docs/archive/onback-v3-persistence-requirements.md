@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # onBack v3 Persistence Requirements
 
 Do not implement this until explicitly authorized.
@@ -21,4 +23,3 @@ Do not implement this until explicitly authorized.
 - `server_playerSync` writes `[weapons, magazines, A2EDC_onBack]`.
 - Login/playLogni accepts both `[weapons, magazines]` and `[weapons, magazines, onBack]`.
 - Server-side guards must not drop or overwrite `onBack` when handling legacy records.
-

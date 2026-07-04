@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # First mpmission audit
 
 **Entrypoint Map**

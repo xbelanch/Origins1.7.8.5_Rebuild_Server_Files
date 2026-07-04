@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # DayZ Origins 1.7.8.5 / 1.7.9 Reconstruction Server Setup
 
 Aquest repositori conté una base comunitària funcional per muntar un servidor **DayZ Origins 1.7.8.5** i, alhora, el treball de reconstrucció i compatibilitat que s’ha anat fent per provar una línia **1.7.9** amb els materials disponibles.

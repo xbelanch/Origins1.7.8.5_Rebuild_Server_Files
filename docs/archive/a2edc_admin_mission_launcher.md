@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # A2EDC Admin Mission Launcher
 
 ## Scope

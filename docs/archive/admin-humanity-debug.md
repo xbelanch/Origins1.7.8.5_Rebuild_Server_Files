@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # Admin Humanity Debug Helper
 
 ## Purpose

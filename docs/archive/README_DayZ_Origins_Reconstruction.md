@@ -1,3 +1,5 @@
+> Historical document. Kept for reference. Current entrypoint: [../INDEX.md](../INDEX.md)
+
 # DayZ Origins Server Reconstruction / Community Server Files
 
 This repository contains community-provided server-side material and tooling used to run and reconstruct DayZ Origins server environments, especially around the 1.7.8.5 baseline and later experimental 1.7.9 reconstruction work.
